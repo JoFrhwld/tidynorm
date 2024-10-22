@@ -1,0 +1,20 @@
+Type: Package
+Package: tidynorm
+Title: Tools for Tidy Vowel Normalization
+Version: 0.1.0
+Authors@R: c(
+    person("Josef", "Fruehwald", , "JoFrhwld@gmail.com", role = c("cre", "aut"))
+  )
+Description: Provides tools for doing tidy speaker vowel normalization.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    glue,
+    rlang,
+    stringr,
+    tidyr,
+    tidyselect

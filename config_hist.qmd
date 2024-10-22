@@ -1,0 +1,180 @@
+---
+title: "Config Hist"
+format: html
+editor: visual
+knitr: 
+  opts_chunk: 
+    eval: false
+---
+
+## Support Packages
+
+```{r}
+renv::install(
+  c(
+    "usethis",
+    "desc",
+    "roxygen2",
+    "here",
+    "testthat",
+    "readr",
+    "devtools"
+  ),
+  prompt = F
+)
+```
+
+## Setup
+
+```{r}
+usethis::git_vaccinate()
+```
+
+```{r}
+desc::desc_coerce_authors_at_r(normalize = T)
+```
+
+```{r}
+desc::desc_del("Author")
+```
+
+```{r}
+renv::install("whoami")
+
+desc::desc_del_author("cre")
+desc::desc_add_me(role = c("cre", "aut"))
+```
+
+```{r}
+desc::desc_del("Maintainer")
+```
+
+```{r}
+usethis::use_gpl3_license()
+```
+
+```{r}
+desc::desc_set(
+  Title = "Tools for Tidy Vowel Normalization",
+  Description = "Provides tools for doing tidy speaker vowel normalization."
+)
+```
+
+```{r}
+fs::file_delete(here::here("NAMESPACE"))
+```
+
+```{r}
+usethis::use_roxygen_md()
+```
+
+```{r}
+roxygen2::roxygenize()
+```
+
+## Readme config
+
+```{r}
+usethis::use_readme_rmd()
+## re-edited to be qmd
+```
+
+```{r}
+fs::dir_create("hooks")
+```
+
+```{r}
+pre_commit <- "#!/bin/sh
+quarto render README.qmd
+git add README.md"
+```
+
+```{r}
+readr::write_lines(
+  pre_commit,
+  file = here::here("hooks", "pre-commit")
+)
+```
+
+```{r}
+fs::file_chmod(here::here("hooks", "pre-commit"), "+x")
+
+fs::file_delete(
+   here::here(".git", "hooks", "pre-commit")
+)
+
+fs::link_create(
+   here::here("hooks", "pre-commit"),
+   here::here(".git", "hooks", "pre-commit")
+)
+```
+
+## Gitignore management
+
+```{r}
+gitignore <- readr::read_lines(here::here(".gitignore"))
+gitignore <- c(
+  gitignore,
+  "*_files",
+  "*.html"
+) |> 
+  unique()
+
+readr::write_lines(
+  gitignore,
+  here::here(".gitignore")
+)
+```
+
+```{r}
+rbuildignore <- readr::read_lines(here::here(".Rbuildignore"))
+
+rbuildignore <- c(
+  rbuildignore,
+  "^README\\.qmd$",
+  "^config_hist.*",
+  "hooks"
+) |> 
+  unique()
+
+readr::write_lines(
+  rbuildignore,
+  here::here(".Rbuildignore")
+)
+```
+
+## Code management
+
+```{r}
+if(fs::file_exists("R/hello.R")){
+  fs::file_delete("R/hello.R")
+}
+```
+
+```{r}
+if(!fs::file_exists("R/tidynorm-package.R")){
+  usethis::use_package_doc()
+}
+```
+
+## Snapshot
+
+```{r}
+renv::snapshot(type = "all")
+```
+
+## Use Packages
+
+```{r}
+usethis::use_package("rlang")
+
+usethis::use_package("dplyr")
+
+usethis::use_package("tidyselect")
+
+usethis::use_package("glue")
+
+usethis::use_package("tidyr", "Imports")
+
+usethis::use_package("stringr")
+```

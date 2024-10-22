@@ -1,0 +1,10 @@
+^requirements\.txt$
+^renv$
+^renv\.lock$
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^README\.Rmd$
+^README\.qmd$
+^config_hist.*
+hooks
