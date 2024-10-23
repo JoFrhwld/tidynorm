@@ -1,90 +1,80 @@
-#' identity norm fun
-#' @export
-identity_norm_fun <- function(
+check_grouping <- function(
     .data,
-    grouping,
-    .names
+    .by,
+    call = caller_env()
 ){
-  .data = dplyr::mutate(
-    .data,
-    L = 0,
-    S = 1
-  )
-  return(.data)
+  grouped_by <- dplyr::group_vars(.data)
+  grouping <- tidyselect::eval_select(.by, .data)
+  if(length(grouped_by) > 0 & length(grouping) > 0){
+    cli_abort(
+      c(
+        "You cannot provide {.arg .by} to a grouped data frame.",
+        "i" = "{.fn dplyr::group_by} was used on {.var .data}, and it is still grouped.",
+        "i" = "You may want to {.fn dplyr::ungroup} {.var .data} before normalizing."
+      ),
+      call = call
+    )
+  }
+
+  if(length(grouped_by) < 1 & length(grouping) < 1){
+    cli_warn(
+      c(
+        "There is was no grouping provided.",
+        "i" = "You may want to provide {.arg .by} with a speaker id column."
+      ),
+      call = call
+    )
+  }
 }
 
-#' lobanov_norm_fun
-#' @export
-lobanov_norm_fun <- function(
-    .data,
-    grouping,
-    .names
-){
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!grouping,
-    L = mean(.col, na.rm = T),
-    S = sd(.col, na.rm = T),
-    dplyr::across(
-      .col,
-      .fns = \(x) (x - L)/S,
-      .names = .names
-    )
-  )
 
-  return(.data)
+check_n_target <- function(
+    target_pos,
+    n = 2,
+    call = caller_env()
+){
+  n_target <- length(target_pos)
+  if(n_target < n){
+    cli_warn(
+      c(
+        "{n_target} column{?s} w{?as/ere} targeted."
+      ),
+      call = call
+    )
+  }
 }
 
-#' Neary norm fun
-#' @export
-nearey_norm_fun <- function(
+wrap_up <- function(
     .data,
-    grouping,
-    .names
+    target_pos,
+    .by,
+    .by_formant
 ){
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!grouping,
-    L = mean(log(.col), na.rm = T),
-    S = 1,
-    dplyr::across(
-      .col,
-      .fns = \(x) log(x) - L,
-      .names = .names
-    )
+  grouping <- tidyselect::eval_select(.by, data = .data)
+  message <-    c(
+    "*" = "normalized {.var {names(target_pos)}}"
   )
-}
-
-#' deltaF norm fun
-#' @export
-deltaF_norm_fun <- function(
-    .data,
-    grouping,
-    .names
-){
-
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!grouping,
-    .formant_num = stringr::str_extract(
-      .formant,
-      r"{[fF](\d)}",
-      group = 1
-    ) |> as.numeric(),
-    L = 0,
-    S = mean(
-      .col/(.formant_num - 0.5),
-      na.rm = T
-    ),
-    dplyr::across(
-      .col,
-      .fns = \(x) x/S,
-      .names = .names
+  if(length(grouping) > 0){
+    message <- c(
+      message,
+      "*" = "grouped by {.var {names(grouping)}}"
     )
-  ) |>
-    dplyr::select(
-      -.formant_num
+  }
+
+  if(.by_formant){
+    message <- c(
+      message,
+      "*" = "formant intrinsic"
+    )
+  }else{
+    message <- c(
+      message,
+      "*" = "formant extrinsic"
     )
 
-  return(.data)
+  }
+
+  cli_inform(
+   message
+  )
 }

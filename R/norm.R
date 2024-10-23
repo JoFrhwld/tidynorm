@@ -1,4 +1,30 @@
-#' norm generic
+#' Generic normalization procedure
+#'
+#' This is a generic normalization procedure with which
+#' you can create your own normalization method.
+#'
+#' @param .data A data frame containing vowel formant data
+#' @param ... [`<tidy-select>`][dplyr::dplyr_tidy_select] One or more unquoted
+#' expressions separated by commas. These should target the vowel formant
+#' data columns.
+#' @param .by  [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
+#' columns to group by. Typically a column of speaker IDs.
+#' @param .norm_fun A function to apply to a pivoted long data frame. See
+#' Detsils for how to write such a function.
+#' @param .by_formant Whether or not the normalization method is formant
+#' intrinsic.
+#' @param .drop_orig Whether or not to drop the original formant data columns.
+#' @param .keep_params Whether or not to keep the Location (`*_L`) and scale
+#' (`*_S`) normalization parameters
+#' @param .names A [glue::glue()] expression for naming the normalized
+#' data columns. The `"{.col}"` portion corresponds to the name of the original
+#' formant columns.
+#'
+#' @details
+#' The following `norm_*` procedures are built on top of `norm_generic()`.
+#'
+#'
+#'
 #' @export
 norm_generic <- function(
   .data,
@@ -8,23 +34,33 @@ norm_generic <- function(
   .by_formant = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_n"
+  .names = "{.col}_n",
+  call = caller_env()
 ){
   targets <- rlang::expr(c(...))
+
+  check_grouping(.data, enquo(.by), call)
+
   grouping <- rlang::enquo(.by)
 
+  # evaluating for the number of
+  # targeted columns
   target_pos <- tidyselect::eval_select(targets, data = .data)
+  check_n_target(target_pos, n = 2, call = call)
 
-  targets <- rlang::expr(c(...))
-  grouping <- rlang::enquo(.by)
-
-  target_pos <- tidyselect::eval_select(targets, data = .data)
-
+  # adding an id col for safety in
+  # pivoting
   .data <- dplyr::mutate(
     .data,
     .id = dplyr::row_number()
-  )
+  ) |>
+    dplyr::relocate(
+      .id,
+      .before = 1
+    )
 
+  # all normalization happens
+  # longwise
   .data <- tidyr::pivot_longer(
     .data,
     !!targets,
@@ -32,7 +68,21 @@ norm_generic <- function(
     values_to = ".col"
   )
 
-  if(.by_formant){
+  # see if the data is grouped
+  grouped_by <- dplyr::group_vars(
+    .data
+  )
+
+  # augment grouping as necessary to
+  # match .by_formant
+  if(.by_formant & length(grouped_by > 0)){
+    .data <- group_by(
+      .data,
+      !!sym(".formant"),
+      .add = TRUE
+    )
+    norm_group <- grouping
+  } else if(.by_formant){
     norm_group <- rlang::expr(
       c(!!grouping, .formant)
     )
@@ -40,12 +90,15 @@ norm_generic <- function(
     norm_group <- grouping
   }
 
+  # apply provided norm_fun
   .data <- .norm_fun(
     .data,
     norm_group,
     .names
   )
 
+  # set up value columns for pivoting
+  # back wide
   if(.keep_params){
     values_target <- rlang::expr(c(
       tidyselect::starts_with(".col"),
@@ -61,6 +114,7 @@ norm_generic <- function(
     )
   }
 
+  # pivot_back wide
   .data <- tidyr::pivot_wider(
     .data,
     names_from = .formant,
@@ -68,18 +122,22 @@ norm_generic <- function(
     names_glue = "{.formant}_{.value}"
   )
 
+  # move normalized columns adjacent to
+  # original
   .data <- dplyr::relocate(
     .data,
     tidyselect::matches("_.col"),
     .after = target_pos[1]-1
   )
 
+  # remove _.col from names
   .data <- dplyr::rename_with(
     .data,
     .cols = tidyselect::matches("_.col"),
     .fn = \(x) stringr::str_remove(x, "_.col")
   )
 
+  # if .drop_orig
   if(.drop_orig){
     .data <- dplyr::select(
       .data,
@@ -87,17 +145,28 @@ norm_generic <- function(
     )
   }
 
+  wrap_up(
+    .data,
+    target_pos,
+    enquo(.by),
+    .by_formant
+  )
   return(.data)
 
 }
 
 #' Lobanov Normalize
+#' @inheritParams norm_generic
+#'
+#' @param .by_formant Ignored by this procedure
+#'
 #' @importFrom rlang `:=`
 #' @export
 norm_lobanov <- function(
     .data,
     ...,
     .by = NULL,
+    .by_formant = TRUE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.col}_z"
@@ -121,12 +190,14 @@ norm_lobanov <- function(
 }
 
 #' Nearey Normalization
+#' @inheritParams norm_generic
 #' @importFrom rlang `!!`
 #' @export
 norm_nearey <- function(
     .data,
     ...,
     .by = NULL,
+    .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.col}_lm"
@@ -138,7 +209,7 @@ norm_nearey <- function(
     !!targets,
     .by = {{.by}},
     .norm_fun = nearey_norm_fun,
-    .by_formant = FALSE,
+    .by_formant = .by_formant,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names
@@ -149,11 +220,16 @@ norm_nearey <- function(
 }
 
 #' Delta F Method
+#' @inheritParams norm_generic
+#'
+#' @param .by_formant Ignored by this procedure
+#'
 #' @export
 norm_deltaF <- function(
     .data,
     ...,
     .by = NULL,
+    .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.col}_df"

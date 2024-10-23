@@ -8,10 +8,32 @@ norm_deltaF(
   .data,
   ...,
   .by = NULL,
+  .by_formant = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_df"
 )
+}
+\arguments{
+\item{.data}{A data frame containing vowel formant data}
+
+\item{...}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} One or more unquoted
+expressions separated by commas. These should target the vowel formant
+data columns.}
+
+\item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
+columns to group by. Typically a column of speaker IDs.}
+
+\item{.by_formant}{Ignored by this procedure}
+
+\item{.drop_orig}{Whether or not to drop the original formant data columns.}
+
+\item{.keep_params}{Whether or not to keep the Location (\verb{*_L}) and scale
+(\verb{*_S}) normalization parameters}
+
+\item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
+data columns. The \code{"{.col}"} portion corresponds to the name of the original
+formant columns.}
 }
 \description{
 Delta F Method

@@ -1,5 +1,5 @@
 ---
-testing
+title: testing
 ---
 
 ```{r}
@@ -36,12 +36,11 @@ c(
   data
 ```
 
-```{r}
-data |> 
-  norm_nearey(
-    F1:F3,
+```{r} 
+data  |>
+  #group_by(speaker) |> 
+  norm_lobanov(
     .by = speaker,
-    .keep_params = T
+    F1:F3
   )
 ```
-

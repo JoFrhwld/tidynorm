@@ -177,4 +177,6 @@ usethis::use_package("glue")
 usethis::use_package("tidyr", "Imports")
 
 usethis::use_package("stringr")
+
+usethis::use_package("cli")
 ```
