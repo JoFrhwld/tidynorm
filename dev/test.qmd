@@ -4,7 +4,10 @@ testing
 
 ```{r}
 library(readr)
+library(purrr)
+library(dplyr)
 library(ggplot2)
+library(ggdensity)
 
 s01_dat <- read_csv(
   "https://lin611-2024.github.io/notes/meetings/data/s01_dat.csv"
@@ -12,58 +15,33 @@ s01_dat <- read_csv(
 ```
 
 ```{r}
-s01_dat |> 
-  norm_wattfab(
-    f1:f2,
-    .by = speaker,
-    .vowel_col = plt_vclass,
-    .high_front = c("iy"),
-    .low = c("ae")
+c(
+  s01 = "https://lingmethodshub.github.io/content/R/tidy-norm/data/s01.txt",
+  s03 = "https://lingmethodshub.github.io/content/R/tidy-norm/data/s03.txt"
+) |> 
+  map(
+    ~read_tsv(.x, col_types=cols(sex = 'c'))
   ) |> 
-  ggplot(
-    aes(f2_wf, f1_wf)
-  )+
-  geom_point() +
-  coord_fixed()+
-  scale_y_reverse()+
-  scale_x_reverse()
+  list_rbind(
+    names_to = "speaker"
+  ) |> 
+  select(
+    speaker, 
+    vowel, 
+    plt_vclass,
+    ipa_vclass,
+    word,
+    F1:F3
+  ) ->
+  data
 ```
 
 ```{r}
-length(tidyselect::eval_select(foo, s01_dat))
-```
-
-```{r}
-stringr::str_extract(
-      "f1", 
-      r"{[fF](\d)}",
-      group = 1
-    )
-```
-
-```{r}
-s01_dat |> 
-  mutate(
-    across(
-      f1:f3,
-      .fns = \(x) mean(x, na.rm = T)
-    )
+data |> 
+  norm_nearey(
+    F1:F3,
+    .by = speaker,
+    .keep_params = T
   )
 ```
 
-```{r}
-library(tidyselect)
-```
-
-```{r}
-expr <- rlang::expr(starts_with("f"))
-expr
-```
-
-```{r}
-pos <- eval_select(expr, data = s01_dat)
-
-glue::glue(
-  "{x}_L",  x = names(pos)
-)
-```

@@ -1,3 +1,96 @@
+#' norm generic
+#' @export
+norm_generic <- function(
+  .data,
+  ...,
+  .by = NULL,
+  .norm_fun = identity_norm_fun,
+  .by_formant = FALSE,
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.col}_n"
+){
+  targets <- rlang::expr(c(...))
+  grouping <- rlang::enquo(.by)
+
+  target_pos <- tidyselect::eval_select(targets, data = .data)
+
+  targets <- rlang::expr(c(...))
+  grouping <- rlang::enquo(.by)
+
+  target_pos <- tidyselect::eval_select(targets, data = .data)
+
+  .data <- dplyr::mutate(
+    .data,
+    .id = dplyr::row_number()
+  )
+
+  .data <- tidyr::pivot_longer(
+    .data,
+    !!targets,
+    names_to = ".formant",
+    values_to = ".col"
+  )
+
+  if(.by_formant){
+    norm_group <- rlang::expr(
+      c(!!grouping, .formant)
+    )
+  } else {
+    norm_group <- grouping
+  }
+
+  .data <- .norm_fun(
+    .data,
+    norm_group,
+    .names
+  )
+
+  if(.keep_params){
+    values_target <- rlang::expr(c(
+      tidyselect::starts_with(".col"),
+      tidyselect::all_of(c("L", "S"))
+    ))
+  } else {
+    values_target <- rlang::expr(
+      tidyselect::starts_with(".col")
+    )
+    .data <- dplyr::select(
+      .data,
+      -c(L, S)
+    )
+  }
+
+  .data <- tidyr::pivot_wider(
+    .data,
+    names_from = .formant,
+    values_from = !!values_target,
+    names_glue = "{.formant}_{.value}"
+  )
+
+  .data <- dplyr::relocate(
+    .data,
+    tidyselect::matches("_.col"),
+    .after = target_pos[1]-1
+  )
+
+  .data <- dplyr::rename_with(
+    .data,
+    .cols = tidyselect::matches("_.col"),
+    .fn = \(x) stringr::str_remove(x, "_.col")
+  )
+
+  if(.drop_orig){
+    .data <- dplyr::select(
+      .data,
+      -(!!targets)
+    )
+  }
+
+  return(.data)
+
+}
+
 #' Lobanov Normalize
 #' @importFrom rlang `:=`
 #' @export
@@ -11,62 +104,17 @@ norm_lobanov <- function(
 ){
 
   targets <- rlang::expr(c(...))
-  grouping <- rlang::enquo(.by)
 
-  target_pos <- tidyselect::eval_select(targets, data = .data)
-
-  param_col_names <- make_param_col_names(
-    target_pos,
-    data = .data,
-    norm = .names
-  )
-
-  target_names <- param_col_names$target_names
-  L_names <- param_col_names$L_names
-  S_names <- param_col_names$S_names
-  norm_names <- param_col_names$norm_names
-
-  .data <- .data |>
-    make_L(
-      grouping = !!grouping,
-      targets = !!targets,
-      fn = \(x) mean(x, na.rm = T)
-    ) |>
-    make_S(
-      grouping = !!grouping,
-      targets = !!targets,
-      fn = \(x) sd(x, na.rm = T)
-    )
-
-  for(targ in names(target_pos)){
-    .data <- dplyr::mutate(
-      .data,
-      !!norm_names[targ] :=
-        (!!rlang::sym(targ) - !!rlang::sym(L_names[targ])) / !!rlang::sym(S_names[targ])
-    )
-  }
-
-  .data <- dplyr::relocate(
+  .data <- norm_generic(
     .data,
-    tidyselect::all_of(norm_names |> rlang::set_names()),
-    .after = dplyr::last(names(target_pos))
+    !!targets,
+    .by = {{.by}},
+    .norm_fun = lobanov_norm_fun,
+    .by_formant = TRUE,
+    .drop_orig = .drop_orig,
+    .keep_params = .keep_params,
+    .names = .names
   )
-
-  if(!.keep_params){
-    .data <- dplyr::select(
-      .data,
-      -tidyselect::all_of(S_names),
-      -tidyselect::all_of(L_names)
-
-    )
-  }
-
-  if(.drop_orig){
-    .data <- dplyr::select(
-      .data,
-      -(!!targets)
-    )
-  }
 
   return(.data)
 
@@ -84,66 +132,17 @@ norm_nearey <- function(
     .names = "{.col}_lm"
 ){
   targets <- rlang::expr(c(...))
-  grouping <- rlang::enquo(.by)
 
-  target_pos <- tidyselect::eval_select(targets, data = .data)
-
-  .data <- dplyr::mutate(
-    .data,
-    .id = dplyr::row_number()
-  )
-
-  .data <- tidyr::pivot_longer(
+  .data <- norm_generic(
     .data,
     !!targets,
-    names_to = ".formant",
-    values_to = ".col"
+    .by = {{.by}},
+    .norm_fun = nearey_norm_fun,
+    .by_formant = FALSE,
+    .drop_orig = .drop_orig,
+    .keep_params = .keep_params,
+    .names = .names
   )
-
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!grouping,
-    L = mean(log(.col), na.rm = T),
-    S = 1,
-    dplyr::across(
-      .col,
-      .fns = \(x) log(x) - L,
-      .names = .names
-    )
-  )
-
-  .data <- tidyr::pivot_wider(
-    .data,
-    names_from = .formant,
-    values_from = starts_with(".col"),
-    names_glue = "{.formant}_{.value}"
-  )
-
-  .data <- dplyr::relocate(
-    .data,
-    tidyselect::matches("_.col"),
-    .after = target_pos[1]-1
-  )
-
-  .data <- dplyr::rename_with(
-    .data,
-    .cols = tidyselect::matches("_.col"),
-    .fn = \(x) stringr::str_remove(x, "_.col")
-  )
-
-  if(.drop_orig){
-    .data <- dplyr::select(
-      .data,
-      -(!!targets)
-    )
-  }
-
-  if(!.keep_params){
-    .data <- dplyr::select(
-      .data,
-      -c(L,S)
-    )
-  }
 
   return(.data)
 
@@ -160,79 +159,17 @@ norm_deltaF <- function(
     .names = "{.col}_df"
 ){
   targets <- rlang::expr(c(...))
-  grouping <- rlang::enquo(.by)
 
-  target_pos <- tidyselect::eval_select(targets, data = .data)
-
-  .data <- dplyr::mutate(
-    .data,
-    .id = dplyr::row_number()
-  )
-
-  .data <- tidyr::pivot_longer(
+  .data <- norm_generic(
     .data,
     !!targets,
-    names_to = ".formant",
-    values_to = ".col"
+    .by = {{.by}},
+    .norm_fun = deltaF_norm_fun,
+    .by_formant = FALSE,
+    .drop_orig = .drop_orig,
+    .keep_params = .keep_params,
+    .names = .names
   )
-
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!grouping,
-    .formant_num = stringr::str_extract(
-      .formant,
-      r"{[fF](\d)}",
-      group = 1
-    ) |> as.numeric(),
-    L = 0,
-    S = mean(
-      .col/(.formant_num - 0.5),
-      na.rm = T
-    ),
-    dplyr::across(
-      .col,
-      .fns = \(x) x/S,
-      .names = .names
-    )
-  )
-
-  .data <- dplyr::select(
-    .data,
-    -.formant_num
-  )
-
-  .data <- tidyr::pivot_wider(
-    .data,
-    names_from = .formant,
-    values_from = starts_with(".col"),
-    names_glue = "{.formant}_{.value}"
-  )
-
-  .data <- dplyr::relocate(
-    .data,
-    tidyselect::matches("_.col"),
-    .after = target_pos[1]-1
-  )
-
-  .data <- dplyr::rename_with(
-    .data,
-    .cols = tidyselect::matches("_.col"),
-    .fn = \(x) stringr::str_remove(x, "_.col")
-  )
-
-  if(.drop_orig){
-    .data <- dplyr::select(
-      .data,
-      -(!!targets)
-    )
-  }
-
-  if(!.keep_params){
-    .data <- dplyr::select(
-      .data,
-      -c(L,S)
-    )
-  }
 
   return(.data)
 
@@ -265,7 +202,7 @@ norm_wattfab <-  function(
   target_names <- param_col_names$target_names
   norm_names <- param_col_names$norm_names
 
-  .data <- dplyr::mutate(
+  .data_c <- dplyr::mutate(
     .data,
     .corners = dplyr::case_when(
       {{.vowel_col}} %in% .high_front~ "high_front",
@@ -274,7 +211,7 @@ norm_wattfab <-  function(
     )
   )
 
-  corners <- .data |>
+  corners <- .data_c |>
     dplyr::filter(
       .corners %in% c("high_front", "low")
     ) |>

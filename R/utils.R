@@ -1,53 +1,90 @@
-make_param_col_names <- function(target_pos, data, norm){
-
-  target_names <- names(target_pos)
-
-  list(
-    target_pos = target_pos,
-    target_names = target_names,
-
-    L_names = glue::glue(
-      "{formant}_L",
-      formant = target_names
-    ) |>
-      rlang::set_names(target_names),
-
-    S_names = glue::glue(
-      "{formant}_S",
-      formant = target_names
-    ) |>
-      rlang::set_names(target_names),
-
-    norm_names = glue::glue(
-      norm,
-      .col = target_names
-    ) |>
-      rlang::set_names(target_names)
+#' identity norm fun
+#' @export
+identity_norm_fun <- function(
+    .data,
+    grouping,
+    .names
+){
+  .data = dplyr::mutate(
+    .data,
+    L = 0,
+    S = 1
   )
-
+  return(.data)
 }
 
-
-make_L <- function(.data, grouping, targets, fn){
+#' lobanov_norm_fun
+#' @export
+lobanov_norm_fun <- function(
+    .data,
+    grouping,
+    .names
+){
   .data <- dplyr::mutate(
     .data,
-    .by = {{grouping}},
+    .by = !!grouping,
+    L = mean(.col, na.rm = T),
+    S = sd(.col, na.rm = T),
     dplyr::across(
-      {{targets}},
-      .fns = fn,
-      .names = "{.col}_L"
+      .col,
+      .fns = \(x) (x - L)/S,
+      .names = .names
+    )
+  )
+
+  return(.data)
+}
+
+#' Neary norm fun
+#' @export
+nearey_norm_fun <- function(
+    .data,
+    grouping,
+    .names
+){
+  .data <- dplyr::mutate(
+    .data,
+    .by = !!grouping,
+    L = mean(log(.col), na.rm = T),
+    S = 1,
+    dplyr::across(
+      .col,
+      .fns = \(x) log(x) - L,
+      .names = .names
     )
   )
 }
 
-make_S <- function(.data, grouping, targets, fn){
+#' deltaF norm fun
+#' @export
+deltaF_norm_fun <- function(
+    .data,
+    grouping,
+    .names
+){
+
   .data <- dplyr::mutate(
     .data,
-    .by = {{grouping}},
+    .by = !!grouping,
+    .formant_num = stringr::str_extract(
+      .formant,
+      r"{[fF](\d)}",
+      group = 1
+    ) |> as.numeric(),
+    L = 0,
+    S = mean(
+      .col/(.formant_num - 0.5),
+      na.rm = T
+    ),
     dplyr::across(
-      {{targets}},
-      .fns = fn,
-      .names = "{.col}_S"
+      .col,
+      .fns = \(x) x/S,
+      .names = .names
     )
-  )
+  ) |>
+    dplyr::select(
+      -.formant_num
+    )
+
+  return(.data)
 }
