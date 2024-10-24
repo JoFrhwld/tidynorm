@@ -98,6 +98,10 @@ data columns. The <code>"{.col}"</code> portion corresponds to the name of the o
 formant columns.</p></dd>
 
 
+<dt id="arg--silent">.silent<a class="anchor" aria-label="anchor" href="#arg--silent"></a></dt>
+<dd><p>Whether or not the informational message should be printed.</p></dd>
+
+
 <dt id="arg--call">.call<a class="anchor" aria-label="anchor" href="#arg--call"></a></dt>
 <dd><p>Used for internal purposes.</p></dd>
 
@@ -175,10 +179,12 @@ to the normalization function.</p>
 <span class="r-in"><span>    .drop_orig <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    .names <span class="op">=</span> <span class="st">"{.col}_mad"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Normalization info</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized `F1`, `F2`, and `F3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized values in `F1_mad`, `F2_mad`, and `F3_mad`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> grouped by `speaker`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> formant intrinsic</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,697 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      .id speaker vowel plt_vclass ipa_vclass word      F1_mad  F2_mad F3_mad</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
