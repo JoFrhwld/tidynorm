@@ -14,9 +14,12 @@ RoxygenNote: 7.3.2
 Imports: 
     cli,
     dplyr,
-    glue,
     rlang,
     stringr,
     tidyr,
     tidyselect
 URL: https://jofrhwld.github.io/tidynorm/
+Depends: 
+    R (>= 4.1)
+Suggests: 
+    ggplot2

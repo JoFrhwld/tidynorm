@@ -1,4 +1,38 @@
 url: https://jofrhwld.github.io/tidynorm/
 template:
   bootstrap: 5
+  bslib:
+    bootswatch: flatly
+    base_font: {google: "Public Sans"}
+    heading_font: {google: "Comfortaa"}
+    code_font: {google: "Roboto Mono"}
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+  math-rendering: katex
 
+reference:
+  - title: "Package Overview"
+    contents:
+      - tidynorm-package
+
+  - title: "Normalization Procedures"
+    desc: >
+      Tidy normalization procedures to be applied
+      to your formant data frames.
+    contents:
+      - norm_generic
+      - starts_with("norm_")
+
+  - title: "Normalization Functions"
+    desc: >
+      Functions used within normalization
+      procedures
+    contents:
+      - ends_with("_norm_fun")
+
+  - title: "Data"
+    contents:
+      - speaker_data

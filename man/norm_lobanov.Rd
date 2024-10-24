@@ -38,3 +38,16 @@ formant columns.}
 \description{
 Lobanov Normalize
 }
+\details{
+\deqn{
+  \hat{F_{ij}} = \frac{F_{ij} - L_i}{S_i}
+}
+
+\deqn{
+  L_i = \frac{1}{N}\sum_{j=1}^{N}F_{ij}
+}
+
+\deqn{
+  S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
+}
+}

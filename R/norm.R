@@ -10,7 +10,7 @@
 #' @param .by  [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to group by. Typically a column of speaker IDs.
 #' @param .norm_fun A function to apply to a pivoted long data frame. See
-#' Detsils for how to write such a function.
+#' Details for how to write such a function.
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
 #' @param .drop_orig Whether or not to drop the original formant data columns.
@@ -28,7 +28,44 @@
 #' - [norm_nearey]
 #' - [norm_deltaF]
 #'
+#' You can define a custom normalization function to pass
+#' to `.norm_fun` that takes the following arguments
 #'
+#' - `.data`
+#' - `.grouping`
+#' - `.names`
+#'
+#' The `.data` data frame will be your original data frame with the
+#' formant columns pivoted longer. The formant names will be available
+#' in a column called `.formant`, and the formant values in a column
+#' called `.col`. Any Location parameters should be assigned to a
+#' column called `L`, and any Scale parameters should be assigned
+#' to a column called `S`. A median-based normalization function might
+#' look like the following.
+#'
+#' ```r
+#' median_norm_fun <- function(.data, .grouping, .names){
+#'   .data |>
+#'     mutate(
+#'       .by = !!.grouping,
+#'       L = median(.col),
+#'       S = mad(.col),
+#'       across(
+#'         .col,
+#'         .fns = \(x) (x - L)/S,
+#'         .names = .names
+#'       )
+#'     )
+#'  return(.data)
+#' }
+#' ```
+#'
+#' If the method is meant to be formant ex/intrinsic, as
+#' defined by `.by_formant`, this will be accounted for by
+#' the grouping variables in the `.grouping` argument passed
+#' to the normalization function.
+#'
+#' @example inst/examples/ex-norm_generic.R
 #'
 #' @export
 norm_generic <- function(
@@ -60,7 +97,7 @@ norm_generic <- function(
     .id = dplyr::row_number()
   ) |>
     dplyr::relocate(
-      .id,
+      !!sym(".id"),
       .before = 1
     )
 
@@ -81,7 +118,7 @@ norm_generic <- function(
   # augment grouping as necessary to
   # match .by_formant
   if(.by_formant & length(grouped_by > 0)){
-    .data <- group_by(
+    .data <- dplyr::group_by(
       .data,
       !!sym(".formant"),
       .add = TRUE
@@ -89,7 +126,7 @@ norm_generic <- function(
     norm_group <- grouping
   } else if(.by_formant){
     norm_group <- rlang::expr(
-      c(!!grouping, .formant)
+      c(!!grouping, !!sym(".formant"))
     )
   } else {
     norm_group <- grouping
@@ -115,7 +152,7 @@ norm_generic <- function(
     )
     .data <- dplyr::select(
       .data,
-      -c(L, S)
+      -c(!!sym("L"), !!sym("S"))
     )
   }
 
@@ -132,7 +169,7 @@ norm_generic <- function(
   .data <- dplyr::relocate(
     .data,
     tidyselect::matches("_.col"),
-    .after = target_pos[1]-1
+    .after = target_pos[length(target_pos)]
   )
 
   # remove _.col from names
@@ -165,7 +202,22 @@ norm_generic <- function(
 #'
 #' @param .by_formant Ignored by this procedure
 #'
-#' @importFrom rlang `:=`
+#' @details
+#'
+#' \deqn{
+#'   \hat{F_{ij}} = \frac{F_{ij} - L_i}{S_i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}F_{ij}
+#' }
+#'
+#' \deqn{
+#'   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
+#' }
+#'
+#'
+#'
 #' @export
 norm_lobanov <- function(
     .data,
@@ -257,6 +309,7 @@ norm_deltaF <- function(
 }
 
 #' Watt & Fabricius method
+#' @inheritParams norm_generic
 #' @export
 norm_wattfab <-  function(
     .data,

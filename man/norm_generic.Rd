@@ -13,7 +13,7 @@ norm_generic(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_n",
-  call = caller_env()
+  .call = caller_env()
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ data columns.}
 columns to group by. Typically a column of speaker IDs.}
 
 \item{.norm_fun}{A function to apply to a pivoted long data frame. See
-Detsils for how to write such a function.}
+Details for how to write such a function.}
 
 \item{.by_formant}{Whether or not the normalization method is formant
 intrinsic.}
@@ -40,6 +40,8 @@ intrinsic.}
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
 data columns. The \code{"{.col}"} portion corresponds to the name of the original
 formant columns.}
+
+\item{.call}{Used for internal purposes.}
 }
 \description{
 This is a generic normalization procedure with which
@@ -50,6 +52,73 @@ The following \verb{norm_*} procedures are built on top of \code{norm_generic()}
 \itemize{
 \item \link{norm_lobanov}
 \item \link{norm_nearey}
-\item \link{norm_detaF}
+\item \link{norm_deltaF}
 }
+
+You can define a custom normalization function to pass
+to \code{.norm_fun} that takes the following arguments
+\itemize{
+\item \code{.data}
+\item \code{.grouping}
+\item \code{.names}
+}
+
+The \code{.data} data frame will be your original data frame with the
+formant columns pivoted longer. The formant names will be available
+in a column called \code{.formant}, and the formant values in a column
+called \code{.col}. Any Location parameters should be assigned to a
+column called \code{L}, and any Scale parameters should be assigned
+to a column called \code{S}. A median-based normalization function might
+look like the following.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{median_norm_fun <- function(.data, .grouping, .names)\{
+  .data |>
+    mutate(
+      .by = !!.grouping,
+      L = median(.col),
+      S = mad(.col),
+      across(
+        .col,
+        .fns = \\(x) (x - L)/S,
+        .names = .names
+      )
+    )
+ return(.data)
+\}
+}\if{html}{\out{</div>}}
+
+If the method is meant to be formant ex/intrinsic, as
+defined by \code{.by_formant}, this will be accounted for by
+the grouping variables in the \code{.grouping} argument passed
+to the normalization function.
+}
+\examples{
+library(tidynorm)
+library(dplyr)
+
+median_norm_fun <- function(.data, .grouping, .names){
+  .data <- .data |>
+    mutate(
+      .by = !!.grouping,
+      L = median(.col, na.rm = TRUE),
+      S = mad(.col, na.rm = TRUE),
+      across(
+        .col,
+        .fns = \(x) (x - L)/S,
+        .names = .names
+      )
+    )
+  return(.data)
+}
+
+speaker_data |>
+  norm_generic(
+    F1:F3,
+    .by = speaker,
+    .norm_fun = median_norm_fun,
+    .by_formant = TRUE,
+    .drop_orig = TRUE,
+    .names = "{.col}_mad"
+  )
+
 }

@@ -23,11 +23,11 @@ lobanov_norm_fun <- function(
   .data <- dplyr::mutate(
     .data,
     .by = !!grouping,
-    L = mean(.col, na.rm = T),
-    S = sd(.col, na.rm = T),
+    L = base::mean(!!sym(".col"), na.rm = T),
+    S = stats::sd(!!sym(".col"), na.rm = T),
     dplyr::across(
-      .col,
-      .fns = \(x) (x - L)/S,
+      !!sym(".col"),
+      .fns = \(x) (x - !!sym("L"))/!!sym("S"),
       .names = .names
     )
   )
@@ -45,11 +45,11 @@ nearey_norm_fun <- function(
   .data <- dplyr::mutate(
     .data,
     .by = !!grouping,
-    L = mean(log(.col), na.rm = T),
+    L = mean(log(!!sym(".col")), na.rm = T),
     S = 1,
     dplyr::across(
       .col,
-      .fns = \(x) log(x) - L,
+      .fns = \(x) log(x) - !!sym("L"),
       .names = .names
     )
   )
@@ -67,23 +67,23 @@ deltaF_norm_fun <- function(
     .data,
     .by = !!grouping,
     .formant_num = stringr::str_extract(
-      .formant,
+      !!sym(".formant"),
       r"{[fF](\d)}",
       group = 1
     ) |> as.numeric(),
     L = 0,
     S = mean(
-      .col/(.formant_num - 0.5),
+      !!sym(".col")/(!!sym(".formant_num") - 0.5),
       na.rm = T
     ),
     dplyr::across(
-      .col,
-      .fns = \(x) x/S,
+      !!sym(".col"),
+      .fns = \(x) x/!!sym("S"),
       .names = .names
     )
   ) |>
     dplyr::select(
-      -.formant_num
+      -!!sym(".formant_num")
     )
 
   return(.data)

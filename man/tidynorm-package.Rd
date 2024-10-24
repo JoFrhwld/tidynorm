@@ -8,6 +8,13 @@
 \description{
 Provides tools for doing tidy speaker vowel normalization.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://jofrhwld.github.io/tidynorm/}
+}
+
+}
 \author{
 \strong{Maintainer}: Josef Fruehwald \email{JoFrhwld@gmail.com}
 

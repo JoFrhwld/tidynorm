@@ -1,0 +1,12 @@
+#' Speaker Data
+#' @format ## `speaker_data`
+#' A data frame with 10,697 rows and 8 columns
+#' \describe{
+#'   \item{speaker}{Speaker ID column}
+#'   \item{vowel}{CMU Dictionary vowel class}
+#'   \item{plt_vclass}{Modified Labov-Trager vowel class}
+#'   \item{ipa_vclas}{IPA-like vowel class}
+#'   \item{word}{Word that the vowel appeared in}
+#'   \item{F1, F2, F3}{The first, second and third formants, in Hz}
+#' }
+"speaker_data"

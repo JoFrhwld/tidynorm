@@ -180,3 +180,7 @@ usethis::use_package("stringr")
 
 usethis::use_package("cli")
 ```
+
+```{r}
+usethis::use_package("ggplot2", type = "Suggests")
+```

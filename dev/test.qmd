@@ -33,8 +33,13 @@ c(
     word,
     F1:F3
   ) ->
-  data
+  speaker_data
 ```
+
+```{r}
+usethis::use_data(speaker_data)
+```
+
 
 ```{r} 
 data  |>

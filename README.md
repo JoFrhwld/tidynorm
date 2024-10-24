@@ -2,19 +2,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidynorm
+# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="139" alt="tidynorm website" /></a>
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of tidynorm is to …
+The goal of `{tidynorm}` is to provide convenient and tidy functions to
+normalize vowel formant data.
 
 ## Installation
 
 You can install the development version of tidynorm like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("jofrhwld/tidynorm")
 ```
 
 ## Example
@@ -23,29 +24,53 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(tidynorm)
-## basic example code
+library(ggplot2)
+options(
+  ggplot2.discrete.colour = \(...) scale_color_brewer(palette = "Dark2", ...)
+)
+
+ggplot(
+  speaker_data,
+  aes(
+    F2, F1,
+    color = speaker
+  )
+)+
+  stat_density_2d(
+    bins = 4
+  )+
+  scale_x_reverse()+
+  scale_y_reverse()+
+  coord_fixed()
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+<img src="man/figures/README-unnorm-1.png" style="width:100.0%" />
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+speaker_data |> 
+  norm_nearey(
+    F1:F3,
+    .by = speaker,
+    .names = "{.col}_nearey"
+  ) ->
+  speaker_normalized
+#> • normalized `F1`, `F2`, and `F3`
+#> • grouped by `speaker`
+#> • formant extrinsic
+
+speaker_normalized |> 
+  ggplot(
+    aes(
+      F2_nearey, F1_nearey,
+      color = speaker
+    )
+  )+
+  stat_density_2d(
+    bins = 4
+  )+
+  scale_x_reverse()+
+  scale_y_reverse()+
+  coord_fixed()  
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" style="width:100.0%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/README-norm-1.png" style="width:100.0%" />
