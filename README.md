@@ -56,6 +56,7 @@ speaker_data |>
     .names = "{.col}_nearey"
   ) ->
   speaker_normalized
+#> Normalization info
 #> • normalized `F1`, `F2`, and `F3`
 #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
 #> • grouped by `speaker`

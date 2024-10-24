@@ -80,11 +80,16 @@ norm_generic <- function(
   .silent = FALSE,
   .call = caller_env()
 ){
+
+  prev_attr <- attributes(.data)$norminfo
+
   targets <- rlang::expr(c(...))
 
   check_grouping(.data, enquo(.by), .call)
-
   grouping <- rlang::enquo(.by)
+  group_pos <- tidyselect::eval_select(
+    grouping, data = .data
+  )
 
   # evaluating for the number of
   # targeted columns
@@ -194,7 +199,17 @@ norm_generic <- function(
   }
 
   attr(.data, "normalized") <- TRUE
-  attr(.data, ".by_formant") <- .by_formant
+  attr(.data, "norminfo") <- c(
+    prev_attr,
+    list(
+      list(
+        .by_col = .by_formant,
+        .targets = names(target_pos),
+        .norm_cols = glue::glue(.names, .col = names(target_pos)),
+        .by = names(group_pos)
+      )
+    )
+  )
 
   if(!.silent){
     wrap_up(
@@ -258,7 +273,9 @@ norm_lobanov <- function(
     .silent = .silent
   )
 
-  attr(.data, "norm_procedure") <- "norm_lobanov"
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
+  attr(.data, "norminfo") <- norminfo
 
   return(.data)
 
@@ -292,7 +309,9 @@ norm_nearey <- function(
     .silent = .silent
   )
 
-  attr(.data, "norm_procedure") <- "norm_nearey"
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_nearey"
+  attr(.data, "norminfo") <- norminfo
 
   return(.data)
 
@@ -328,7 +347,9 @@ norm_deltaF <- function(
     .silent = .silent
   )
 
-  attr(.data, "norm_procedure") <- "norm_deltaF"
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_deltaF"
+  attr(.data, "norminfo") <- norminfo
 
   return(.data)
 
