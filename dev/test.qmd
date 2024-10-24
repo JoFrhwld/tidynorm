@@ -37,15 +37,52 @@ c(
 ```
 
 ```{r}
-usethis::use_data(speaker_data)
-```
-
-
-```{r} 
-data  |>
+speaker_data  |>
   #group_by(speaker) |> 
   norm_lobanov(
-    .by = speaker,
-    F1:F3
+    .by = jawn,
+    c(F1:F3),
+    .by_formant = T,
+    .silent = T
   )
+```
+
+```{r}
+foo
+```
+
+```{r}
+check_norm(foo)
+```
+
+```{r}
+library(rlang)
+```
+
+```{r}
+my_fun <- function(x, fn = inner_fun){
+  x <- fn(x)
+  cli::cli_inform(
+    c(
+      "outer",
+      names(attributes(x))
+    )
+  )
+  return(x)
+}
+
+inner_fun <- function(x){
+  attr(x, "jawn") <- "foo"
+  cli::cli_inform(
+    c(
+      "inner",
+      names(attributes(x))
+    )
+  )
+  return(x)
+}
+```
+
+```{r}
+my_fun("a")
 ```

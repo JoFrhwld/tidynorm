@@ -13,6 +13,7 @@ norm_generic(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_n",
+  .silent = FALSE,
   .call = caller_env()
 )
 }

@@ -13,7 +13,8 @@ norm_wattfab(
   .by = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_wf"
+  .names = "{.col}_wf",
+  .silent = FALSE
 )
 }
 \arguments{

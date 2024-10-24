@@ -6,6 +6,8 @@
 \alias{tidynorm-package}
 \title{tidynorm: Tools for Tidy Vowel Normalization}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides tools for doing tidy speaker vowel normalization.
 }
 \seealso{

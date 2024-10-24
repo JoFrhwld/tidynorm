@@ -11,7 +11,8 @@ norm_nearey(
   .by_formant = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_lm"
+  .names = "{.col}_lm",
+  .silent = FALSE
 )
 }
 \arguments{

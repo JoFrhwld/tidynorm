@@ -77,6 +77,7 @@ norm_generic <- function(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_n",
+  .silent = FALSE,
   .call = caller_env()
 ){
   targets <- rlang::expr(c(...))
@@ -87,7 +88,10 @@ norm_generic <- function(
 
   # evaluating for the number of
   # targeted columns
-  target_pos <- tidyselect::eval_select(targets, data = .data)
+  target_pos <- try_fetch(
+    tidyselect::eval_select(targets, data = .data),
+    error = \(cnd) selection_errors(cnd, call = .call)
+  )
   check_n_target(target_pos, n = 2, call = .call)
 
   # adding an id col for safety in
@@ -109,6 +113,7 @@ norm_generic <- function(
     names_to = ".formant",
     values_to = ".col"
   )
+  eval_bare(.data)
 
   # see if the data is grouped
   grouped_by <- dplyr::group_vars(
@@ -138,6 +143,7 @@ norm_generic <- function(
     norm_group,
     .names
   )
+
 
   # set up value columns for pivoting
   # back wide
@@ -187,12 +193,19 @@ norm_generic <- function(
     )
   }
 
-  wrap_up(
-    .data,
-    target_pos,
-    enquo(.by),
-    .by_formant
-  )
+  attr(.data, "normalized") <- TRUE
+  attr(.data, ".by_formant") <- .by_formant
+
+  if(!.silent){
+    wrap_up(
+      .data,
+      target_pos,
+      enquo(.by),
+      .by_formant
+    )
+  }
+
+
   return(.data)
 
 }
@@ -226,7 +239,8 @@ norm_lobanov <- function(
     .by_formant = TRUE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_z"
+    .names = "{.col}_z",
+    .silent = FALSE
 ){
 
   targets <- rlang::expr(c(...))
@@ -239,8 +253,11 @@ norm_lobanov <- function(
     .by_formant = TRUE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
-    .names = .names
+    .names = .names,
+    .silent = .silent
   )
+
+  attr(.data, "norm_procedure") <- "norm_lobanov"
 
   return(.data)
 
@@ -257,7 +274,8 @@ norm_nearey <- function(
     .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_lm"
+    .names = "{.col}_lm",
+    .silent = FALSE
 ){
   targets <- rlang::expr(c(...))
 
@@ -269,8 +287,11 @@ norm_nearey <- function(
     .by_formant = .by_formant,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
-    .names = .names
+    .names = .names,
+    .silent = .silent
   )
+
+  attr(.data, "norm_procedure") <- "norm_nearey"
 
   return(.data)
 
@@ -289,7 +310,8 @@ norm_deltaF <- function(
     .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_df"
+    .names = "{.col}_df",
+    .silent = FALSE
 ){
   targets <- rlang::expr(c(...))
 
@@ -301,8 +323,11 @@ norm_deltaF <- function(
     .by_formant = FALSE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
-    .names = .names
+    .names = .names,
+    .silent = .silent
   )
+
+  attr(.data, "norm_procedure") <- "norm_deltaF"
 
   return(.data)
 
@@ -320,7 +345,8 @@ norm_wattfab <-  function(
     .by = NULL,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_wf"
+    .names = "{.col}_wf",
+    .silent = FALSE
 ){
   targets <- rlang::expr(c(...))
   grouping <- rlang::enquo(.by)
@@ -412,6 +438,7 @@ norm_wattfab <-  function(
     .after = target_pos[2]
   )
 
+  attr(.data, "norm_procedure") <- "norm_wattfab"
   return(.data)
 
 }

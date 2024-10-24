@@ -11,7 +11,8 @@ norm_lobanov(
   .by_formant = TRUE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_z"
+  .names = "{.col}_z",
+  .silent = FALSE
 )
 }
 \arguments{

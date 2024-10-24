@@ -11,7 +11,8 @@ norm_deltaF(
   .by_formant = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_df"
+  .names = "{.col}_df",
+  .silent = FALSE
 )
 }
 \arguments{

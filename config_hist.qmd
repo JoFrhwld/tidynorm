@@ -184,3 +184,15 @@ usethis::use_package("cli")
 ```{r}
 usethis::use_package("ggplot2", type = "Suggests")
 ```
+
+```{r}
+usethis::use_github_action("check-standard")
+```
+
+```{r}
+usethis::use_testthat(parallel = TRUE)
+```
+
+```{r}
+usethis::use_github()
+```

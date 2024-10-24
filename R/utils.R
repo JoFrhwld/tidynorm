@@ -4,7 +4,10 @@ check_grouping <- function(
     call = caller_env()
 ){
   grouped_by <- dplyr::group_vars(.data)
-  grouping <- tidyselect::eval_select(.by, .data)
+  grouping <- try_fetch(
+    tidyselect::eval_select(.by, .data),
+    error = \(cnd) selection_errors(cnd, call = call)
+  )
   if(length(grouped_by) > 0 & length(grouping) > 0){
     cli_abort(
       c(
@@ -44,14 +47,51 @@ check_n_target <- function(
   }
 }
 
+selection_errors <- function(cnd, call = caller_env()){
+  if(cnd_inherits(cnd, "vctrs_error_subscript_oob")){
+    cli_abort(
+      "Problem with column selection",
+      parent = cnd,
+      call = call
+    )
+  } else if(cnd_inherits(cnd, "vctrs_error_subscript")){
+    cli_abort(
+      c(
+        "Problem with column selection",
+        "i" = "Most arguments need to start with a .",
+        "i" = "e.g. {.arg .by_formant}"
+      ),
+      parent = cnd,
+      call = call
+    )
+  } else {
+    cli_abort(
+      "Problem with column selection",
+      parent = cnd,
+      call = call
+    )
+  }
+}
+
 wrap_up <- function(
     .data,
     target_pos,
     .by,
     .by_formant
 ){
+
+  message <- c()
+  procedure <- NULL
+  if(!is.null(procedure)){
+    message <- c(
+      message,
+      "*" = "normalized with {.fn {procedure}}"
+    )
+  }
+
   grouping <- tidyselect::eval_select(.by, data = .data)
   message <-    c(
+    message,
     "*" = "normalized {.var {names(target_pos)}}"
   )
   if(length(grouping) > 0){
@@ -61,18 +101,14 @@ wrap_up <- function(
     )
   }
 
-  if(.by_formant){
-    message <- c(
-      message,
-      "*" = "formant intrinsic"
+  message <- c(
+    message,
+    "*" = ifelse(
+      .by_formant,
+      "formant intrinsic",
+      "formant extrinsic"
     )
-  }else{
-    message <- c(
-      message,
-      "*" = "formant extrinsic"
-    )
-
-  }
+  )
 
   cli_inform(
    message
