@@ -179,6 +179,12 @@ usethis::use_package("tidyr", "Imports")
 usethis::use_package("stringr")
 
 usethis::use_package("cli")
+
+usethis::use_package("Rdpack")
+```
+
+```{r}
+desc::desc_set(RdMacros = "Rdpack")
 ```
 
 ```{r}

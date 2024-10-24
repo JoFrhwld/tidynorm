@@ -9,3 +9,4 @@ nearey_norm_fun(.data, grouping, .names)
 \description{
 Neary norm fun
 }
+\keyword{internal}

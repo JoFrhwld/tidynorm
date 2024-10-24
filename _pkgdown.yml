@@ -26,15 +26,21 @@ reference:
       - norm_generic
       - starts_with("norm_")
 
-  - title: "Normalization Functions"
-    desc: >
-      Functions used within normalization
-      procedures
-    contents:
-      - ends_with("_norm_fun")
+  # - title: "Normalization Functions"
+  #   desc: >
+  #     Functions used within normalization
+  #     procedures
+  #   contents:
+  #     - ends_with("_norm_fun")
+
   - title: "Info Functions"
     contents:
       - check_norm
+
+  - title: DCT
+    contents:
+      - dct
+      - idct
 
   - title: "Data"
     contents:

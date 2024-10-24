@@ -36,7 +36,12 @@ intrinsic.}
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
 data columns. The \code{"{.col}"} portion corresponds to the name of the original
 formant columns.}
+
+\item{.silent}{Whether or not the informational message should be printed.}
 }
 \description{
 Nearey Normalization
+}
+\references{
+\insertRef{neareyPhoneticFeatureSystems1978}{tidynorm}
 }

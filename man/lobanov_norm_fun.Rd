@@ -9,3 +9,4 @@ lobanov_norm_fun(.data, grouping, .names)
 \description{
 lobanov_norm_fun
 }
+\keyword{internal}

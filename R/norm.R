@@ -19,6 +19,7 @@
 #' @param .names A [glue::glue()] expression for naming the normalized
 #' data columns. The `"{.col}"` portion corresponds to the name of the original
 #' formant columns.
+#' @param .silent Whether or not the informational message should be printed.
 #' @param .call Used for internal purposes.
 #'
 #' @details
@@ -245,6 +246,8 @@ norm_generic <- function(
 #'   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
 #' }
 #'
+#' @references
+#' \insertRef{lobanov1971}{tidynorm}
 #'
 #'
 #' @export
@@ -284,6 +287,9 @@ norm_lobanov <- function(
 #' Nearey Normalization
 #' @inheritParams norm_generic
 #' @importFrom rlang `!!`
+#'
+#' @references
+#' \insertRef{neareyPhoneticFeatureSystems1978}{tidynorm}
 #' @export
 norm_nearey <- function(
     .data,
@@ -321,6 +327,10 @@ norm_nearey <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#' @references
+#' \insertRef{johnsonDFMethodVocal2020}{tidynorm}
+#'
+#' @example inst/examples/ex-norm_deltaF.R
 #'
 #' @export
 norm_deltaF <- function(

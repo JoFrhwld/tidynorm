@@ -1,0 +1,24 @@
+---
+title: dct-experiment
+---
+
+```{r}
+x <- seq(0,1, length = 10)
+y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+```
+
+```{r}
+plot(x, y)
+```
+
+```{r}
+plot(dct(y))
+```
+
+```{r}
+idct(dct(y))
+```
+
+```{r}
+y
+```

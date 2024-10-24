@@ -9,3 +9,4 @@ deltaF_norm_fun(.data, grouping, .names)
 \description{
 deltaF norm fun
 }
+\keyword{internal}

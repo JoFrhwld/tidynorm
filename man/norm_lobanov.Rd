@@ -35,6 +35,8 @@ columns to group by. Typically a column of speaker IDs.}
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
 data columns. The \code{"{.col}"} portion corresponds to the name of the original
 formant columns.}
+
+\item{.silent}{Whether or not the informational message should be printed.}
 }
 \description{
 Lobanov Normalize
@@ -51,4 +53,7 @@ Lobanov Normalize
 \deqn{
   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
 }
+}
+\references{
+\insertRef{lobanov1971}{tidynorm}
 }

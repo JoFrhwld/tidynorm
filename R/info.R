@@ -15,3 +15,8 @@ check_norm <- function(data){
     )
   }
 }
+
+norminfo_to_message <- function(data){
+  norminfo <- attributes(data)$norminfo
+
+}

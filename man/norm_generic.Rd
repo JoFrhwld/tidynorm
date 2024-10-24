@@ -42,6 +42,8 @@ intrinsic.}
 data columns. The \code{"{.col}"} portion corresponds to the name of the original
 formant columns.}
 
+\item{.silent}{Whether or not the informational message should be printed.}
+
 \item{.call}{Used for internal purposes.}
 }
 \description{

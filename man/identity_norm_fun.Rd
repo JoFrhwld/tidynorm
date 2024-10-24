@@ -9,3 +9,4 @@ identity_norm_fun(.data, grouping, .names)
 \description{
 identity norm fun
 }
+\keyword{internal}

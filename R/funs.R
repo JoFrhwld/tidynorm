@@ -1,5 +1,6 @@
 #' identity norm fun
 #' @export
+#' @keywords internal
 identity_norm_fun <- function(
     .data,
     grouping,
@@ -15,6 +16,7 @@ identity_norm_fun <- function(
 
 #' lobanov_norm_fun
 #' @export
+#' @keywords internal
 lobanov_norm_fun <- function(
     .data,
     grouping,
@@ -37,6 +39,7 @@ lobanov_norm_fun <- function(
 
 #' Neary norm fun
 #' @export
+#' @keywords internal
 nearey_norm_fun <- function(
     .data,
     grouping,
@@ -57,6 +60,7 @@ nearey_norm_fun <- function(
 
 #' deltaF norm fun
 #' @export
+#' @keywords internal
 deltaF_norm_fun <- function(
     .data,
     grouping,
