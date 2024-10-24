@@ -4,6 +4,8 @@
 
 # tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="139" alt="tidynorm website" /></a>
 
+This package is currently not even at a pre-release stage
+
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
