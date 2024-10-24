@@ -47,4 +47,9 @@ you can create your own normalization method.
 }
 \details{
 The following \verb{norm_*} procedures are built on top of \code{norm_generic()}.
+\itemize{
+\item \link{norm_lobanov}
+\item \link{norm_nearey}
+\item \link{norm_detaF}
+}
 }

@@ -8,3 +8,8 @@
 ^README\.qmd$
 ^config_hist.*
 hooks
+dev
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

@@ -19,9 +19,14 @@
 #' @param .names A [glue::glue()] expression for naming the normalized
 #' data columns. The `"{.col}"` portion corresponds to the name of the original
 #' formant columns.
+#' @param .call Used for internal purposes.
 #'
 #' @details
 #' The following `norm_*` procedures are built on top of `norm_generic()`.
+#'
+#' - [norm_lobanov]
+#' - [norm_nearey]
+#' - [norm_deltaF]
 #'
 #'
 #'
@@ -35,18 +40,18 @@ norm_generic <- function(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_n",
-  call = caller_env()
+  .call = caller_env()
 ){
   targets <- rlang::expr(c(...))
 
-  check_grouping(.data, enquo(.by), call)
+  check_grouping(.data, enquo(.by), .call)
 
   grouping <- rlang::enquo(.by)
 
   # evaluating for the number of
   # targeted columns
   target_pos <- tidyselect::eval_select(targets, data = .data)
-  check_n_target(target_pos, n = 2, call = call)
+  check_n_target(target_pos, n = 2, call = .call)
 
   # adding an id col for safety in
   # pivoting
