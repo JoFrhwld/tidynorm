@@ -1,8 +1,8 @@
 url: https://jofrhwld.github.io/tidynorm/
 template:
   bootstrap: 5
+  bootswatch: flatly
   bslib:
-    bootswatch: flatly
     base_font: {google: "Public Sans"}
     heading_font: {google: "Comfortaa"}
     code_font: {google: "Roboto Mono"}
