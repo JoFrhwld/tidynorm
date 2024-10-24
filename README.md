@@ -57,6 +57,7 @@ speaker_data |>
   ) ->
   speaker_normalized
 #> • normalized `F1`, `F2`, and `F3`
+#> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
 #> • grouped by `speaker`
 #> • formant extrinsic
 

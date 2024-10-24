@@ -165,7 +165,7 @@ norm_generic <- function(
   # pivot_back wide
   .data <- tidyr::pivot_wider(
     .data,
-    names_from = .formant,
+    names_from = !!sym(".formant"),
     values_from = !!values_target,
     names_glue = "{.formant}_{.value}"
   )
@@ -201,7 +201,8 @@ norm_generic <- function(
       .data,
       target_pos,
       enquo(.by),
-      .by_formant
+      .by_formant,
+      .names
     )
   }
 
@@ -333,112 +334,122 @@ norm_deltaF <- function(
 
 }
 
-#' Watt & Fabricius method
-#' @inheritParams norm_generic
-#' @export
-norm_wattfab <-  function(
-    .data,
-    ...,
-    .vowel_col,
-    .high_front = NULL,
-    .low = NULL,
-    .by = NULL,
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.col}_wf",
-    .silent = FALSE
-){
-  targets <- rlang::expr(c(...))
-  grouping <- rlang::enquo(.by)
-
-  target_pos <- tidyselect::eval_select(targets, data = .data)
-
-  param_col_names <- make_param_col_names(
-    target_pos,
-    data = .data,
-    norm = .names
-  )
-
-  target_names <- param_col_names$target_names
-  norm_names <- param_col_names$norm_names
-
-  .data_c <- dplyr::mutate(
-    .data,
-    .corners = dplyr::case_when(
-      {{.vowel_col}} %in% .high_front~ "high_front",
-      {{.vowel_col}} %in% .low ~ "low",
-      .default = NA
-    )
-  )
-
-  corners <- .data_c |>
-    dplyr::filter(
-      .corners %in% c("high_front", "low")
-    ) |>
-    tidyr::pivot_longer(
-      !!targets,
-      names_to = ".formant",
-      values_to = ".col"
-    ) |>
-    dplyr::summarise(
-      .by = c(!!grouping, .formant, .corners),
-      .col = mean(.col, na.rm = TRUE)
-    ) |>
-    tidyr::pivot_wider(
-      names_from = c(.formant, .corners),
-      values_from = .col
-    ) |>
-    dplyr::rename_with(
-      .fn = tolower
-    ) |>
-    dplyr::rowwise() |>
-    dplyr::mutate(
-      f1_high_back = f1_high_front,
-      f2_high_back = f2_high_front,
-      f2_low = median(c(f2_high_front, f2_high_back))
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(
-      .by = !!grouping,
-      f1_L = 0,
-      f2_L = 0,
-      f1_S = (f1_high_front + f1_high_back + f1_low)/3,
-      f2_S = (f2_high_front + f2_high_back + f2_low)/3
-    ) |>
-    dplyr::select(
-      -tidyselect::matches("high"),
-      -tidyselect::matches("low")
-    )
-
-  if(length(tidyselect::eval_select(grouping, .data)) > 0){
-    .data <- dplyr::left_join(
-      .data,
-      corners,
-      by = dplyr::join_by({{grouping}})
-    )
-  } else {
-    .data <- dplyr::cross_join(
-      .data,
-      corners
-    )
-  }
-
-  .data <- dplyr::mutate(
-    .data,
-    !!rlang::sym(norm_names[1]) :=
-      !!rlang::sym(target_names[1]) / f1_S,
-
-    !!rlang::sym(norm_names[2]) :=
-      !!rlang::sym(target_names[2]) / f2_S
-  )
-
-  .data <- dplyr::relocate(
-    .data,
-    tidyselect::all_of(norm_names[1:2] |> rlang::set_names()),
-    .after = target_pos[2]
-  )
-
-  attr(.data, "norm_procedure") <- "norm_wattfab"
-  return(.data)
-
-}
+#' #' Watt & Fabricius method
+#' #' @inheritParams norm_generic
+#' #' @export
+#' norm_wattfab <-  function(
+#'     .data,
+#'     ...,
+#'     .vowel_col,
+#'     .high_front = NULL,
+#'     .low = NULL,
+#'     .by = NULL,
+#'     .by_formant = TRUE,
+#'     .drop_orig = FALSE,
+#'     .keep_params = FALSE,
+#'     .names = "{.col}_wf",
+#'     .silent = FALSE
+#' ){
+#'   targets <- rlang::expr(c(...))
+#'   grouping <- rlang::enquo(.by)
+#'
+#'   target_pos <- tidyselect::eval_select(targets, data = .data)
+#'
+#'   param_col_names <- make_param_col_names(
+#'     target_pos,
+#'     data = .data,
+#'     norm = .names
+#'   )
+#'
+#'   target_names <- param_col_names$target_names
+#'   norm_names <- param_col_names$norm_names
+#'
+#'   .data_c <- dplyr::mutate(
+#'     .data,
+#'     .corners = dplyr::case_when(
+#'       {{.vowel_col}} %in% .high_front~ "high_front",
+#'       {{.vowel_col}} %in% .low ~ "low",
+#'       .default = NA
+#'     )
+#'   )
+#'
+#'   corners <- .data_c |>
+#'     dplyr::filter(
+#'       .corners %in% c("high_front", "low")
+#'     ) |>
+#'     tidyr::pivot_longer(
+#'       !!targets,
+#'       names_to = ".formant",
+#'       values_to = ".col"
+#'     ) |>
+#'     dplyr::summarise(
+#'       .by = c(!!grouping, .formant, .corners),
+#'       .col = mean(.col, na.rm = TRUE)
+#'     ) |>
+#'     tidyr::pivot_wider(
+#'       names_from = c(.formant, .corners),
+#'       values_from = .col
+#'     ) |>
+#'     dplyr::rename_with(
+#'       .fn = tolower
+#'     ) |>
+#'     dplyr::rowwise() |>
+#'     dplyr::mutate(
+#'       f1_high_back = f1_high_front,
+#'       f2_high_back = f2_high_front,
+#'       f2_low = median(c(f2_high_front, f2_high_back))
+#'     ) |>
+#'     dplyr::ungroup() |>
+#'     dplyr::mutate(
+#'       .by = !!grouping,
+#'       f1_L = 0,
+#'       f2_L = 0,
+#'       f1_S = (f1_high_front + f1_high_back + f1_low)/3,
+#'       f2_S = (f2_high_front + f2_high_back + f2_low)/3
+#'     ) |>
+#'     dplyr::select(
+#'       -tidyselect::matches("high"),
+#'       -tidyselect::matches("low")
+#'     )
+#'
+#'   if(length(tidyselect::eval_select(grouping, .data)) > 0){
+#'     .data <- dplyr::left_join(
+#'       .data,
+#'       corners,
+#'       by = dplyr::join_by({{grouping}})
+#'     )
+#'   } else {
+#'     .data <- dplyr::cross_join(
+#'       .data,
+#'       corners
+#'     )
+#'   }
+#'
+#'   .data <- dplyr::mutate(
+#'     .data,
+#'     !!rlang::sym(norm_names[1]) :=
+#'       !!rlang::sym(target_names[1]) / f1_S,
+#'
+#'     !!rlang::sym(norm_names[2]) :=
+#'       !!rlang::sym(target_names[2]) / f2_S
+#'   )
+#'
+#'   .data <- dplyr::relocate(
+#'     .data,
+#'     tidyselect::all_of(norm_names[1:2] |> rlang::set_names()),
+#'     .after = target_pos[2]
+#'   )
+#'
+#'   attr(.data, "norm_procedure") <- "norm_wattfab"
+#'   if(!.silent){
+#'     wrap_up(
+#'       .data,
+#'       target_pos,
+#'       enquo(.by),
+#'       .by_formant,
+#'       .names
+#'     )
+#'   }
+#'   return(.data)
+#'
+#' }

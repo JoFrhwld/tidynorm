@@ -77,23 +77,24 @@ wrap_up <- function(
     .data,
     target_pos,
     .by,
-    .by_formant
+    .by_formant,
+    .names
 ){
-
   message <- c()
-  procedure <- NULL
-  if(!is.null(procedure)){
-    message <- c(
-      message,
-      "*" = "normalized with {.fn {procedure}}"
-    )
-  }
 
   grouping <- tidyselect::eval_select(.by, data = .data)
-  message <-    c(
+  target_names <- names(target_pos)
+  message <- c(
     message,
-    "*" = "normalized {.var {names(target_pos)}}"
+    "*" = "normalized {.var {target_names}}"
   )
+
+  norm_names <- glue::glue(.names, .col = target_names)
+  message <- c(
+    message,
+    "*" = "normalized values in {.var {norm_names}}"
+  )
+
   if(length(grouping) > 0){
     message <- c(
       message,
