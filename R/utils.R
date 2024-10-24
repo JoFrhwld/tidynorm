@@ -20,6 +20,7 @@ check_grouping <- function(
   }
 
   if(length(grouped_by) < 1 & length(grouping) < 1){
+    cli_par()
     cli_warn(
       c(
         "There is was no grouping provided.",
@@ -27,6 +28,7 @@ check_grouping <- function(
       ),
       call = call
     )
+    cli_end()
   }
 }
 
@@ -80,7 +82,7 @@ wrap_up <- function(
     .by_formant,
     .names
 ){
-  message <- c()
+  message <- c("Normalization info")
 
   grouping <- tidyselect::eval_select(.by, data = .data)
   target_names <- names(target_pos)
@@ -111,7 +113,9 @@ wrap_up <- function(
     )
   )
 
+  cli_par()
   cli_inform(
    message
   )
+  cli_end()
 }
