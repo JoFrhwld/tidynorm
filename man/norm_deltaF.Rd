@@ -73,5 +73,7 @@ if(ggplot2_inst){
 }
 }
 \references{
-\insertRef{johnsonDFMethodVocal2020}{tidynorm}
+Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
+Article 1. \link{https://doi.org/10.5334/labphon.196}
 }

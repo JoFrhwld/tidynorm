@@ -119,7 +119,6 @@ norm_generic <- function(
     names_to = ".formant",
     values_to = ".col"
   )
-  eval_bare(.data)
 
   # see if the data is grouped
   grouped_by <- dplyr::group_vars(
@@ -247,7 +246,8 @@ norm_generic <- function(
 #' }
 #'
 #' @references
-#' \insertRef{lobanov1971}{tidynorm}
+#' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
+#' Journal of the Acoustical Society of America, 49, 606–608.
 #'
 #'
 #' @export
@@ -289,7 +289,8 @@ norm_lobanov <- function(
 #' @importFrom rlang `!!`
 #'
 #' @references
-#' \insertRef{neareyPhoneticFeatureSystems1978}{tidynorm}
+#' Nearey, T. M. (1978). Phonetic Feature Systems for Vowels \[Ph.D.\].
+#' University of Alberta.
 #' @export
 norm_nearey <- function(
     .data,
@@ -328,7 +329,9 @@ norm_nearey <- function(
 #'
 #' @param .by_formant Ignored by this procedure
 #' @references
-#' \insertRef{johnsonDFMethodVocal2020}{tidynorm}
+#' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+#' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
+#' Article 1. [https://doi.org/10.5334/labphon.196]
 #'
 #' @example inst/examples/ex-norm_deltaF.R
 #'

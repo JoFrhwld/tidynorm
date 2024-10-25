@@ -39,7 +39,7 @@ c(
 ```{r}
 speaker_data  |>
   dplyr::group_by(speaker) |> 
-  norm_nearey(
+  norm_deltaF(
     F1:F3
   )
 ```
@@ -86,4 +86,58 @@ inner_fun <- function(x){
 
 ```{r}
 my_fun("a")
+```
+
+```{r}
+c(
+  s01 = "~/OneDrive - University of Kentucky/Corpora/Buckeye/buckeye_fave/s01.tracks",
+  s03 = "~/OneDrive - University of Kentucky/Corpora/Buckeye/buckeye_fave/s03.tracks"
+) |>
+  map(
+    ~read_tsv(.x, col_types=cols(sex = 'c'))
+  ) |>
+  list_rbind(names_to = "speaker") |> 
+  filter(stress == 1) |>
+  select(
+    speaker,
+    vowel,
+    plt_vclass,
+    word,
+    id,
+    t,
+    F1:F3
+  ) ->
+  speaker_tracks_init
+```
+
+```{r}
+speaker_tracks_init |> 
+  count(
+    speaker, id
+  ) |> 
+  slice(
+    .by = speaker,
+    1:500
+  ) |> 
+  left_join(speaker_tracks) |> 
+  select(-n) |> 
+  slice(
+    .by=c(speaker, id),
+   floor(seq(1, n(), length = 20))
+  ) -> 
+  speaker_tracks
+```
+
+```{r}
+usethis::use_data(speaker_tracks, overwrite = T, version = 3)
+```
+
+```{r}
+speaker_tracks |> 
+  reframe_dct(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t
+  )
 ```

@@ -55,5 +55,6 @@ Lobanov Normalize
 }
 }
 \references{
-\insertRef{lobanov1971}{tidynorm}
+Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
+Journal of the Acoustical Society of America, 49, 606–608.
 }

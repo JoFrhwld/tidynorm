@@ -43,5 +43,6 @@ formant columns.}
 Nearey Normalization
 }
 \references{
-\insertRef{neareyPhoneticFeatureSystems1978}{tidynorm}
+Nearey, T. M. (1978). Phonetic Feature Systems for Vowels [Ph.D.].
+University of Alberta.
 }

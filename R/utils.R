@@ -32,6 +32,19 @@ check_grouping <- function(
   }
 }
 
+check_tokens <- function(
+    tokens,
+    call = caller_env
+){
+  if(length(tokens)<1){
+    cli_abort(
+      c(
+        "No column passed to {.arg .token_id_col}.",
+        "i" = "Provide column name(s) that uniquely identify tokens."
+      )
+    )
+  }
+}
 
 check_n_target <- function(
     target_pos,
@@ -49,7 +62,10 @@ check_n_target <- function(
   }
 }
 
-selection_errors <- function(cnd, call = caller_env()){
+selection_errors <- function(
+    cnd,
+    call = caller_env()
+){
   if(cnd_inherits(cnd, "vctrs_error_subscript_oob")){
     cli_abort(
       "Problem with column selection",

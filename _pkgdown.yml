@@ -38,10 +38,16 @@ reference:
       - check_norm
 
   - title: DCT
+  - subtitle: Basic DCT Functions
     contents:
       - dct
       - idct
 
+  - subtitle: Tidy DCT Functions
+    contents:
+      - reframe_dct
+
   - title: "Data"
     contents:
       - speaker_data
+      - speaker_tracks
