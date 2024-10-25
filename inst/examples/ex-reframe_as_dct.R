@@ -1,4 +1,5 @@
 library(tidynorm)
+library(dplyr)
 
 speaker_small <- filter(
   speaker_tracks,

@@ -1,4 +1,5 @@
 library(tidynorm)
+library(dplyr)
 ggplot2_inst <- require(ggplot2)
 
 speaker_small <- filter(
