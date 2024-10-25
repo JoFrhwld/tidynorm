@@ -404,6 +404,15 @@ reframe_with_idct <- function(
 
 }
 
-
+reframe_dct_smooth <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .time_col = NULL,
+    .order = 5
+){
+  return(NULL)
+}
 
 

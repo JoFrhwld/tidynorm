@@ -53,5 +53,3 @@ if(ggplot2_inst){
       title = "DCT Smooth Data"
     )
 }
-
-
