@@ -21,6 +21,8 @@ expressions separated by commas. These should target the vowel formant.}
 
 \item{.token_id_col}{The token ID column.}
 
+\item{.by}{A grouping column.}
+
 \item{.time_col}{A time column.}
 
 \item{.order}{The number of DCT parameters to return. If \code{NA}, all DCT
@@ -68,6 +70,7 @@ correctly arranged by time.
 }
 \examples{
 library(tidynorm)
+library(dplyr)
 
 speaker_small <- filter(
   speaker_tracks,

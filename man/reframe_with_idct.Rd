@@ -21,6 +21,8 @@ expressions separated by commas. These should target the vowel formant.}
 
 \item{.token_id_col}{The token ID column.}
 
+\item{.by}{A grouping column.}
+
 \item{.param_col}{A column identifying the DCT parameter number}
 
 \item{.n}{The size of the outcome of the IDCT}
@@ -61,6 +63,7 @@ The order of the DCT parameters is crucially important. The optional
 }
 \examples{
 library(tidynorm)
+library(dplyr)
 ggplot2_inst <- require(ggplot2)
 
 speaker_small <- filter(
@@ -115,6 +118,4 @@ if(ggplot2_inst){
       title = "DCT Smooth Data"
     )
 }
-
-
 }
