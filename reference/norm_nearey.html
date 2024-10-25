@@ -93,6 +93,26 @@ formant columns.</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When formant extrinsic:
+$$
+ \hat{F}_{ij} = \log(F_{ij}) - L
+$$
+$$
+ L = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \log(F_{ij})
+$$</p>
+<p>When formant intrinsic:
+$$
+ \hat{F}_{ij} = \log(F_{ij}) - L_{i}
+$$</p>
+<p>$$
+  L_i = \frac{1}{N}\sum_{j=1}^{N}\log(F_{ij})
+$$</p>
+<p>Where</p><ul><li><p>\(\hat{F}\) is the normalized formant</p></li>
+<li><p>\(i\) is the formant number</p></li>
+<li><p>\(j\) is the token number</p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Nearey, T. M. (1978). Phonetic Feature Systems for Vowels [Ph.D.].
 University of Alberta.</p>

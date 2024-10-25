@@ -94,7 +94,7 @@ formant columns.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>$$
-  \hat{F_{ij}} = \frac{F_{ij} - L_i}{S_i}
+  \hat{F}_{ij} = \frac{F_{ij} - L_i}{S_i}
 $$</p>
 <p>$$
   L_i = \frac{1}{N}\sum_{j=1}^{N}F_{ij}
@@ -102,7 +102,10 @@ $$</p>
 <p>$$
   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
 $$</p>
-    </div>
+<p>Where</p><ul><li><p>\(\hat{F}\) is the normalized formant</p></li>
+<li><p>\(i\) is the formant number</p></li>
+<li><p>\(j\) is the token number</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
