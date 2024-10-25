@@ -289,7 +289,7 @@ norm_lobanov <- function(
 
 }
 
-#' Nearey Normalization
+#' Nearey Normalize
 #' @inheritParams norm_generic
 #' @importFrom rlang `!!`
 #'
@@ -354,7 +354,7 @@ norm_nearey <- function(
 
 }
 
-#' Delta F Method
+#' Delta F Normalize
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
