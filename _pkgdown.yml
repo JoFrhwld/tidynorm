@@ -45,7 +45,8 @@ reference:
 
   - subtitle: Tidy DCT Functions
     contents:
-      - reframe_dct
+      - reframe_as_dct
+      - reframe_with_idct
 
   - title: "Data"
     contents:

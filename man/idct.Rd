@@ -11,6 +11,9 @@ idct(y, n = length(y))
 
 \item{n}{The desired length of the idct}
 }
+\value{
+A vector with the inverse DCT values
+}
 \description{
 The Inverse DCT
 }

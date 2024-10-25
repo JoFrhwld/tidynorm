@@ -134,10 +134,79 @@ usethis::use_data(speaker_tracks, overwrite = T, version = 3)
 
 ```{r}
 speaker_tracks |> 
-  reframe_dct(
+  reframe_as_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
   )
+```
+
+```{r}
+my_mutate <- function(data, n){
+  data |> 
+    summarise(
+      x = first({{n}})
+    )
+}
+```
+
+```{r}
+my_thing <- function(x = NULL){
+  if(rlang::maybe_missing(x)){
+    print("missing!")
+  }else{
+    print("there!")
+  }
+}
+```
+
+```{r}
+speaker_tracks |> 
+  filter(id == 0) |> 
+  reframe_as_dct(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .order = 5
+  ) |> 
+  reframe_with_idct(
+    F1:F3,
+    .token_id_col = id,
+    .by = speaker,
+    .n = 100
+  ) |> 
+  ggplot(
+    aes(
+      .time,
+      F1
+    )
+  )+
+  geom_point()
+```
+
+```{r}
+small_sp$F1[5] <- NA
+```
+
+```{r}
+small_sp |> 
+  reframe_as_dct(
+    F1:F2,
+    .by = speaker,
+    .token_id_col = id,
+    .order = 21
+  )
+```
+
+```{r}
+tidynorm:::dct_reg(small_sp$F1[1:20])
+```
+
+```{r}
+plot(small_sp$F1[1:20])
+```
+
+```{r}
+foo <- dct(diag(5), norm_forward = F)
 ```

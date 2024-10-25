@@ -11,6 +11,10 @@ dct(x, norm_forward = TRUE)
 
 \item{norm_forward}{DCT normalization (see Details)}
 }
+\value{
+A vector or matrix the same size as \code{x} containing the
+Discrete Cosine Transform.
+}
 \description{
 Discrete Cosine Transform
 }
