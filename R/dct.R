@@ -96,7 +96,7 @@ registerS3method("dct", "matrix", method = dct.matrix)
 dct_reg <- function(y){
   basis <- dct(diag(length(y)), norm_forward = F)
   coefs <- try_fetch(
-    coef(lm(y ~ -1 + basis)),
+    stats::coef(stats::lm(y ~ -1 + basis)),
     error = \(cnd) {
       cli_warn(
         c("A DCT failed"),
@@ -148,6 +148,7 @@ idct <- function(y, n = length(y)){
 #' @param .data A data frame
 #' @param ... [`<tidy-select>`][dplyr::dplyr_tidy_select] One or more unquoted
 #' expressions separated by commas. These should target the vowel formant.
+#' @param .by A grouping column.
 #' @param .token_id_col The token ID column.
 #' @param .time_col A time column.
 #' @param .order The number of DCT parameters to return. If `NA`, all DCT
@@ -200,7 +201,7 @@ reframe_as_dct <- function(
   time <- enquo(.time_col)
   grouping <- enquo(.by)
 
-  order <- ifelse(!is.finite(.order), expr(n()), expr(.order))
+  order <- ifelse(!is.finite(.order), expr(dplyr::n()), expr(.order))
 
   ## a token column is required
   tokens_pos <- try_fetch(
@@ -236,7 +237,7 @@ reframe_as_dct <- function(
     cli_end()
   } else {
     .data <- dplyr::arrange(.data, !!time) |>
-      select(-!!time)
+      dplyr::select(-!!time)
   }
 
   orig <- dplyr::select(
@@ -255,7 +256,7 @@ reframe_as_dct <- function(
     dplyr::reframe(
       .by = c(!!tokens, !!grouping),
       .param = (1:!!order)-1,
-      across(
+      dplyr::across(
         !!targets,
         \(x) dct_reg(x)[1:!!order]
       ),
@@ -270,7 +271,7 @@ reframe_as_dct <- function(
   out_df <- dplyr::left_join(
     orig,
     dct_df,
-    by = join_by(
+    by = dplyr::join_by(
       !!!joining
     )
   )
@@ -382,7 +383,7 @@ reframe_with_idct <- function(
     dplyr::reframe(
       .by = c(!!grouping, !!tokens),
       .time = 1:dplyr::first({{.n}}),
-      across(
+      dplyr::across(
         !!targets,
         \(x) idct(x, n = dplyr::first({{.n}}))
       )
@@ -396,7 +397,7 @@ reframe_with_idct <- function(
   out_df <- dplyr::left_join(
     orig,
     idct_df,
-    by = join_by(
+    by = dplyr::join_by(
       !!!joining
     )
   )
