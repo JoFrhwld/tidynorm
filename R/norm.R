@@ -249,7 +249,7 @@ norm_generic <- function(
 #' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 #' Journal of the Acoustical Society of America, 49, 606–608.
 #'
-#'
+#' @example inst/examples/ex-norm_lobanov.R
 #' @export
 norm_lobanov <- function(
     .data,
@@ -287,6 +287,8 @@ norm_lobanov <- function(
 #' Nearey Normalization
 #' @inheritParams norm_generic
 #' @importFrom rlang `!!`
+#'
+#' @example inst/examples/ex-norm_nearey.R
 #'
 #' @references
 #' Nearey, T. M. (1978). Phonetic Feature Systems for Vowels \[Ph.D.\].

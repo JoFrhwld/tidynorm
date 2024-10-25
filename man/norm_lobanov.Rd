@@ -54,6 +54,37 @@ Lobanov Normalize
   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
 }
 }
+\examples{
+library(tidynorm)
+ggplot2_inst <- require(ggplot2)
+
+speaker_data_lobanov <- speaker_data |>
+  norm_lobanov(
+    F1:F3,
+    .by = speaker,
+    .names = "{.col}_z"
+  )
+
+if(ggplot2_inst){
+  ggplot(
+    speaker_data_lobanov,
+    aes(
+      F2_z,
+      F1_z,
+      color = speaker
+    )
+  )+
+    stat_density_2d(
+      bins = 4
+    )+
+    scale_color_brewer(
+      palette = "Dark2"
+    )+
+    scale_x_reverse()+
+    scale_y_reverse()+
+    coord_fixed()
+}
+}
 \references{
 Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 Journal of the Acoustical Society of America, 49, 606–608.
