@@ -41,6 +41,21 @@ formant columns.}
 \description{
 Delta F Method
 }
+\details{
+\deqn{
+ \hat{F}_{ij} = \frac{F_{ij}}{S}
+}
+\deqn{
+ S = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
+}
+
+Where
+\itemize{
+\item \eqn{\hat{F}} is the normalized formant
+\item \eqn{i} is the formant number
+\item \eqn{j} is the token number
+}
+}
 \examples{
 library(tidynorm)
 ggplot2_inst <- require(ggplot2)

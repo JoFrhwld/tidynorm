@@ -234,7 +234,7 @@ norm_generic <- function(
 #' @details
 #'
 #' \deqn{
-#'   \hat{F_{ij}} = \frac{F_{ij} - L_i}{S_i}
+#'   \hat{F}_{ij} = \frac{F_{ij} - L_i}{S_i}
 #' }
 #'
 #' \deqn{
@@ -244,6 +244,11 @@ norm_generic <- function(
 #' \deqn{
 #'   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
 #' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
 #'
 #' @references
 #' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
@@ -288,6 +293,29 @@ norm_lobanov <- function(
 #' @inheritParams norm_generic
 #' @importFrom rlang `!!`
 #'
+#' @details
+#' When formant extrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L
+#' }
+#' \deqn{
+#'  L = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \log(F_{ij})
+#' }
+#'
+#' When formant intrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L_{i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}\log(F_{ij})
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
 #' @example inst/examples/ex-norm_nearey.R
 #'
 #' @references
@@ -330,6 +358,20 @@ norm_nearey <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#'
+#' @details
+#' \deqn{
+#'  \hat{F}_{ij} = \frac{F_{ij}}{S}
+#' }
+#' \deqn{
+#'  S = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
 #' @references
 #' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
 #' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),

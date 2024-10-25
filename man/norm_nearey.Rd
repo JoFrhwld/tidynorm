@@ -42,6 +42,31 @@ formant columns.}
 \description{
 Nearey Normalization
 }
+\details{
+When formant extrinsic:
+\deqn{
+ \hat{F}_{ij} = \log(F_{ij}) - L
+}
+\deqn{
+ L = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \log(F_{ij})
+}
+
+When formant intrinsic:
+\deqn{
+ \hat{F}_{ij} = \log(F_{ij}) - L_{i}
+}
+
+\deqn{
+  L_i = \frac{1}{N}\sum_{j=1}^{N}\log(F_{ij})
+}
+
+Where
+\itemize{
+\item \eqn{\hat{F}} is the normalized formant
+\item \eqn{i} is the formant number
+\item \eqn{j} is the token number
+}
+}
 \examples{
 library(tidynorm)
 ggplot2_inst <- require(ggplot2)

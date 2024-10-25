@@ -43,7 +43,7 @@ Lobanov Normalize
 }
 \details{
 \deqn{
-  \hat{F_{ij}} = \frac{F_{ij} - L_i}{S_i}
+  \hat{F}_{ij} = \frac{F_{ij} - L_i}{S_i}
 }
 
 \deqn{
@@ -52,6 +52,13 @@ Lobanov Normalize
 
 \deqn{
   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
+}
+
+Where
+\itemize{
+\item \eqn{\hat{F}} is the normalized formant
+\item \eqn{i} is the formant number
+\item \eqn{j} is the token number
 }
 }
 \examples{
