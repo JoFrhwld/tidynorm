@@ -142,6 +142,9 @@ idct <- function(y, n = length(y)){
 }
 
 #' Reframe DCT
+#'
+#' Reframe data columns using the Discrete Cosine Transform
+#'
 #' @param .data A data frame
 #' @param ... [`<tidy-select>`][dplyr::dplyr_tidy_select] One or more unquoted
 #' expressions separated by commas. These should target the vowel formant.
@@ -276,8 +279,42 @@ reframe_as_dct <- function(
 
 }
 
-#' Reframe with idct
+#' Reframe with IDCT
+#'
+#' Reframe data columns using the Inverse Discrete Cosine Transform
+#'
 #' @inheritParams reframe_as_dct
+#' @param .param_col A column identifying the DCT parameter number
+#' @param .n The size of the outcome of the IDCT
+#'
+#' @details
+#' This will apply the Inverse Discrete Cosine Transform to the targeted
+#' columns. See [idct].
+#'
+#' ### Identifying tokens
+#' The IDCT only works on a by-token basis, so there must be a column that
+#' uniquely identifies (or, in combination with a `.by` grouping, uniquely
+#' identifies) each individual token. This column should be passed to
+#' `.token_id_col`.
+#'
+#' ### Size of the output
+#' The output of the IDCT can be arbitrarily long as defined by the `.n`
+#' argument. `.n` can either be an integer, or an unqoted data column.
+#'
+#' ### The Parameter Column
+#' The order of the DCT parameters is crucially important. The optional
+#' `.param_col` will ensure the data is properly arranged.
+#'
+#' @returns
+#' A data frame with the IDCT of the targeted columns along with an
+#' additional `.time` column.
+#'
+#' \describe{
+#'  \item{.time}{A column from 1 to `.n` by token}
+#' }
+#'
+#' @example inst/examples/ex-reframe_with_idct.R
+#'
 #' @export
 reframe_with_idct <- function(
     .data,
@@ -325,7 +362,8 @@ reframe_with_idct <- function(
     )
     cli_end()
   } else {
-    .data <- dplyr::arrange(.data, !!param)
+    .data <- dplyr::arrange(.data, !!param) |>
+      dplyr::select(-!!param)
   }
 
   orig <- dplyr::select(

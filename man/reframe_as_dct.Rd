@@ -36,7 +36,7 @@ additional columns
 }
 }
 \description{
-Reframe DCT
+Reframe data columns using the Discrete Cosine Transform
 }
 \details{
 This function will tidily apply the Discrete Cosine Transform with forward
