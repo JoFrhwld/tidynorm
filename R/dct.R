@@ -253,6 +253,13 @@ reframe_as_dct <- function(
   dct_df <- dplyr::ungroup(
     .data
   ) |>
+    dplyr::mutate(
+      .by = c(!!tokens, !!grouping),
+      dplyr::across(
+        !!targets,
+        \(x) ifelse(mean(is.finite(x)<0.5), NA, x)
+      )
+    ) |>
     dplyr::reframe(
       .by = c(!!tokens, !!grouping),
       .param = (1:!!order)-1,
@@ -405,7 +412,49 @@ reframe_with_idct <- function(
 
 }
 
-reframe_dct_smooth <- function(
+#' Reframe as DCT Smooth
+#'
+#' Apply a DCT Smooth to the targeted data
+#'
+#' @inheritParams reframe_as_dct
+#'
+#' @details
+#' This is roughly equivalent to applying [reframe_as_dct] followed by
+#' [reframe_with_idct]. As long as the value passed to `.order` is less than
+#' the length of the each token's data, this will result in a smoothed version
+#' of the data.
+#'
+#' ### Identifying tokens
+#' The DCT only works on a by-token basis, so there must be a column that
+#' uniquely identifies (or, in combination with a `.by` grouping, uniquely
+#' identifies) each individual token. This column should be passed to
+#' `.token_id_col`.
+#'
+#' ### Order
+#' The number of DCT coefficients to return is defined by `.order`. The default
+#' value is 5. Larger numbers will lead to less smoothing when the Inverse
+#' DCT is applied (see [idct]). Smaller numbers will lead to more smoothing.
+#'
+#' If `NA` is passed to `.order`, all DCT parameters will be returned, which
+#' when the Inverse DCT is supplied, will completely reconstruct the original
+#' data.
+#'
+#' ### Sorting by Time
+#' An optional `.time_col` can also be defined to ensure that the data is
+#' correctly arranged by time.
+#'
+#' Additionally, if `.time_col` is provided, the original time column will
+#' be included in the output
+#'
+#' @returns
+#' A data frame where the target columns have been smoothed using the
+#' DCT.
+#'
+#' @example inst/examples/ex-reframe_as_dct_smooth.R
+#'
+#'
+#' @export
+reframe_as_dct_smooth <- function(
     .data,
     ...,
     .token_id_col,
@@ -413,7 +462,83 @@ reframe_dct_smooth <- function(
     .time_col = NULL,
     .order = 5
 ){
-  return(NULL)
+  targets <- expr(c(...))
+  tokens <- enquo(.token_id_col)
+  time <- enquo(.time_col)
+
+
+  time_pos <- try_fetch(
+    tidyselect::eval_select(time, data = .data),
+    error = \(cnd) selection_errors(cnd)
+  )
+
+  ## a token column is required
+  tokens_pos <- try_fetch(
+    tidyselect::eval_select(tokens, data = .data),
+    error = \(cnd) selection_errors(cnd)
+  )
+
+  # make sure groupings are ok
+  group_pos <- tidyselect::eval_select(
+    enquo(.by), data = .data
+  )
+
+  if(length(time_pos) == 1){
+    .time_data <- dplyr::arrange(.data, !!time) |>
+      dplyr::select(
+        {{.by}},
+        {{.token_id_col}},
+        {{.time_col}}
+      ) |>
+      dplyr::mutate(
+        .by = c({{.by}}, {{.token_id_col}}),
+        .row = dplyr::row_number()
+      )
+  }
+
+
+  .dct_data <- reframe_as_dct(
+    .data,
+    !!targets,
+    .token_id_col = {{.token_id_col}},
+    .by = {{.by}},
+    .time_col = {{.time_col}},
+    .order = .order
+  )
+
+  .dct_smooth <- reframe_with_idct(
+    .dct_data,
+    !!targets,
+    .token_id_col = {{.token_id_col}},
+    .by = {{.by}},
+    .param_col = !!sym(".param"),
+    .n = !!sym(".n")
+  )
+
+  if(length(time_pos) == 1){
+    joining <- list()
+    if(length(group_pos) > 0){
+      joining <- c(joining, list(enquo(.by)))
+    }
+    if(length(tokens_pos) > 0){
+      joining = c(joining, list(enquo(.token_id_col)))
+    }
+
+    .dct_smooth <- dplyr::select(
+      .dct_smooth,
+      -!!sym(".time")
+    ) |>
+      dplyr::mutate(
+        .by = c({{.by}}, {{.token_id_col}}),
+        .row = dplyr::row_number()
+      ) |>
+      dplyr::left_join(
+        .time_data,
+        by = dplyr::join_by(!!!joining, .row)
+      )
+  }
+
+  return(.dct_smooth)
 }
 
 

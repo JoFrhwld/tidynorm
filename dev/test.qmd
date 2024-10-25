@@ -38,10 +38,21 @@ c(
 
 ```{r}
 speaker_data  |>
-  dplyr::group_by(speaker) |> 
-  norm_deltaF(
-    F1:F3
-  )
+  norm_nearey(
+    F1:F3,
+    .by = speaker,
+    .by_formant = F
+  ) |> 
+  norm_lobanov(
+    F1_lm:F3_lm,
+    .by_formant = T
+  ) |> 
+  ggplot(
+    aes(-F2, -F1)
+  )+
+    geom_point(
+      aes(color = speaker)
+    )
 ```
 
 ```{r}
@@ -133,12 +144,22 @@ usethis::use_data(speaker_tracks, overwrite = T, version = 3)
 ```
 
 ```{r}
+speaker_tracks
+```
+
+```{r}
 speaker_tracks |> 
   reframe_as_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
+  ) |> 
+  reframe_with_idct(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .param_col = .param,
   )
 ```
 
@@ -163,45 +184,21 @@ my_thing <- function(x = NULL){
 
 ```{r}
 speaker_tracks |> 
-  filter(id == 0) |> 
-  reframe_as_dct(
+  norm_track_generic(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
-    .order = 5,
-    .time_col = t
-  ) |> 
-  reframe_with_idct(
-    F1:F3,
-    .token_id_col = id,
-    .by = speaker,
-    .param_col = .param,
-    .n = 20
+    .time_col = t,
+    .by_formant = T
+  ) 
+```
+
+```{r}
+speaker_tracks |> 
+  filter(
+    speaker == "s01",
+    id == 295
   )
 ```
 
-```{r}
-small_sp$F1[5] <- NA
-```
 
-```{r}
-small_sp |> 
-  reframe_as_dct(
-    F1:F2,
-    .by = speaker,
-    .token_id_col = id,
-    .order = 21
-  )
-```
-
-```{r}
-tidynorm:::dct_reg(small_sp$F1[1:20])
-```
-
-```{r}
-plot(small_sp$F1[1:20])
-```
-
-```{r}
-foo <- dct(diag(5), norm_forward = F)
-```

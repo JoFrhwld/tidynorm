@@ -47,6 +47,7 @@ reference:
     contents:
       - reframe_as_dct
       - reframe_with_idct
+      - reframe_as_dct_smooth
 
   - title: "Data"
     contents:

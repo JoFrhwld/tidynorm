@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{norm_deltaF}
 \alias{norm_deltaF}
-\title{Delta F Method}
+\title{Delta F Normalize}
 \usage{
 norm_deltaF(
   .data,
@@ -39,7 +39,7 @@ formant columns.}
 \item{.silent}{Whether or not the informational message should be printed.}
 }
 \description{
-Delta F Method
+Delta F Normalize
 }
 \details{
 \deqn{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{norm_nearey}
 \alias{norm_nearey}
-\title{Nearey Normalization}
+\title{Nearey Normalize}
 \usage{
 norm_nearey(
   .data,
@@ -40,7 +40,7 @@ formant columns.}
 \item{.silent}{Whether or not the informational message should be printed.}
 }
 \description{
-Nearey Normalization
+Nearey Normalize
 }
 \details{
 When formant extrinsic:
