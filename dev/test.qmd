@@ -185,19 +185,35 @@ my_thing <- function(x = NULL){
 ```{r}
 speaker_tracks |> 
   norm_track_generic(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .time_col = t,
-    .by_formant = T
-  ) 
+  F1:F3,
+  .by = c(speaker),
+  .token_id_col = id,
+  .time_col = t,
+  .by_formant = T,
+  .keep_params = T,
+  .return_dct = T
+)->thing
+
+thing 
 ```
 
+
 ```{r}
-speaker_tracks |> 
+speaker_tracks  |> 
+  reframe_as_dct(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id
+  ) |> 
   filter(
-    speaker == "s01",
-    id == 295
+    .param == 0
+  ) |> 
+  summarise(
+    .by = speaker,
+    across(
+      F1:F3,
+      \(x) sd(x, na.rm= T) * sqrt(2)
+    )
   )
 ```
 

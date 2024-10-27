@@ -4,7 +4,14 @@
 \alias{lobanov_dct_norm_fun}
 \title{lobanov_dct_norm_fun}
 \usage{
-lobanov_dct_norm_fun(.data, grouping, .names, .param_col)
+lobanov_dct_norm_fun(
+  .data,
+  .by,
+  .token_id_col,
+  .by_formant,
+  .names,
+  .param_col
+)
 }
 \description{
 lobanov_dct_norm_fun

@@ -13,6 +13,7 @@ norm_track_generic(
   .norm_fun = lobanov_dct_norm_fun,
   .by_formant = FALSE,
   .order = 5,
+  .return_dct = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.col}_n",

@@ -201,7 +201,12 @@ reframe_as_dct <- function(
   time <- enquo(.time_col)
   grouping <- enquo(.by)
 
-  order <- ifelse(!is.finite(.order), expr(dplyr::n()), expr(.order))
+  order <- if(!is.finite(.order)){
+    expr(dplyr::n())
+  } else {
+    expr(I(.order))
+  }
+
 
   ## a token column is required
   tokens_pos <- try_fetch(
@@ -257,7 +262,12 @@ reframe_as_dct <- function(
       .by = c(!!tokens, !!grouping),
       dplyr::across(
         !!targets,
-        \(x) ifelse(mean(is.finite(x)<0.5), NA, x)
+        \(x){
+          if(mean(is.finite(x)) < 0.9){
+            x <- NA
+          }
+          return(x)
+        }
       )
     ) |>
     dplyr::reframe(
@@ -270,17 +280,17 @@ reframe_as_dct <- function(
       .n = dplyr::n()
     )
 
-  joining <- list(tokens)
+  #return(dct_df)
+
+  joining <- names(tokens_pos)
   if(length(group_pos) > 0){
-    joining <- c(joining, list(grouping))
+    joining <- c(joining, names(group_pos))
   }
 
   out_df <- dplyr::left_join(
     orig,
     dct_df,
-    by = dplyr::join_by(
-      !!!joining
-    )
+    by = joining
   )
 
   return(out_df)
@@ -396,17 +406,15 @@ reframe_with_idct <- function(
       )
     )
 
-  joining <- list(tokens)
+  joining <- names(tokens_pos)
   if(length(group_pos) > 0){
-    joining <- c(joining, list(grouping))
+    joining <- c(joining, names(group_pos))
   }
 
   out_df <- dplyr::left_join(
     orig,
     idct_df,
-    by = dplyr::join_by(
-      !!!joining
-    )
+    by = joining
   )
   return(out_df)
 
