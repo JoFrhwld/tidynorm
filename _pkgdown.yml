@@ -22,9 +22,22 @@ reference:
     desc: >
       Tidy normalization procedures to be applied
       to your formant data frames.
+  - subtitle: "Point measurements"
     contents:
       - norm_generic
       - starts_with("norm_")
+      - -matches("_track_")
+      - -matches("_dct_")
+
+  - subtitle: "Formant tracks"
+    contents:
+      - norm_track_generic
+      - starts_with("norm_track_")
+
+  - subtitle: "DCT Coefficients"
+    contents:
+      - norm_dct_generic
+      - starts_with("norm_dct_")
 
   # - title: "Normalization Functions"
   #   desc: >
@@ -45,9 +58,9 @@ reference:
 
   - subtitle: Tidy DCT Functions
     contents:
-      - reframe_as_dct
+      - reframe_with_dct
       - reframe_with_idct
-      - reframe_as_dct_smooth
+      - reframe_with_dct_smooth
 
   - title: "Data"
     contents:

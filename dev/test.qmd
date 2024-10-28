@@ -14,241 +14,76 @@ s01_dat <- read_csv(
 ) 
 ```
 
-```{r}
-c(
-  s01 = "https://lingmethodshub.github.io/content/R/tidy-norm/data/s01.txt",
-  s03 = "https://lingmethodshub.github.io/content/R/tidy-norm/data/s03.txt"
-) |> 
-  map(
-    ~read_tsv(.x, col_types=cols(sex = 'c'))
-  ) |> 
-  list_rbind(
-    names_to = "speaker"
-  ) |> 
-  select(
-    speaker, 
-    vowel, 
-    plt_vclass,
-    ipa_vclass,
-    word,
-    F1:F3
-  ) ->
-  speaker_data
-```
 
-```{r}
-speaker_data  |>
-  norm_nearey(
-    F1:F3,
-    .by = speaker,
-    .by_formant = F
-  ) |> 
-  norm_lobanov(
-    F1_lm:F3_lm,
-    .by_formant = T
-  ) |> 
-  ggplot(
-    aes(-F2, -F1)
-  )+
-    geom_point(
-      aes(color = speaker)
-    )
-```
-
-```{r}
-foo
-```
-
-```{r}
-attributes(foo)$norminfo
-```
-
-```{r}
-check_norm(foo)
-```
-
-```{r}
-library(rlang)
-```
-
-```{r}
-my_fun <- function(x, fn = inner_fun){
-  x <- fn(x)
-  cli::cli_inform(
-    c(
-      "outer",
-      names(attributes(x))
-    )
-  )
-  return(x)
-}
-
-inner_fun <- function(x){
-  attr(x, "jawn") <- "foo"
-  cli::cli_inform(
-    c(
-      "inner",
-      names(attributes(x))
-    )
-  )
-  return(x)
-}
-```
-
-```{r}
-my_fun("a")
-```
-
-```{r}
-c(
-  s01 = "~/OneDrive - University of Kentucky/Corpora/Buckeye/buckeye_fave/s01.tracks",
-  s03 = "~/OneDrive - University of Kentucky/Corpora/Buckeye/buckeye_fave/s03.tracks"
-) |>
-  map(
-    ~read_tsv(.x, col_types=cols(sex = 'c'))
-  ) |>
-  list_rbind(names_to = "speaker") |> 
-  filter(stress == 1) |>
-  select(
-    speaker,
-    vowel,
-    plt_vclass,
-    word,
-    id,
-    t,
-    F1:F3
-  ) ->
-  speaker_tracks_init
-```
-
-```{r}
-speaker_tracks_init |> 
-  count(
-    speaker, id
-  ) |> 
-  slice(
-    .by = speaker,
-    1:500
-  ) |> 
-  left_join(speaker_tracks) |> 
-  select(-n) |> 
-  slice(
-    .by=c(speaker, id),
-   floor(seq(1, n(), length = 20))
-  ) -> 
-  speaker_tracks
-```
-
-```{r}
-usethis::use_data(speaker_tracks, overwrite = T, version = 3)
-```
-
-```{r}
-speaker_tracks
-```
 
 ```{r}
 speaker_tracks |> 
-  reframe_as_dct(
+  norm_track_generic(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t,
+    .L = mean(.formant, na.rm = T),
+    .S = sd(.formant, na.rm = T),
+    .by_formant = T,
+    .return_dct = F
+  ) |> 
+  ggplot(
+    aes(-F2_n, -F1_n, color = speaker)
+  ) +
+  stat_density_2d()+
+  coord_fixed()
+```
+```{r}
+speaker_tracks |>
+  norm_track_generic(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .by_formant = TRUE,
+    .L = mean(.formant, na.rm = TRUE),
+    .S = sd(.formant, na.rm = TRUE),
+    .time_col = t
+  )
+
+speaker_tracks |> 
+ norm_track_generic(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t,
+    .L = mean(.formant, na.rm = T),
+    .S = sd(.formant, na.rm = T),
+    .by_formant = T,
+    .return_dct = F,
+    .drop_orig = T
+  ) 
+```
+```{r}
+speaker_tracks |> 
+  filter(
+    .by = c(speaker, id),
+    if_all(
+      F1:F3,
+      .fns =\(x) mean(is.finite(x)) > 0.9
+    ),
+    row_number() %% 2 == 1
+  ) -> small_tracks
+
+
+small_tracks |> 
+  norm_track_lobanov(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
   ) |> 
-  reframe_with_idct(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .param_col = .param,
-  )
-```
-
-```{r}
-my_mutate <- function(data, n){
-  data |> 
-    summarise(
-      x = first({{n}})
-    )
-}
-```
-
-```{r}
-my_thing <- function(x = NULL){
-  if(rlang::maybe_missing(x)){
-    print("missing!")
-  }else{
-    print("there!")
-  }
-}
-```
-
-```{r}
-speaker_tracks |> 
-  norm_track_generic(
-  F1:F3,
-  .by = c(speaker),
-  .token_id_col = id,
-  .time_col = t,
-  .by_formant = T,
-  .return_dct = T,
-  .order = 3
-)->thing
-
-thing 
-```
-
-
-```{r}
-thing |> 
-  summarise(
-    .by = c(speaker, plt_vclass, .param),
-    across(
-      F1_n:F2_n,
-      \(x) mean(x, na.rm =T )
-    )
-  ) |> 
-  reframe_with_idct(
-    F1_n:F2_n,
-    .by = speaker,
-    .token_id_col = plt_vclass
-  ) |> 
   ggplot(
-    aes(-F2_n, -F1_n)
+    aes(-F2_z, -F1_z, color = speaker)
   )+
-  geom_point()+
-  facet_wrap(~speaker)
-```
-```{r}
-new_fun <- function(data, ...){
-  dots <- expr(...)
-  dots_pos <- tidyselect::eval_select(dots, data)
-}
-
-new_fun(speaker_data, speaker:word)
+  stat_density_2d()+
+  coord_fixed()
 ```
 
-```{r}
-speaker_data |> 
-  norm_generic(
-    F1:F3,
-    .by = speaker,
-    .by_formant = FALSE,
-    .pre_trans = log,
-    .S = mean(.formant, na.rm = T)
-  )
-```
-
-```{r}
-foo <- function(
-    data,
-    L = .col[3]
-){
-  data |> 
-    mutate(
-      .by = .id,
-      L = {{L}}
-    )
-}
-```
 
 

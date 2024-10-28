@@ -71,7 +71,7 @@ The following \verb{norm_*} procedures are built on top of \code{norm_generic()}
 \subsection{Location and Scale expressions}{
 
 All normalization procedures built on \link{norm_generic} produce normalized
-formant values (\eqn{\hat{F}}) by subracting a location parameter
+formant values (\eqn{\hat{F}}) by subtracting a location parameter
 (\eqn{L}) and dividing by a scale parameter (\eqn{S}).
 
 \deqn{

@@ -36,7 +36,7 @@
 #'
 #' ### Location and Scale expressions
 #' All normalization procedures built on [norm_generic] produce normalized
-#' formant values (\eqn{\hat{F}}) by subracting a location parameter
+#' formant values (\eqn{\hat{F}}) by subtracting a location parameter
 #' (\eqn{L}) and dividing by a scale parameter (\eqn{S}).
 #'
 #' \deqn{

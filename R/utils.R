@@ -76,6 +76,46 @@ selection_errors <- function(
   }
 }
 
+make_dct_grouping <- function(
+    .data,
+    .by,
+    .token_id_col
+){
+  cols <- enquos(
+    .by = .by,
+    .token_id_col = .token_id_col
+  )
+  if(length(dplyr::group_vars(.data))>0){
+    by_grouping = expr(NULL)
+    .data <- group_by(
+      .data,
+      {{.token_id_col}},
+      .add = TRUE
+    )
+    joining <- group_vars(.data)
+  }else{
+    by_grouping = expr(c({{.by}}, {{.token_id_col}}))
+    joining <- c()
+    for(col in cols){
+      joining <- c(
+        joining,
+        names(
+          tidyselect::eval_select(col, .data)
+        )
+      )
+    }
+  }
+
+  return(
+    list(
+      .data = .data,
+      by_grouping = by_grouping,
+      joining = joining
+    )
+  )
+}
+
+
 wrap_up <- function(
     .data,
     target_pos,

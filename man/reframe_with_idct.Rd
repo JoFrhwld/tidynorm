@@ -7,7 +7,7 @@
 reframe_with_idct(
   .data,
   ...,
-  .token_id_col,
+  .token_id_col = NULL,
   .by = NULL,
   .param_col = NULL,
   .n = 20
@@ -19,9 +19,9 @@ reframe_with_idct(
 \item{...}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} One or more unquoted
 expressions separated by commas. These should target the vowel formant.}
 
-\item{.token_id_col}{The token ID column.}
+\item{.token_id_col}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} The token ID column.}
 
-\item{.by}{A grouping column.}
+\item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A grouping column.}
 
 \item{.param_col}{A column identifying the DCT parameter number}
 
