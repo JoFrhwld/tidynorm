@@ -4,7 +4,7 @@
 \alias{deltaF_norm_fun}
 \title{deltaF norm fun}
 \usage{
-deltaF_norm_fun(.data, grouping, .names)
+deltaF_norm_fun(.data, .by, .names)
 }
 \description{
 deltaF norm fun

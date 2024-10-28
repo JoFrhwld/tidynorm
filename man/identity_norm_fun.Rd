@@ -4,7 +4,7 @@
 \alias{identity_norm_fun}
 \title{identity norm fun}
 \usage{
-identity_norm_fun(.data, grouping, .names)
+identity_norm_fun(.data, .by, .names)
 }
 \description{
 identity norm fun

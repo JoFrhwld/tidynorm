@@ -5,8 +5,8 @@ check_grouping <- function(
 ){
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
-    tidyselect::eval_select(.by, .data),
-    error = \(cnd) selection_errors(cnd, call = call)
+    tidyselect::eval_select(enquo(.by), .data),
+    error = \(cnd) selection_errors(cnd, arg = ".by", call = call)
   )
   if(length(grouped_by) > 0 & length(grouping) > 0){
     cli_abort(
@@ -46,45 +46,30 @@ check_tokens <- function(
   }
 }
 
-check_n_target <- function(
-    target_pos,
-    n = 2,
-    call = caller_env()
-){
-  n_target <- length(target_pos)
-  if(n_target < n){
-    cli_warn(
-      c(
-        "{n_target} column{?s} w{?as/ere} targeted."
-      ),
-      call = call
-    )
-  }
-}
-
 selection_errors <- function(
     cnd,
+    arg = "",
     call = caller_env()
 ){
   if(cnd_inherits(cnd, "vctrs_error_subscript_oob")){
     cli_abort(
-      "Problem with column selection",
+      "Problem with column selection for {.arg {arg}}",
       parent = cnd,
       call = call
     )
   } else if(cnd_inherits(cnd, "vctrs_error_subscript")){
     cli_abort(
       c(
-        "Problem with column selection",
+        "Problem with column selection for {.arg {arg}}",
         "i" = "Most arguments need to start with a .",
-        "i" = "e.g. {.arg .by_formant}"
+        "i" = "{.arg .{arg}}"
       ),
       parent = cnd,
       call = call
     )
   } else {
     cli_abort(
-      "Problem with column selection",
+      "Problem with column selection for {.arg arg}",
       parent = cnd,
       call = call
     )

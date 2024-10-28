@@ -1,3 +1,14 @@
+prepare_norm_params <- function(
+    .data,
+    .by,
+    .token_id_col,
+    .by_formant,
+    .names,
+    .param_col
+){
+
+}
+
 #' lobanov_dct_norm_fun
 #' @export
 #' @keywords internal

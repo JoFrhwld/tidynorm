@@ -82,23 +82,30 @@ norm_generic <- function(
   .call = caller_env()
 ){
 
+  targets <- expr(...)
+  cols <- enquos(
+    .by = .by
+  )
+
+  if(env_name(.call) == "global"){
+    .call <- current_env()
+  }
+
   prev_attr <- attributes(.data)$norminfo
 
-  targets <- rlang::expr(c(...))
+  check_grouping(.data, {{.by}}, call = .call)
 
-  check_grouping(.data, enquo(.by), .call)
-  grouping <- rlang::enquo(.by)
+  #grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
-    grouping, data = .data
+    enquo(.by), data = .data
   )
 
   # evaluating for the number of
   # targeted columns
   target_pos <- try_fetch(
     tidyselect::eval_select(targets, data = .data),
-    error = \(cnd) selection_errors(cnd, call = .call)
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
-  check_n_target(target_pos, n = 2, call = .call)
 
   # adding an id col for safety in
   # pivoting
@@ -127,40 +134,28 @@ norm_generic <- function(
 
   # augment grouping as necessary to
   # match .by_formant
+  formant_symbol <- quo(NULL)
   if(.by_formant & length(grouped_by > 0)){
     .data <- dplyr::group_by(
       .data,
       !!sym(".formant"),
       .add = TRUE
     )
-    norm_group <- grouping
   } else if(.by_formant){
-    norm_group <- rlang::expr(
-      c(!!grouping, !!sym(".formant"))
-    )
-  } else {
-    norm_group <- grouping
+    formant_symbol <- sym(".formant")
   }
+
 
   # apply provided norm_fun
   .data <- .norm_fun(
     .data,
-    norm_group,
+    c({{.by}}, !!formant_symbol),
     .names
   )
 
-
   # set up value columns for pivoting
   # back wide
-  if(.keep_params){
-    values_target <- rlang::expr(c(
-      tidyselect::starts_with(".col"),
-      tidyselect::all_of(c("L", "S"))
-    ))
-  } else {
-    values_target <- rlang::expr(
-      tidyselect::starts_with(".col")
-    )
+  if(!.keep_params){
     .data <- dplyr::select(
       .data,
       -c(!!sym("L"), !!sym("S"))
@@ -171,7 +166,10 @@ norm_generic <- function(
   .data <- tidyr::pivot_wider(
     .data,
     names_from = !!sym(".formant"),
-    values_from = !!values_target,
+    values_from = c(
+      tidyselect::starts_with(".col"),
+      tidyselect::any_of(c("L", "S"))
+      ),
     names_glue = "{.formant}_{.value}"
   )
 
@@ -221,9 +219,7 @@ norm_generic <- function(
     )
   }
 
-
   return(.data)
-
 }
 
 #' Lobanov Normalize

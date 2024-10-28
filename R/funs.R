@@ -3,7 +3,7 @@
 #' @keywords internal
 identity_norm_fun <- function(
     .data,
-    grouping,
+    .by,
     .names
 ){
   .data = dplyr::mutate(
@@ -19,12 +19,12 @@ identity_norm_fun <- function(
 #' @keywords internal
 lobanov_norm_fun <- function(
     .data,
-    grouping,
+    .by,
     .names
 ){
   .data <- dplyr::mutate(
     .data,
-    .by = !!grouping,
+    .by = {{.by}},
     L = base::mean(!!sym(".col"), na.rm = T),
     S = stats::sd(!!sym(".col"), na.rm = T),
     dplyr::across(
@@ -42,12 +42,12 @@ lobanov_norm_fun <- function(
 #' @keywords internal
 nearey_norm_fun <- function(
     .data,
-    grouping,
+    .by,
     .names
 ){
   .data <- dplyr::mutate(
     .data,
-    .by = !!grouping,
+    .by = {{.by}},
     L = mean(log(!!sym(".col")), na.rm = T),
     S = 1,
     dplyr::across(
@@ -63,13 +63,13 @@ nearey_norm_fun <- function(
 #' @keywords internal
 deltaF_norm_fun <- function(
     .data,
-    grouping,
+    .by,
     .names
 ){
 
   .data <- dplyr::mutate(
     .data,
-    .by = !!grouping,
+    .by = {{.by}},
     .formant_num = stringr::str_extract(
       !!sym(".formant"),
       r"{[fF](\d)}",

@@ -84,6 +84,13 @@ norm_track_generic <- function(
     )
   }
 
+  zeroth <- dplyr::filter(
+    .data,
+    .by = c({{.by}}, {{.token_id_col}}, !!sym(".formant")),
+    {{.param_col}} == min({{.param_col}})
+  )
+
+
   normed<- .norm_fun(
     .data = .dct_data,
     .by = {{.by}},

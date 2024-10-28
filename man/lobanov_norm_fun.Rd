@@ -4,7 +4,7 @@
 \alias{lobanov_norm_fun}
 \title{lobanov_norm_fun}
 \usage{
-lobanov_norm_fun(.data, grouping, .names)
+lobanov_norm_fun(.data, .by, .names)
 }
 \description{
 lobanov_norm_fun

@@ -4,7 +4,7 @@
 \alias{nearey_norm_fun}
 \title{Neary norm fun}
 \usage{
-nearey_norm_fun(.data, grouping, .names)
+nearey_norm_fun(.data, .by, .names)
 }
 \description{
 Neary norm fun

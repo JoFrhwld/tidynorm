@@ -190,8 +190,8 @@ speaker_tracks |>
   .token_id_col = id,
   .time_col = t,
   .by_formant = T,
-  .keep_params = T,
-  .return_dct = T
+  .return_dct = T,
+  .order = 3
 )->thing
 
 thing 
@@ -199,22 +199,46 @@ thing
 
 
 ```{r}
-speaker_tracks  |> 
-  reframe_as_dct(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id
-  ) |> 
-  filter(
-    .param == 0
-  ) |> 
+thing |> 
   summarise(
-    .by = speaker,
+    .by = c(speaker, plt_vclass, .param),
     across(
-      F1:F3,
-      \(x) sd(x, na.rm= T) * sqrt(2)
+      F1_n:F2_n,
+      \(x) mean(x, na.rm =T )
     )
-  )
+  ) |> 
+  reframe_with_idct(
+    F1_n:F2_n,
+    .by = speaker,
+    .token_id_col = plt_vclass
+  ) |> 
+  ggplot(
+    aes(-F2_n, -F1_n)
+  )+
+  geom_point()+
+  facet_wrap(~speaker)
+```
+```{r}
+new_fun <- function(data, ...){
+  dots <- expr(...)
+  dots_pos <- tidyselect::eval_select(dots, data)
+}
+
+new_fun(speaker_data, speaker:word)
 ```
 
+```{r}
+speaker_data |> 
+  norm_lobanov(
+    F1:F2,
+    .by_formant = T,
+    .by = speaker,
+    .keep_params = T
+  ) 
+```
+
+```{r}
+x <- quo(NULL)
+eval_tidy(x)
+```
 
