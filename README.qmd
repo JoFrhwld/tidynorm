@@ -63,7 +63,7 @@ speaker_data |>
   norm_nearey(
     F1:F3,
     .by = speaker,
-    .names = "{.col}_nearey"
+    .names = "{.formant}_nearey"
   ) ->
   speaker_normalized
 
