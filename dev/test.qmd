@@ -229,16 +229,26 @@ new_fun(speaker_data, speaker:word)
 
 ```{r}
 speaker_data |> 
-  norm_lobanov(
-    F1:F2,
-    .by_formant = T,
+  norm_generic(
+    F1:F3,
     .by = speaker,
-    .keep_params = T
-  ) 
+    .by_formant = FALSE,
+    .pre_trans = log,
+    .S = mean(.formant, na.rm = T)
+  )
 ```
 
 ```{r}
-x <- quo(NULL)
-eval_tidy(x)
+foo <- function(
+    data,
+    L = .col[3]
+){
+  data |> 
+    mutate(
+      .by = .id,
+      L = {{L}}
+    )
+}
 ```
+
 

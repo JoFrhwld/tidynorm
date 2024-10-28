@@ -11,7 +11,7 @@ norm_deltaF(
   .by_formant = FALSE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_df",
+  .names = "{.formant}_df",
   .silent = FALSE
 )
 }
@@ -29,11 +29,11 @@ columns to group by. Typically a column of speaker IDs.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
-\item{.keep_params}{Whether or not to keep the Location (\verb{*_L}) and scale
-(\verb{*_S}) normalization parameters}
+\item{.keep_params}{Whether or not to keep the Location (\verb{*_.L}) and Scale
+(\verb{*_.S}) normalization parameters}
 
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
-data columns. The \code{"{.col}"} portion corresponds to the name of the original
+data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
 \item{.silent}{Whether or not the informational message should be printed.}
@@ -64,8 +64,16 @@ speaker_data_deltaF <- speaker_data |>
   norm_deltaF(
     F1:F3,
     .by = speaker,
-    .names = "{.col}_df"
+    .names = "{.formant}_df"
   )
+
+## this is equivalent to
+# speaker_data |>
+#   norm_generic(
+#     F1:F3,
+#     .by = speaker,
+#     .S = mean(.formant/(.formant_num - 0.5), na.rm = T)
+#   )
 
 if(ggplot2_inst){
   ggplot(

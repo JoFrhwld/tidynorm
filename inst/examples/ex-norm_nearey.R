@@ -6,8 +6,18 @@ speaker_data_nearey <- speaker_data |>
     F1:F3,
     .by = speaker,
     .by_formant = FALSE,
-    .names = "{.col}_nearey"
+    .names = "{.formant}_nearey"
   )
+
+## this is equivalent to
+# speaker_data |>
+#   norm_generic(
+#     F1:F3,
+#     .by = speaker,
+#     .by_formant = FALSE,
+#     .pre_trans = log,
+#     .L = mean(.formant, na.rm = T)
+#   )
 
 if(ggplot2_inst){
   ggplot(
@@ -37,7 +47,7 @@ speaker_data_nearey2 <- speaker_data |>
     F1:F3,
     .by = speaker,
     .by_formant = TRUE,
-    .names = "{.col}_nearey"
+    .names = "{.formant}_nearey"
   )
 
 if(ggplot2_inst){

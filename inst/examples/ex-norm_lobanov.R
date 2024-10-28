@@ -5,8 +5,18 @@ speaker_data_lobanov <- speaker_data |>
   norm_lobanov(
     F1:F3,
     .by = speaker,
-    .names = "{.col}_z"
+    .names = "{.formant}_z"
   )
+
+## this is equivalent to
+# speaker_data |>
+#   norm_generic(
+#     F1:F3,
+#     .by = speaker,
+#     .by_formant = T,
+#     .L = mean(.formant, na.rm = T),
+#     .S = sd(.formant, na.rm = T)
+#   )
 
 if(ggplot2_inst){
   ggplot(

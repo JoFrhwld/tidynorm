@@ -92,7 +92,7 @@ wrap_up <- function(
     "*" = "normalized {.var {target_names}}"
   )
 
-  norm_names <- glue::glue(.names, .col = target_names)
+  norm_names <- glue::glue(.names, .formant = target_names)
   message <- c(
     message,
     "*" = "normalized values in {.var {norm_names}}"

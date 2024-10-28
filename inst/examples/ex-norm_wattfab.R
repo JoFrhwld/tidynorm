@@ -1,27 +1,19 @@
 library(tidynorm)
 ggplot2_inst <- require(ggplot2)
 
-speaker_data_deltaF <- speaker_data |>
-  norm_deltaF(
+speaker_data_wattfab <- speaker_data |>
+  norm_wattfab(
     F1:F3,
     .by = speaker,
-    .names = "{.formant}_df"
+    .names = "{.formant}_wf"
   )
-
-## this is equivalent to
-# speaker_data |>
-#   norm_generic(
-#     F1:F3,
-#     .by = speaker,
-#     .S = mean(.formant/(.formant_num - 0.5), na.rm = T)
-#   )
 
 if(ggplot2_inst){
   ggplot(
-    speaker_data_deltaF,
+    speaker_data_wattfab,
     aes(
-      F2_df,
-      F1_df,
+      F2_wf,
+      F1_wf,
       color = speaker
     )
   )+
@@ -35,3 +27,4 @@ if(ggplot2_inst){
     scale_y_reverse()+
     coord_fixed()
 }
+

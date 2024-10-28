@@ -8,11 +8,14 @@ norm_generic(
   .data,
   ...,
   .by = NULL,
-  .norm_fun = identity_norm_fun,
   .by_formant = FALSE,
+  .L = 0,
+  .S = 1,
+  .pre_trans = function(x) x,
+  .post_trans = function(x) x,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_n",
+  .names = "{.formant}_n",
   .silent = FALSE,
   .call = caller_env()
 )
@@ -27,19 +30,26 @@ data columns.}
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
 
-\item{.norm_fun}{A function to apply to a pivoted long data frame. See
-Details for how to write such a function.}
-
 \item{.by_formant}{Whether or not the normalization method is formant
 intrinsic.}
 
+\item{.L}{An expression defining the location parameter.
+See Details for more information.}
+
+\item{.S}{An expression defining the scale parameter.
+See Details for more information.}
+
+\item{.pre_trans}{A function to apply to formant values before normalization.}
+
+\item{.post_trans}{A function to apply to formant values after normalization.}
+
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
-\item{.keep_params}{Whether or not to keep the Location (\verb{*_L}) and scale
-(\verb{*_S}) normalization parameters}
+\item{.keep_params}{Whether or not to keep the Location (\verb{*_.L}) and Scale
+(\verb{*_.S}) normalization parameters}
 
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
-data columns. The \code{"{.col}"} portion corresponds to the name of the original
+data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
 \item{.silent}{Whether or not the informational message should be printed.}
@@ -56,72 +66,55 @@ The following \verb{norm_*} procedures are built on top of \code{norm_generic()}
 \item \link{norm_lobanov}
 \item \link{norm_nearey}
 \item \link{norm_deltaF}
+\item \link{norm_wattfab}
+}
+\subsection{Location and Scale expressions}{
+
+All normalization procedures built on \link{norm_generic} produce normalized
+formant values (\eqn{\hat{F}}) by subracting a location parameter
+(\eqn{L}) and dividing by a scale parameter (\eqn{S}).
+
+\deqn{
+\hat{F} = \frac{F-L}{S}
 }
 
-You can define a custom normalization function to pass
-to \code{.norm_fun} that takes the following arguments
-\itemize{
-\item \code{.data}
-\item \code{.grouping}
-\item \code{.names}
+The expressions for calculating \eqn{L} and \eqn{S} can be
+passed to \code{.L} and \code{.S}, respectively. Available values for
+these expressions are
+
+\describe{
+\item{\code{.formant}}{The original formant value}
+\item{\code{.formant_num}}{The number of the formant. (e.g. 1 for F1, 2 for F2 etc)}
 }
 
-The \code{.data} data frame will be your original data frame with the
-formant columns pivoted longer. The formant names will be available
-in a column called \code{.formant}, and the formant values in a column
-called \code{.col}. Any Location parameters should be assigned to a
-column called \code{L}, and any Scale parameters should be assigned
-to a column called \code{S}. A median-based normalization function might
-look like the following.
+Along with any data columns from your original data.
+}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{median_norm_fun <- function(.data, .grouping, .names)\{
-  .data |>
-    mutate(
-      .by = !!.grouping,
-      L = median(.col),
-      S = mad(.col),
-      across(
-        .col,
-        .fns = \\(x) (x - L)/S,
-        .names = .names
-      )
-    )
- return(.data)
-\}
-}\if{html}{\out{</div>}}
+\subsection{Pre and Post normalization transforms}{
 
-If the method is meant to be formant ex/intrinsic, as
-defined by \code{.by_formant}, this will be accounted for by
-the grouping variables in the \code{.grouping} argument passed
-to the normalization function.
+To apply any transformations before or after normalization,
+you can pass a function to \code{.pre_trans} and \code{.post_trans}.
+}
+
+\subsection{Formant In/Extrinsic Normalization}{
+
+If \code{.by_formant} is \code{TRUE}, normalization will be formant intrinsic.
+if \code{.by_formant} is \code{FALSE}, normalization will be extrinsic.
+}
 }
 \examples{
 library(tidynorm)
 library(dplyr)
 
-median_norm_fun <- function(.data, .grouping, .names){
-  .data <- .data |>
-    mutate(
-      .by = !!.grouping,
-      L = median(.col, na.rm = TRUE),
-      S = mad(.col, na.rm = TRUE),
-      across(
-        .col,
-        .fns = \(x) (x - L)/S,
-        .names = .names
-      )
-    )
-  return(.data)
-}
-
 speaker_data |>
   norm_generic(
     F1:F3,
     .by = speaker,
-    .norm_fun = median_norm_fun,
     .by_formant = TRUE,
+    .L = median(.formant, na.rm = T),
+    .S = mad(.formant, na.rm = T),
     .drop_orig = TRUE,
-    .names = "{.col}_mad"
+    .names = "{.formant}_mad"
   )
 
 }

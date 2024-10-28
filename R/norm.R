@@ -9,15 +9,19 @@
 #' data columns.
 #' @param .by  [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to group by. Typically a column of speaker IDs.
-#' @param .norm_fun A function to apply to a pivoted long data frame. See
-#' Details for how to write such a function.
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
+#' @param .L An expression defining the location parameter.
+#' See Details for more information.
+#' @param .S An expression defining the scale parameter.
+#' See Details for more information.
+#' @param .pre_trans A function to apply to formant values before normalization.
+#' @param .post_trans A function to apply to formant values after normalization.
 #' @param .drop_orig Whether or not to drop the original formant data columns.
-#' @param .keep_params Whether or not to keep the Location (`*_L`) and scale
-#' (`*_S`) normalization parameters
+#' @param .keep_params Whether or not to keep the Location (`*_.L`) and Scale
+#' (`*_.S`) normalization parameters
 #' @param .names A [glue::glue()] expression for naming the normalized
-#' data columns. The `"{.col}"` portion corresponds to the name of the original
+#' data columns. The `"{.formant}"` portion corresponds to the name of the original
 #' formant columns.
 #' @param .silent Whether or not the informational message should be printed.
 #' @param .call Used for internal purposes.
@@ -28,56 +32,50 @@
 #' - [norm_lobanov]
 #' - [norm_nearey]
 #' - [norm_deltaF]
+#' - [norm_wattfab]
 #'
-#' You can define a custom normalization function to pass
-#' to `.norm_fun` that takes the following arguments
+#' ### Location and Scale expressions
+#' All normalization procedures built on [norm_generic] produce normalized
+#' formant values (\eqn{\hat{F}}) by subracting a location parameter
+#' (\eqn{L}) and dividing by a scale parameter (\eqn{S}).
 #'
-#' - `.data`
-#' - `.grouping`
-#' - `.names`
-#'
-#' The `.data` data frame will be your original data frame with the
-#' formant columns pivoted longer. The formant names will be available
-#' in a column called `.formant`, and the formant values in a column
-#' called `.col`. Any Location parameters should be assigned to a
-#' column called `L`, and any Scale parameters should be assigned
-#' to a column called `S`. A median-based normalization function might
-#' look like the following.
-#'
-#' ```r
-#' median_norm_fun <- function(.data, .grouping, .names){
-#'   .data |>
-#'     mutate(
-#'       .by = !!.grouping,
-#'       L = median(.col),
-#'       S = mad(.col),
-#'       across(
-#'         .col,
-#'         .fns = \(x) (x - L)/S,
-#'         .names = .names
-#'       )
-#'     )
-#'  return(.data)
+#' \deqn{
+#' \hat{F} = \frac{F-L}{S}
 #' }
-#' ```
 #'
-#' If the method is meant to be formant ex/intrinsic, as
-#' defined by `.by_formant`, this will be accounted for by
-#' the grouping variables in the `.grouping` argument passed
-#' to the normalization function.
+#' The expressions for calculating \eqn{L} and \eqn{S} can be
+#' passed to `.L` and `.S`, respectively. Available values for
+#' these expressions are
+#'
+#' \describe{
+#'  \item{`.formant`}{The original formant value}
+#'  \item{`.formant_num`}{The number of the formant. (e.g. 1 for F1, 2 for F2 etc)}
+#' }
+#'
+#' Along with any data columns from your original data.
+#'
+#' ### Pre and Post normalization transforms
+#' To apply any transformations before or after normalization,
+#' you can pass a function to `.pre_trans` and `.post_trans`.
+#'
+#' ### Formant In/Extrinsic Normalization
+#' If `.by_formant` is `TRUE`, normalization will be formant intrinsic.
+#' if `.by_formant` is `FALSE`, normalization will be extrinsic.
 #'
 #' @example inst/examples/ex-norm_generic.R
-#'
 #' @export
 norm_generic <- function(
   .data,
   ...,
   .by = NULL,
-  .norm_fun = identity_norm_fun,
   .by_formant = FALSE,
+  .L = 0,
+  .S = 1,
+  .pre_trans = \(x)x,
+  .post_trans = \(x)x,
   .drop_orig = FALSE,
   .keep_params = FALSE,
-  .names = "{.col}_n",
+  .names = "{.formant}_n",
   .silent = FALSE,
   .call = caller_env()
 ){
@@ -86,6 +84,8 @@ norm_generic <- function(
   cols <- enquos(
     .by = .by
   )
+
+  .names2 <- glue::glue(.names, .formant = ".formant")
 
   if(env_name(.call) == "global"){
     .call <- current_env()
@@ -123,9 +123,17 @@ norm_generic <- function(
   .data <- tidyr::pivot_longer(
     .data,
     !!targets,
-    names_to = ".formant",
-    values_to = ".col"
-  )
+    names_to = ".formant_name",
+    values_to = ".formant"
+  ) |>
+    dplyr::mutate(
+      .formant_num = stringr::str_extract(
+        !!sym(".formant_name"),
+        r"{[fF](\d)}",
+        group = 1
+      ) |> as.numeric(),
+      .formant = .pre_trans(.formant)
+    )
 
   # see if the data is grouped
   grouped_by <- dplyr::group_vars(
@@ -138,19 +146,20 @@ norm_generic <- function(
   if(.by_formant & length(grouped_by > 0)){
     .data <- dplyr::group_by(
       .data,
-      !!sym(".formant"),
+      !!sym(".formant_name"),
       .add = TRUE
     )
   } else if(.by_formant){
-    formant_symbol <- sym(".formant")
+    formant_symbol <- sym(".formant_name")
   }
 
-
-  # apply provided norm_fun
-  .data <- .norm_fun(
+  .data <- dplyr::mutate(
     .data,
-    c({{.by}}, !!formant_symbol),
-    .names
+    .by = c({{.by}}, !!formant_symbol),
+    .L = {{.L}},
+    .S = {{.S}},
+    "{.names2}" := .post_trans((.formant - .L) / .S),
+    .formant = .post_trans(.formant)
   )
 
   # set up value columns for pivoting
@@ -158,34 +167,42 @@ norm_generic <- function(
   if(!.keep_params){
     .data <- dplyr::select(
       .data,
-      -c(!!sym("L"), !!sym("S"))
+      -c(!!sym(".L"), !!sym(".S"))
     )
   }
+  .data <- dplyr::select(
+    .data,
+    -!!sym(".formant_num")
+  )
 
   # pivot_back wide
   .data <- tidyr::pivot_wider(
     .data,
-    names_from = !!sym(".formant"),
+    names_from = !!sym(".formant_name"),
     values_from = c(
-      tidyselect::starts_with(".col"),
-      tidyselect::any_of(c("L", "S"))
+      tidyselect::starts_with(".formant") & !tidyselect::all_of(".formant_name"),
+      tidyselect::any_of(c(".L", ".S"))
       ),
-    names_glue = "{.formant}_{.value}"
+    names_glue = "{.formant_name}_{.value}"
   )
 
   # move normalized columns adjacent to
   # original
   .data <- dplyr::relocate(
     .data,
-    tidyselect::matches("_.col"),
-    .after = target_pos[length(target_pos)]
+    c(
+      tidyselect::matches("_.formant"),
+      tidyselect::ends_with("_.L"),
+      tidyselect::ends_with("_.S")
+    ),
+    .before = target_pos[1]
   )
 
   # remove _.col from names
   .data <- dplyr::rename_with(
     .data,
-    .cols = tidyselect::matches("_.col"),
-    .fn = \(x) stringr::str_remove(x, "_.col")
+    .cols = tidyselect::matches("_.formant"),
+    .fn = \(x) stringr::str_remove(x, "_.formant")
   )
 
   # if .drop_orig
@@ -203,7 +220,7 @@ norm_generic <- function(
       list(
         .by_col = .by_formant,
         .targets = names(target_pos),
-        .norm_cols = glue::glue(.names, .col = names(target_pos)),
+        .norm_cols = glue::glue(.names, .formant = names(target_pos)),
         .by = names(group_pos)
       )
     )
@@ -259,7 +276,7 @@ norm_lobanov <- function(
     .by_formant = TRUE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_z",
+    .names = "{.formant}_z",
     .silent = FALSE
 ){
 
@@ -269,7 +286,10 @@ norm_lobanov <- function(
     .data,
     !!targets,
     .by = {{.by}},
-    .norm_fun = lobanov_norm_fun,
+    .pre_trans = \(x)x,
+    .post_trans = \(x)x,
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = sd(!!sym(".formant"), na.rm = T),
     .by_formant = TRUE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -277,9 +297,9 @@ norm_lobanov <- function(
     .silent = .silent
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
-  attr(.data, "norminfo") <- norminfo
+  # norminfo <- attr(.data, "norminfo")
+  # norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
+  # attr(.data, "norminfo") <- norminfo
 
   return(.data)
 
@@ -325,7 +345,7 @@ norm_nearey <- function(
     .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_lm",
+    .names = "{.formant}_lm",
     .silent = FALSE
 ){
   targets <- rlang::expr(c(...))
@@ -334,7 +354,10 @@ norm_nearey <- function(
     .data,
     !!targets,
     .by = {{.by}},
-    .norm_fun = nearey_norm_fun,
+    .pre_trans = log,
+    .post_trans = \(x)x,
+    .L = mean(.formant, na.rm = T),
+    .S = 1,
     .by_formant = .by_formant,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -383,7 +406,7 @@ norm_deltaF <- function(
     .by_formant = FALSE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
-    .names = "{.col}_df",
+    .names = "{.formant}_df",
     .silent = FALSE
 ){
   targets <- rlang::expr(c(...))
@@ -392,7 +415,10 @@ norm_deltaF <- function(
     .data,
     !!targets,
     .by = {{.by}},
-    .norm_fun = deltaF_norm_fun,
+    .pre_trans = \(x)x,
+    .post_trans = \(x)x,
+    .L = 0,
+    .S = mean(.formant/(.formant_num-0.5), na.rm = T),
     .by_formant = FALSE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -408,122 +434,67 @@ norm_deltaF <- function(
 
 }
 
-#' #' Watt & Fabricius method
-#' #' @inheritParams norm_generic
-#' #' @export
-#' norm_wattfab <-  function(
-#'     .data,
-#'     ...,
-#'     .vowel_col,
-#'     .high_front = NULL,
-#'     .low = NULL,
-#'     .by = NULL,
-#'     .by_formant = TRUE,
-#'     .drop_orig = FALSE,
-#'     .keep_params = FALSE,
-#'     .names = "{.col}_wf",
-#'     .silent = FALSE
-#' ){
-#'   targets <- rlang::expr(c(...))
-#'   grouping <- rlang::enquo(.by)
+#' Watt & Fabricius method
+#' @inheritParams norm_generic
+#' @param .by_formant Ignored by this procedure
 #'
-#'   target_pos <- tidyselect::eval_select(targets, data = .data)
+#' @details
+#' This is a modified version of the Watt & Fabricius Method. The original
+#' method identified point vowels over which F1 and F2 centroids were calculated.
+#' The procedure here just identifies centroids by taking the mean of
+#' all formant values.
 #'
-#'   param_col_names <- make_param_col_names(
-#'     target_pos,
-#'     data = .data,
-#'     norm = .names
-#'   )
-#'
-#'   target_names <- param_col_names$target_names
-#'   norm_names <- param_col_names$norm_names
-#'
-#'   .data_c <- dplyr::mutate(
-#'     .data,
-#'     .corners = dplyr::case_when(
-#'       {{.vowel_col}} %in% .high_front~ "high_front",
-#'       {{.vowel_col}} %in% .low ~ "low",
-#'       .default = NA
-#'     )
-#'   )
-#'
-#'   corners <- .data_c |>
-#'     dplyr::filter(
-#'       .corners %in% c("high_front", "low")
-#'     ) |>
-#'     tidyr::pivot_longer(
-#'       !!targets,
-#'       names_to = ".formant",
-#'       values_to = ".col"
-#'     ) |>
-#'     dplyr::summarise(
-#'       .by = c(!!grouping, .formant, .corners),
-#'       .col = mean(.col, na.rm = TRUE)
-#'     ) |>
-#'     tidyr::pivot_wider(
-#'       names_from = c(.formant, .corners),
-#'       values_from = .col
-#'     ) |>
-#'     dplyr::rename_with(
-#'       .fn = tolower
-#'     ) |>
-#'     dplyr::rowwise() |>
-#'     dplyr::mutate(
-#'       f1_high_back = f1_high_front,
-#'       f2_high_back = f2_high_front,
-#'       f2_low = median(c(f2_high_front, f2_high_back))
-#'     ) |>
-#'     dplyr::ungroup() |>
-#'     dplyr::mutate(
-#'       .by = !!grouping,
-#'       f1_L = 0,
-#'       f2_L = 0,
-#'       f1_S = (f1_high_front + f1_high_back + f1_low)/3,
-#'       f2_S = (f2_high_front + f2_high_back + f2_low)/3
-#'     ) |>
-#'     dplyr::select(
-#'       -tidyselect::matches("high"),
-#'       -tidyselect::matches("low")
-#'     )
-#'
-#'   if(length(tidyselect::eval_select(grouping, .data)) > 0){
-#'     .data <- dplyr::left_join(
-#'       .data,
-#'       corners,
-#'       by = dplyr::join_by({{grouping}})
-#'     )
-#'   } else {
-#'     .data <- dplyr::cross_join(
-#'       .data,
-#'       corners
-#'     )
-#'   }
-#'
-#'   .data <- dplyr::mutate(
-#'     .data,
-#'     !!rlang::sym(norm_names[1]) :=
-#'       !!rlang::sym(target_names[1]) / f1_S,
-#'
-#'     !!rlang::sym(norm_names[2]) :=
-#'       !!rlang::sym(target_names[2]) / f2_S
-#'   )
-#'
-#'   .data <- dplyr::relocate(
-#'     .data,
-#'     tidyselect::all_of(norm_names[1:2] |> rlang::set_names()),
-#'     .after = target_pos[2]
-#'   )
-#'
-#'   attr(.data, "norm_procedure") <- "norm_wattfab"
-#'   if(!.silent){
-#'     wrap_up(
-#'       .data,
-#'       target_pos,
-#'       enquo(.by),
-#'       .by_formant,
-#'       .names
-#'     )
-#'   }
-#'   return(.data)
-#'
+#' \deqn{
+#' \hat{F}_{ij} = \frac{F_{ij}}{S_i}
 #' }
+#'
+#' \deqn{
+#'  S_i = \frac{1}{N}\sum_{j=1}^N F_{ij}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @references
+#' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
+#' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
+#' Leeds Working Papers in Linguistics and Phonetics, 9, 159–173.
+#'
+#' @example inst/examples/ex-norm_wattfab.R
+#'
+#' @export
+norm_wattfab <- function(
+    .data,
+    ...,
+    .by = TRUE,
+    .by_formant = TRUE,
+    .drop_orig = FALSE,
+    .keep_params = FALSE,
+    .names = "{.formant}_wf",
+    .silent = FALSE
+){
+  targets <- rlang::expr(c(...))
+
+  .data <- norm_generic(
+    .data,
+    !!targets,
+    .by = {{.by}},
+    .pre_trans = \(x)x,
+    .post_trans = \(x)x,
+    .L = 0,
+    .S = mean(.formant, na.rm = T),
+    .by_formant = TRUE,
+    .drop_orig = .drop_orig,
+    .keep_params = .keep_params,
+    .names = .names,
+    .silent = .silent
+  )
+
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_wattfab"
+  attr(.data, "norminfo") <- norminfo
+
+  return(.data)
+}
