@@ -141,19 +141,17 @@ correctly arranged by time.</p>
 <span class="r-in"><span>  .token_id_col <span class="op">=</span> <span class="va">id</span>,</span></span>
 <span class="r-in"><span>  .time_col <span class="op">=</span> <span class="va">t</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in reframe_as_dct(speaker_small, F1:F3, .by = speaker, .token_id_col = id,     .time_col = t):</span> Problem with column selection for `.by`</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Most arguments need to start with a .</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `..by`</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `check_grouping()`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Can't select columns with `grouping`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> `grouping` must be numeric or character, not a &lt;quosure&gt; object.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">speaker_dct</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   speaker    id vowel plt_vclass word  .param        F1       F2        F3    .n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01         0 EY    eyF        OKAY       0  5.33<span style="color: #949494;">e</span>+ 2 1.52<span style="color: #949494;">e</span>+ 3  2.06<span style="color: #949494;">e</span>+ 3    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01         0 EY    eyF        OKAY       1 -<span style="color: #BB0000;">2.54</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 1.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span> -<span style="color: #BB0000;">7.84</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span>    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01         0 EY    eyF        OKAY       2 -<span style="color: #BB0000;">2.16</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 9.58<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>  3.26<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01         0 EY    eyF        OKAY       3 -<span style="color: #BB0000;">2.39</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 9.78<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>  7.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span>    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01         0 EY    eyF        OKAY       4 -<span style="color: #BB0000;">2.19</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 9.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>  2.18<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s03         0 AY    ay         I          0  4.25<span style="color: #949494;">e</span>+ 2 8.38<span style="color: #949494;">e</span>+ 2  1.63<span style="color: #949494;">e</span>+ 3    20</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'speaker_dct' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
