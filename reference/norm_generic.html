@@ -44,11 +44,14 @@ you can create your own normalization method.</p>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .norm_fun <span class="op">=</span> <span class="va">identity_norm_fun</span>,</span>
 <span>  .by_formant <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .L <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  .S <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  .pre_trans <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>,</span>
+<span>  .post_trans <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>,</span>
 <span>  .drop_orig <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .keep_params <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  .names <span class="op">=</span> <span class="st">"{.col}_n"</span>,</span>
+<span>  .names <span class="op">=</span> <span class="st">"{.formant}_n"</span>,</span>
 <span>  .silent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .call <span class="op">=</span> <span class="fu">caller_env</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -73,14 +76,27 @@ data columns.</p></dd>
 columns to group by. Typically a column of speaker IDs.</p></dd>
 
 
-<dt id="arg--norm-fun">.norm_fun<a class="anchor" aria-label="anchor" href="#arg--norm-fun"></a></dt>
-<dd><p>A function to apply to a pivoted long data frame. See
-Details for how to write such a function.</p></dd>
-
-
 <dt id="arg--by-formant">.by_formant<a class="anchor" aria-label="anchor" href="#arg--by-formant"></a></dt>
 <dd><p>Whether or not the normalization method is formant
 intrinsic.</p></dd>
+
+
+<dt id="arg--l">.L<a class="anchor" aria-label="anchor" href="#arg--l"></a></dt>
+<dd><p>An expression defining the location parameter.
+See Details for more information.</p></dd>
+
+
+<dt id="arg--s">.S<a class="anchor" aria-label="anchor" href="#arg--s"></a></dt>
+<dd><p>An expression defining the scale parameter.
+See Details for more information.</p></dd>
+
+
+<dt id="arg--pre-trans">.pre_trans<a class="anchor" aria-label="anchor" href="#arg--pre-trans"></a></dt>
+<dd><p>A function to apply to formant values before normalization.</p></dd>
+
+
+<dt id="arg--post-trans">.post_trans<a class="anchor" aria-label="anchor" href="#arg--post-trans"></a></dt>
+<dd><p>A function to apply to formant values after normalization.</p></dd>
 
 
 <dt id="arg--drop-orig">.drop_orig<a class="anchor" aria-label="anchor" href="#arg--drop-orig"></a></dt>
@@ -88,13 +104,13 @@ intrinsic.</p></dd>
 
 
 <dt id="arg--keep-params">.keep_params<a class="anchor" aria-label="anchor" href="#arg--keep-params"></a></dt>
-<dd><p>Whether or not to keep the Location (<code>*_L</code>) and scale
-(<code>*_S</code>) normalization parameters</p></dd>
+<dd><p>Whether or not to keep the Location (<code>*_.L</code>) and Scale
+(<code>*_.S</code>) normalization parameters</p></dd>
 
 
 <dt id="arg--names">.names<a class="anchor" aria-label="anchor" href="#arg--names"></a></dt>
 <dd><p>A <code><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue::glue()</a></code> expression for naming the normalized
-data columns. The <code>"{.col}"</code> portion corresponds to the name of the original
+data columns. The <code>"{.formant}"</code> portion corresponds to the name of the original
 formant columns.</p></dd>
 
 
@@ -111,35 +127,46 @@ formant columns.</p></dd>
     <p>The following <code>norm_*</code> procedures are built on top of <code>norm_generic()</code>.</p><ul><li><p><a href="norm_lobanov.html">norm_lobanov</a></p></li>
 <li><p><a href="norm_nearey.html">norm_nearey</a></p></li>
 <li><p><a href="norm_deltaF.html">norm_deltaF</a></p></li>
-</ul><p>You can define a custom normalization function to pass
-to <code>.norm_fun</code> that takes the following arguments</p><ul><li><p><code>.data</code></p></li>
-<li><p><code>.grouping</code></p></li>
-<li><p><code>.names</code></p></li>
-</ul><p>The <code>.data</code> data frame will be your original data frame with the
-formant columns pivoted longer. The formant names will be available
-in a column called <code>.formant</code>, and the formant values in a column
-called <code>.col</code>. Any Location parameters should be assigned to a
-column called <code>L</code>, and any Scale parameters should be assigned
-to a column called <code>S</code>. A median-based normalization function might
-look like the following.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">median_norm_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.grouping</span>, <span class="va">.names</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">.data</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>      .by <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">.grouping</span>,</span>
-<span>      L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">.col</span><span class="op">)</span>,</span>
-<span>      S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html" class="external-link">mad</a></span><span class="op">(</span><span class="va">.col</span><span class="op">)</span>,</span>
-<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span></span>
-<span>        <span class="va">.col</span>,</span>
-<span>        .fns <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">L</span><span class="op">)</span><span class="op">/</span><span class="va">S</span>,</span>
-<span>        .names <span class="op">=</span> <span class="va">.names</span></span>
-<span>      <span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre><p></p></div>
-<p>If the method is meant to be formant ex/intrinsic, as
-defined by <code>.by_formant</code>, this will be accounted for by
-the grouping variables in the <code>.grouping</code> argument passed
-to the normalization function.</p>
+<li><p><a href="norm_wattfab.html">norm_wattfab</a></p></li>
+</ul><div class="section">
+<h3 id="location-and-scale-expressions">Location and Scale expressions<a class="anchor" aria-label="anchor" href="#location-and-scale-expressions"></a></h3>
+
+
+<p>All normalization procedures built on norm_generic produce normalized
+formant values (\(\hat{F}\)) by subracting a location parameter
+(\(L\)) and dividing by a scale parameter (\(S\)).</p>
+<p>$$
+\hat{F} = \frac{F-L}{S}
+$$</p>
+<p>The expressions for calculating \(L\) and \(S\) can be
+passed to <code>.L</code> and <code>.S</code>, respectively. Available values for
+these expressions are</p>
+<dl><dt><code>.formant</code></dt>
+<dd><p>The original formant value</p></dd>
+
+<dt><code>.formant_num</code></dt>
+<dd><p>The number of the formant. (e.g. 1 for F1, 2 for F2 etc)</p></dd>
+
+
+</dl><p>Along with any data columns from your original data.</p>
+</div>
+
+<div class="section">
+<h3 id="pre-and-post-normalization-transforms">Pre and Post normalization transforms<a class="anchor" aria-label="anchor" href="#pre-and-post-normalization-transforms"></a></h3>
+
+
+<p>To apply any transformations before or after normalization,
+you can pass a function to <code>.pre_trans</code> and <code>.post_trans</code>.</p>
+</div>
+
+<div class="section">
+<h3 id="formant-in-extrinsic-normalization">Formant In/Extrinsic Normalization<a class="anchor" aria-label="anchor" href="#formant-in-extrinsic-normalization"></a></h3>
+
+
+<p>If <code>.by_formant</code> is <code>TRUE</code>, normalization will be formant intrinsic.
+if <code>.by_formant</code> is <code>FALSE</code>, normalization will be extrinsic.</p>
+</div>
+
     </div>
 
     <div class="section level2">
@@ -155,31 +182,36 @@ to the normalization function.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">median_norm_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.grouping</span>, <span class="va">.names</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">.data</span> <span class="op">&lt;-</span> <span class="va">.data</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      .by <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">.grouping</span>,</span></span>
-<span class="r-in"><span>      L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">.col</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html" class="external-link">mad</a></span><span class="op">(</span><span class="va">.col</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        <span class="va">.col</span>,</span></span>
-<span class="r-in"><span>        .fns <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">L</span><span class="op">)</span><span class="op">/</span><span class="va">S</span>,</span></span>
-<span class="r-in"><span>        .names <span class="op">=</span> <span class="va">.names</span></span></span>
-<span class="r-in"><span>      <span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">speaker_data</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">norm_generic</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span></span>
 <span class="r-in"><span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span></span>
-<span class="r-in"><span>    .norm_fun <span class="op">=</span> <span class="va">median_norm_fun</span>,</span></span>
 <span class="r-in"><span>    .by_formant <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    .L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">.formant</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    .S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html" class="external-link">mad</a></span><span class="op">(</span><span class="va">.formant</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    .drop_orig <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    .names <span class="op">=</span> <span class="st">"{.col}_mad"</span></span></span>
+<span class="r-in"><span>    .names <span class="op">=</span> <span class="st">"{.formant}_mad"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'speaker' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Normalization info</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized `F1`, `F2`, and `F3`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized values in `F1_mad`, `F2_mad`, and `F3_mad`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> grouped by `speaker`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> formant intrinsic</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,697 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      .id speaker vowel plt_vclass ipa_vclass  F1_mad  F2_mad F3_mad word    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 s01     EY    eyF        ejF         1.13    0.400  -<span style="color: #BB0000;">0.521</span> OKAY    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 s01     AH    uh         ʌ           0.643  -<span style="color: #BB0000;">0.166</span>   0.629 UM      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 s01     AY    ay         aj          2.09   -<span style="color: #BB0000;">0.021</span><span style="color: #BB0000; text-decoration: underline;">1</span>  0.165 I'M     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4 s01     IH    i          ɪ          -<span style="color: #BB0000;">0.454</span>  -<span style="color: #BB0000;">1.13</span>    1.41  LIVED   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5 s01     IH    i          ɪ          -<span style="color: #BB0000;">0.022</span><span style="color: #BB0000; text-decoration: underline;">1</span>  1.04    1.03  IN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6 s01     AH    @          ə          -<span style="color: #BB0000;">0.020</span><span style="color: #BB0000; text-decoration: underline;">6</span> -<span style="color: #BB0000;">0.104</span>   0.715 COLUMBUS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7 s01     AY    ay         aj         -<span style="color: #BB0000;">0.280</span>   0.047<span style="text-decoration: underline;">9</span>  0.968 MY      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8 s01     IH    i          ɪ          -<span style="color: #BB0000;">0.649</span>   1.07    1.03  ENTIRE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9 s01     ER    *hr        ə˞         -<span style="color: #BB0000;">0.585</span>  -<span style="color: #BB0000;">0.709</span>  -<span style="color: #BB0000;">2.35</span>  ENTIRE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10 s01     AY    ay0        aj0         0.987  -<span style="color: #BB0000;">0.656</span>  -<span style="color: #BB0000;">2.34</span>  LIFE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10,687 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
