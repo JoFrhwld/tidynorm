@@ -19,10 +19,13 @@ plot(200:2000, hz_to_mel(200:2000))
 ```
 
 ```{r}
+library(dplyr)
+
+
 speaker_data |> 
+  group_by(speaker) |> 
   norm_lobanov(
-    F1:F3,
-    by = speaker
+    F1:F3
   ) 
 ```
 
