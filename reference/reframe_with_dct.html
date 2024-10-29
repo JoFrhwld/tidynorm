@@ -134,19 +134,26 @@ correctly arranged by time.</p>
 <span class="r-in"><span>  <span class="va">id</span> <span class="op">==</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">speaker_dct</span> <span class="op">&lt;-</span> <span class="fu">reframe_as_dct</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">speaker_dct</span> <span class="op">&lt;-</span> <span class="fu">reframe_with_dct</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">speaker_small</span>,</span></span>
 <span class="r-in"><span>  <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span></span>
 <span class="r-in"><span>  .by <span class="op">=</span> <span class="va">speaker</span>,</span></span>
 <span class="r-in"><span>  .token_id_col <span class="op">=</span> <span class="va">id</span>,</span></span>
 <span class="r-in"><span>  .time_col <span class="op">=</span> <span class="va">t</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in reframe_as_dct(speaker_small, F1:F3, .by = speaker, .token_id_col = id,     .time_col = t):</span> could not find function "reframe_as_dct"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">speaker_dct</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'speaker_dct' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   speaker    id vowel plt_vclass word  .param     F1       F2     F3    .n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01         0 EY    eyF        OKAY       0 495.   <span style="text-decoration: underline;">1</span>624.    <span style="text-decoration: underline;">2</span>108.     20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01         0 EY    eyF        OKAY       1 -<span style="color: #BB0000;">21.9</span>  -<span style="color: #BB0000;">118.</span>     -<span style="color: #BB0000;">46.1</span>    20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01         0 EY    eyF        OKAY       2  57.3    24.1     26.8    20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01         0 EY    eyF        OKAY       3   8.11   16.8    -<span style="color: #BB0000;">25.8</span>    20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01         0 EY    eyF        OKAY       4  -<span style="color: #BB0000;">5.46</span>   -<span style="color: #BB0000;">0.529</span>   19.0    20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s03         0 AY    ay         I          0 508.    909.    <span style="text-decoration: underline;">1</span>556.     20</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

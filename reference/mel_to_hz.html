@@ -44,12 +44,12 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-htk">htk<a class="anchor" aria-label="anchor" href="#arg-htk"></a></dt>
-<dd><p>Whether or not to use the HTK formula</p></dd>
-
-
-<dt id="arg-hz">hz<a class="anchor" aria-label="anchor" href="#arg-hz"></a></dt>
+<dl><dt id="arg-mel">mel<a class="anchor" aria-label="anchor" href="#arg-mel"></a></dt>
 <dd><p>Numeric values in Hz</p></dd>
+
+
+<dt id="arg-htk">htk<a class="anchor" aria-label="anchor" href="#arg-htk"></a></dt>
+<dd><p>Whether or not to use the HTK formula</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,7 +78,7 @@ Work. Technical Report, version 2, Interval Research Corporation.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">mel_to_hz</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7.5</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">31</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in case_when(mel &gt;= min_log_mel ~ min_log_hz * exp(logstep * (mel -     min_log_mel)), .default = f_sp * mel):</span> could not find function "case_when"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  500.000 1000.000 1988.773 3004.251</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
