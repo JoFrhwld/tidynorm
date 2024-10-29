@@ -23,7 +23,7 @@
 <script src="deps/KaTex-0.16.10/katex.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for Tidy Vowel Normalization">
 <meta name="description" content="Provides tools for doing tidy speaker vowel normalization.">
 <meta property="og:description" content="Provides tools for doing tidy speaker vowel normalization.">
-<meta property="og:image" content="https://jofrhwld.github.io/tidynorm/logo.png">
+<meta property="og:image" content="https://jofrhwld.github.io/tidynorm/logo.svg">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 </head>
@@ -60,25 +60,27 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="tidynorm-">tidynorm 
+<img src="logo.svg" class="logo" alt=""><h1 id="tidynorm-">tidynorm 
 <a class="anchor" aria-label="anchor" href="#tidynorm-"></a>
 </h1>
 </div>
-<p>This package is currently not even at a pre-release stage</p>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p>The goal of <a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a> is to provide convenient and tidy functions to normalize vowel formant data.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of tidynorm like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jofrhwld/tidynorm"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## if you need to install `remotes`</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jofrhwld/tidynorm"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<p>Vowel formant frequencies are heavily influenced by vocal tract length differences between speakers. Equivalent vowels between speakers can have dramatically different frequency locations.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -98,8 +100,12 @@
 <span>  <span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"unnormalized"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnorm-1.png" style="width:100.0%"></p>
+<p>The goal of <a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a> is to provide tidyverse-friendly and familiar functions that will allow you to quickly normalize vowel formant data. There are a number of built in functions based on conventional normalization methods.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="reference/norm_nearey.html">norm_nearey</a></span><span class="op">(</span></span>
@@ -126,8 +132,45 @@
 <span>  <span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span>  </span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Nearey Normalized"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-norm-1.png" style="width:100.0%"></p>
+<p>There is also a <code><a href="reference/norm_generic.html">tidynorm::norm_generic()</a></code> function to allow you to define your own bespoke normalization methods. For example, a “robust Nearey” normalization method using the median, instead of the mean, could be done like so.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">speaker_rnearey</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/norm_generic.html">norm_generic</a></span><span class="op">(</span></span>
+<span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
+<span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
+<span>    .by_formant <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    .pre_trans <span class="op">=</span> <span class="va">log</span>,</span>
+<span>    .L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">.formant</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>    .names <span class="op">=</span> <span class="st">"{.formant}_rnearey"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; Normalization info</span></span>
+<span><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
+<span><span class="co">#&gt; • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`</span></span>
+<span><span class="co">#&gt; • grouped by `speaker`</span></span>
+<span><span class="co">#&gt; • formant extrinsic</span></span>
+<span></span>
+<span><span class="va">speaker_rnearey</span> <span class="op">|&gt;</span> </span>
+<span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span>
+<span>      <span class="va">F2_rnearey</span>, <span class="va">F1_rnearey</span>,</span>
+<span>      color <span class="op">=</span> <span class="va">speaker</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html" class="external-link">stat_density_2d</a></span><span class="op">(</span></span>
+<span>    bins <span class="op">=</span> <span class="fl">4</span></span>
+<span>  <span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Robust Nearey Normalized"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-3-1.png" style="width:100.0%"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
