@@ -45,6 +45,7 @@ you can create your own normalization method.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .by_formant <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .by_token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .L <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  .S <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  .pre_trans <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>,</span>
@@ -79,6 +80,10 @@ columns to group by. Typically a column of speaker IDs.</p></dd>
 <dt id="arg--by-formant">.by_formant<a class="anchor" aria-label="anchor" href="#arg--by-formant"></a></dt>
 <dd><p>Whether or not the normalization method is formant
 intrinsic.</p></dd>
+
+
+<dt id="arg--by-token">.by_token<a class="anchor" aria-label="anchor" href="#arg--by-token"></a></dt>
+<dd><p>Whether or not the normalization method is vowel intrinsic</p></dd>
 
 
 <dt id="arg--l">.L<a class="anchor" aria-label="anchor" href="#arg--l"></a></dt>
