@@ -59,6 +59,9 @@ formant columns.}
 
 \item{.call}{Used for internal purposes.}
 }
+\value{
+A data frame of normalized formant values
+}
 \description{
 This is a generic normalization procedure with which
 you can create your own normalization method.
@@ -102,7 +105,13 @@ you can pass a function to \code{.pre_trans} and \code{.post_trans}.
 \subsection{Formant In/Extrinsic Normalization}{
 
 If \code{.by_formant} is \code{TRUE}, normalization will be formant intrinsic.
-if \code{.by_formant} is \code{FALSE}, normalization will be extrinsic.
+If \code{.by_formant} is \code{FALSE}, normalization will be formant extrinsic.
+}
+
+\subsection{Token In/Extrinsic Normalization}{
+
+If \code{.by_token} is \code{TRUE}, normalization will be token intrinsic.
+If \code{.by_token} is \code{FALSE}, normalization will be token extrinsic.
 }
 }
 \examples{

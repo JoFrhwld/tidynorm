@@ -2,8 +2,7 @@
 % Please edit documentation in R/transforms.R
 \name{bark_to_hz}
 \alias{bark_to_hz}
-\title{Bark to Hz
-Converts bark to Hz}
+\title{Bark to Hz}
 \usage{
 bark_to_hz(bark)
 }
@@ -20,7 +19,6 @@ sensory scale. The Journal of the Acoustical Society of America,
 \url{https://doi.org/10.1121/1.399849}
 }
 \description{
-Bark to Hz
 Converts bark to Hz
 }
 \details{

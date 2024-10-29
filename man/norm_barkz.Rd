@@ -7,13 +7,97 @@
 norm_barkz(
   .data,
   ...,
-  .by = TRUE,
+  .by = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_bz",
   .silent = FALSE
 )
 }
+\arguments{
+\item{.data}{A data frame containing vowel formant data}
+
+\item{...}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} One or more unquoted
+expressions separated by commas. These should target the vowel formant
+data columns.}
+
+\item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
+columns to group by. Typically a column of speaker IDs.}
+
+\item{.drop_orig}{Whether or not to drop the original formant data columns.}
+
+\item{.keep_params}{Whether or not to keep the Location (\verb{*_.L}) and Scale
+(\verb{*_.S}) normalization parameters}
+
+\item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
+data columns. The \code{"{.formant}"} portion corresponds to the name of the original
+formant columns.}
+
+\item{.silent}{Whether or not the informational message should be printed.}
+}
+\value{
+A data frame of Bark Difference normalized formant values
+}
 \description{
 Bark Difference Normalization
+}
+\details{
+This is a within-token normalization technique. First all formants are
+converted to Bark (see \link{hz_to_bark}), then, within each token, F3 is
+subtracted from F1 and F2.
+
+\deqn{
+\hat{F}_{ij} = F_{ij} - L_j
+}
+
+\deqn{
+L_j = F_{3j}
+}
+}
+\examples{
+library(tidynorm)
+ggplot2_inst <- require(ggplot2)
+
+speaker_data_barkz <- speaker_data |>
+  norm_barkz(
+    F1:F3,
+    .by = speaker,
+    .names = "{.formant}_bz"
+  )
+
+## this is equivalent to
+# speaker_data |>
+#   norm_generic(
+#     F1:F3,
+#     .by = speaker,
+#     .by_token = T,
+#     .L = .formant[3]
+#   )
+
+if(ggplot2_inst){
+  ggplot(
+    speaker_data_barkz,
+    aes(
+      F2_bz,
+      F1_bz,
+      color = speaker
+    )
+  )+
+    stat_density_2d(
+      bins = 4
+    )+
+    scale_color_brewer(
+      palette = "Dark2"
+    )+
+    scale_x_reverse()+
+    scale_y_reverse()+
+    coord_fixed()
+}
+
+}
+\references{
+Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
+recognition based on the auditory representation of American English vowels.
+The Journal of the Acoustical Society of America, 79(4), 1086–1100.
+\url{https://doi.org/10.1121/1.393381}
 }

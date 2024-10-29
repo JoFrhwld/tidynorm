@@ -14,26 +14,27 @@ s01_dat <- read_csv(
 ) 
 ```
 
+```{r}
+plot(200:2000, hz_to_mel(200:2000))
+```
 
+```{r}
+speaker_data |> 
+  norm_lobanov(
+    F1:F3,
+    by = speaker
+  ) 
+```
 
 
 ```{r}
 speaker_tracks |> 
-  norm_track_generic(
+  norm_track_lobanov(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
-    .time_col = t,
-    .L = mean(.formant, na.rm = T),
-    .S = sd(.formant, na.rm = T),
-    .by_formant = T,
-    .return_dct = F
-  ) |> 
-  ggplot(
-    aes(-F2_n, -F1_n, color = speaker)
-  ) +
-  stat_density_2d()+
-  coord_fixed()
+    .time_col = t
+  )
 ```
 ```{r}
 speaker_tracks |>
@@ -64,26 +65,37 @@ speaker_tracks |>
 speaker_tracks |> 
   filter(
     .by = c(speaker, id),
-    if_all(
-      F1:F3,
-      .fns =\(x) mean(is.finite(x)) > 0.9
-    ),
     row_number() %% 2 == 1
   ) -> small_tracks
 
 
 small_tracks |> 
-  norm_track_deltaF(
+  norm_track_lobanov(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
-  ggplot(
-    aes(-F2_df, -F1_df, color = speaker)
-  )+
-  stat_density_2d()+
-  coord_fixed()
+  )
+```
+```{r}
+foo$call |> 
+  purrr::map(as_label) |> 
+  unlist()
+```
+
+```{r}
+foo <- function(x){
+  out <- bar(x)
+  return(out)
+}
+
+bar <- function(x){
+  return(rlang::trace_back())
+}
+```
+
+```{r}
+as.character(foo()$call[[1]])
 ```
 
 

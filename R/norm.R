@@ -61,7 +61,14 @@
 #'
 #' ### Formant In/Extrinsic Normalization
 #' If `.by_formant` is `TRUE`, normalization will be formant intrinsic.
-#' if `.by_formant` is `FALSE`, normalization will be extrinsic.
+#' If `.by_formant` is `FALSE`, normalization will be formant extrinsic.
+#'
+#' ### Token In/Extrinsic Normalization
+#' If `.by_token` is `TRUE`, normalization will be token intrinsic.
+#' If `.by_token` is `FALSE`, normalization will be token extrinsic.
+#'
+#' @returns
+#' A data frame of normalized formant values
 #'
 #' @example inst/examples/ex-norm_generic.R
 #' @export
@@ -277,6 +284,9 @@ norm_generic <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' @returns
+#' A data frame of Lobanov normalized formant values.
+#'
 #' @references
 #' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 #' Journal of the Acoustical Society of America, 49, 606–608.
@@ -349,6 +359,9 @@ norm_lobanov <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' @returns
+#' A data frame of Nearey normalized formant values.
+#'
 #' @example inst/examples/ex-norm_nearey.R
 #'
 #' @references
@@ -417,6 +430,9 @@ norm_nearey <- function(
 #' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
 #' Article 1. [https://doi.org/10.5334/labphon.196](https://doi.org/10.5334/labphon.196)
 #'
+#' @returns
+#' A data frame of Delta F normalized formant values.
+#'
 #' @example inst/examples/ex-norm_deltaF.R
 #'
 #' @export
@@ -482,6 +498,9 @@ norm_deltaF <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' @returns
+#' A data fame of Watt & Fabricius normalized formant values.
+#'
 #' @references
 #' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
 #' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
@@ -493,7 +512,7 @@ norm_deltaF <- function(
 norm_wattfab <- function(
     .data,
     ...,
-    .by = TRUE,
+    .by = NULL,
     .by_formant = TRUE,
     .drop_orig = FALSE,
     .keep_params = FALSE,
@@ -529,11 +548,35 @@ norm_wattfab <- function(
 }
 
 #' Bark Difference Normalization
+#'
+#' @inheritParams norm_generic
+#' @details
+#' This is a within-token normalization technique. First all formants are
+#' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
+#' subtracted from F1 and F2.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = F_{ij} - L_j
+#' }
+#'
+#' \deqn{
+#' L_j = F_{3j}
+#' }
+#'
+#' @returns
+#' A data frame of Bark Difference normalized formant values
+#'
+#' @references
+#' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
+#' recognition based on the auditory representation of American English vowels.
+#' The Journal of the Acoustical Society of America, 79(4), 1086–1100.
+#' [https://doi.org/10.1121/1.393381](https://doi.org/10.1121/1.393381)
+#' @example inst/examples/ex-norm_barkz.R
 #' @export
 norm_barkz <- function(
     .data,
     ...,
-    .by = TRUE,
+    .by = NULL,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",

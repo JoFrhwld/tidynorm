@@ -44,6 +44,9 @@ formant columns.}
 
 \item{.silent}{Whether or not the informational message should be printed.}
 }
+\value{
+A data frame of Delta F normalized formant tracks.
+}
 \description{
 Delta F Track Normalization
 }

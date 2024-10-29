@@ -2,8 +2,7 @@
 % Please edit documentation in R/transforms.R
 \name{hz_to_bark}
 \alias{hz_to_bark}
-\title{Hz to Bark
-Converts Hz to Bark}
+\title{Hz to Bark}
 \usage{
 hz_to_bark(hz)
 }
@@ -14,7 +13,6 @@ hz_to_bark(hz)
 A vector of bark scaled values
 }
 \description{
-Hz to Bark
 Converts Hz to Bark
 }
 \details{

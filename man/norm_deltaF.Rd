@@ -38,6 +38,9 @@ formant columns.}
 
 \item{.silent}{Whether or not the informational message should be printed.}
 }
+\value{
+A data frame of Delta F normalized formant values.
+}
 \description{
 Delta F Normalize
 }

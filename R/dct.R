@@ -93,8 +93,11 @@ registerS3method("dct", "matrix", method = dct.matrix)
 
 #' regression based dct
 #' @noRd
-dct_reg <- function(y){
-  basis <- dct(diag(length(y)), norm_forward = F)
+dct_reg <- function(y, call = caller_env()){
+  if(all(is.finite(y))){
+    return(dct(y))
+  }
+  basis <- dct(diag(length(y)), norm_forward = FALSE)
   coefs <- try_fetch(
     stats::coef(stats::lm(y ~ -1 + basis)),
     error = \(cnd) {

@@ -7,7 +7,7 @@
 norm_wattfab(
   .data,
   ...,
-  .by = TRUE,
+  .by = NULL,
   .by_formant = TRUE,
   .drop_orig = FALSE,
   .keep_params = FALSE,
@@ -37,6 +37,9 @@ data columns. The \code{"{.formant}"} portion corresponds to the name of the ori
 formant columns.}
 
 \item{.silent}{Whether or not the informational message should be printed.}
+}
+\value{
+A data fame of Watt & Fabricius normalized formant values.
 }
 \description{
 Watt & Fabricius method

@@ -64,7 +64,9 @@ reference:
   - title: Transforms
     contents:
       - hz_to_bark
+      - hz_to_mel
       - bark_to_hz
+      - mel_to_hz
 
   - title: "Data"
     contents:

@@ -10,6 +10,7 @@ norm_track_generic(
   .token_id_col,
   .by = NULL,
   .by_formant = FALSE,
+  .by_token = FALSE,
   .time_col = NULL,
   .L = 0,
   .S = 1/sqrt(2),
@@ -64,6 +65,9 @@ formant columns.}
 \item{.silent}{Whether or not the informational message should be printed.}
 
 \item{.call}{Used for internal purposes.}
+}
+\value{
+A data frame of normalized formant tracks.
 }
 \description{
 Nomalize formant tracks using Discrete Cosine Transform normalization
