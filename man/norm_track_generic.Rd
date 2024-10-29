@@ -2,7 +2,7 @@
 % Please edit documentation in R/dct_norm.R
 \name{norm_track_generic}
 \alias{norm_track_generic}
-\title{Normalize Formant Tracks}
+\title{Generic Formant Track Normalization Procedure}
 \usage{
 norm_track_generic(
   .data,
@@ -75,7 +75,7 @@ formant columns.}
 A data frame of normalized formant tracks.
 }
 \description{
-Nomalize formant tracks using Discrete Cosine Transform normalization
+Normalize formant tracks using Discrete Cosine Transform normalization
 }
 \details{
 This will normalize vowel formant tracks in the following steps:

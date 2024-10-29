@@ -1,4 +1,4 @@
-#' Generic normalization procedure
+#' Generic Normalization Procedure
 #'
 #' This is a generic normalization procedure with which
 #' you can create your own normalization method.
@@ -475,7 +475,7 @@ norm_deltaF <- function(
 
 }
 
-#' Watt & Fabricius method
+#' Watt & Fabricius Normalize
 #' @inheritParams norm_generic
 #' @param .by_formant Ignored by this procedure
 #'
@@ -547,7 +547,7 @@ norm_wattfab <- function(
   return(.data)
 }
 
-#' Bark Difference Normalization
+#' Bark Difference Normalize
 #'
 #' @inheritParams norm_generic
 #' @details

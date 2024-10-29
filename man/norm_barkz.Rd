@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{norm_barkz}
 \alias{norm_barkz}
-\title{Bark Difference Normalization}
+\title{Bark Difference Normalize}
 \usage{
 norm_barkz(
   .data,
@@ -39,7 +39,7 @@ formant columns.}
 A data frame of Bark Difference normalized formant values
 }
 \description{
-Bark Difference Normalization
+Bark Difference Normalize
 }
 \details{
 This is a within-token normalization technique. First all formants are

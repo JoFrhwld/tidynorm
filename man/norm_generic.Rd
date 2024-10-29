@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{norm_generic}
 \alias{norm_generic}
-\title{Generic normalization procedure}
+\title{Generic Normalization Procedure}
 \usage{
 norm_generic(
   .data,

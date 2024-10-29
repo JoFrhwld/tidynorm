@@ -2,7 +2,7 @@
 % Please edit documentation in R/norm.R
 \name{norm_wattfab}
 \alias{norm_wattfab}
-\title{Watt & Fabricius method}
+\title{Watt & Fabricius Normalize}
 \usage{
 norm_wattfab(
   .data,
@@ -42,7 +42,7 @@ formant columns.}
 A data fame of Watt & Fabricius normalized formant values.
 }
 \description{
-Watt & Fabricius method
+Watt & Fabricius Normalize
 }
 \details{
 This is a modified version of the Watt & Fabricius Method. The original

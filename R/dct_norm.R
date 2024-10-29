@@ -1,6 +1,6 @@
-#' Normalize Formant Tracks
+#' Generic Formant Track Normalization Procedure
 #'
-#' Nomalize formant tracks using Discrete Cosine Transform normalization
+#' Normalize formant tracks using Discrete Cosine Transform normalization
 #'
 #' @param .data A data frame containing vowel formant data
 #' @param ... [`<tidy-select>`][dplyr::dplyr_tidy_select] One or more unquoted
@@ -245,7 +245,7 @@ norm_track_generic <- function(
   return(normed_track)
 }
 
-#' Normalize Formant DCTs
+#' Generic Formant DCT Normalization Procedure
 #'
 #' @inheritParams norm_track_generic
 #' @param .data A data frame of formant DCT coefficients

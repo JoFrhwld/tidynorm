@@ -2,7 +2,7 @@
 % Please edit documentation in R/dct_norm.R
 \name{norm_dct_generic}
 \alias{norm_dct_generic}
-\title{Normalize Formant DCTs}
+\title{Generic Formant DCT Normalization Procedure}
 \usage{
 norm_dct_generic(
   .data,
@@ -61,7 +61,7 @@ formant columns.}
 A data frame of normalized DCT coefficients.
 }
 \description{
-Normalize Formant DCTs
+Generic Formant DCT Normalization Procedure
 }
 \details{
 This will normalize vowel formant data that has already had the
