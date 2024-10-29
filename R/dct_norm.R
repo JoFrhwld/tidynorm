@@ -719,6 +719,8 @@ norm_track_deltaF <- function(
 #' @returns
 #' A data frame of Watt & Fabricius normalized formant tracks.
 #'
+#' @example inst/examples/ex-norm_track_wattfab.R
+#'
 #' @references
 #' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
 #' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
