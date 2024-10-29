@@ -8,7 +8,7 @@ speaker_small <- filter(
 )
 
 speaker_dct <- speaker_small |>
-  reframe_as_dct(
+  reframe_with_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,

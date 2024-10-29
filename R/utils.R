@@ -118,12 +118,12 @@ make_dct_grouping <- function(
   )
   if(length(dplyr::group_vars(.data))>0){
     by_grouping = expr(NULL)
-    .data <- group_by(
+    .data <- dplyr::group_by(
       .data,
       {{.token_id_col}},
       .add = TRUE
     )
-    joining <- group_vars(.data)
+    joining <- dplyr::group_vars(.data)
   }else{
     by_grouping = expr(c({{.by}}, {{.token_id_col}}))
     joining <- c()

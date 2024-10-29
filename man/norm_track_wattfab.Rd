@@ -33,6 +33,8 @@ columns to group by. Typically a column of speaker IDs.}
 \item{.time_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A time column.
 (optional)}
 
+\item{.order}{The number of DCT parameters to use.}
+
 \item{.return_dct}{Whether or not the normalized DCT coefficients themselves
 should be returned.}
 

@@ -37,6 +37,8 @@ intrinsic.}
 \item{.time_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A time column.
 (optional)}
 
+\item{.order}{The number of DCT parameters to use.}
+
 \item{.return_dct}{Whether or not the normalized DCT coefficients themselves
 should be returned.}
 
@@ -100,7 +102,7 @@ track_norm <- track_subset |>
     .by = speaker,
     .token_id_col = id,
     .time_col = t,
-    .by_formant = T,
+    .by_formant = TRUE,
     .drop_orig = TRUE
   )
 

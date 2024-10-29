@@ -7,9 +7,9 @@
 mel_to_hz(mel, htk = F)
 }
 \arguments{
-\item{htk}{Whether or not to use the HTK formula}
+\item{mel}{Numeric values in Hz}
 
-\item{hz}{Numeric values in Hz}
+\item{htk}{Whether or not to use the HTK formula}
 }
 \value{
 A numeric vector of Hz values

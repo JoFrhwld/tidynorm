@@ -145,7 +145,7 @@ hz_to_mel <- function(
 #'
 #' Convert Mel to Hz
 #'
-#' @param hz Numeric values in Hz
+#' @param mel Numeric values in Hz
 #' @param htk Whether or not to use the HTK formula
 #'
 #' @details
@@ -190,7 +190,7 @@ mel_to_hz <- function(
   min_log_mel = min_log_hz / f_sp
   logstep = log(6.4) / 27.0
 
-  hz <- case_when(
+  hz <- dplyr::case_when(
     mel >= min_log_mel ~ min_log_hz * exp(logstep * (mel - min_log_mel)),
     .default = f_sp * mel
   )

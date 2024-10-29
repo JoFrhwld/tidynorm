@@ -9,7 +9,7 @@ speaker_small <- filter(
 )
 
 speaker_dct_smooth <- speaker_small |>
-  reframe_as_dct_smooth(
+  reframe_with_dct_smooth(
     F1:F3,
     .by = speaker,
     .token_id_col = id,

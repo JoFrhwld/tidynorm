@@ -12,6 +12,8 @@
 #' that identifies token ids.
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
+#' @param .by_token Whether or not the normalization method is token
+#' intrinsic
 #' @param .L An expression defining the location parameter.
 #' See Details for more information.
 #' @param .S An expression defining the scale parameter.
@@ -20,6 +22,7 @@
 #' @param .post_trans A function to apply to formant values after normalization.
 #' @param .time_col [`<data-masking>`][rlang::args_data_masking] A time column.
 #' (optional)
+#' @param .order The number of DCT parameters to use.
 #' @param .names A [glue::glue()] expression for naming the normalized
 #' data columns. The `"{.formant}"` portion corresponds to the name of the original
 #' formant columns.
@@ -246,7 +249,7 @@ norm_track_generic <- function(
 #'
 #' @inheritParams norm_track_generic
 #' @param .data A data frame of formant DCT coefficients
-#'
+#' @param .param_col A column identifying the DCT parameter number.
 #' @details
 #' This will normalize vowel formant data that has already had the
 #' Discrete Cosine Transform applied (see [dct]) with the following
@@ -399,7 +402,7 @@ norm_dct_generic <- function(
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2 ,
-    .param == min(.param)
+    !!sym(".param") == min(!!sym(".param"))
   )
 
   if(grouped_by & !.by_token){
@@ -437,7 +440,7 @@ norm_dct_generic <- function(
   normed <- .dct_with_norm |>
     dplyr::mutate(
       "{.names}" := case_when(
-        .param == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
+        !!sym(".param") == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
         .default = !!sym(".formant")/!!sym(".S")
       )
     ) |>
@@ -533,8 +536,8 @@ norm_track_lobanov <- function(
     .by = {{.by}},
     .token_id_col = {{.token_id_col}},
     .by_formant = TRUE,
-    .L = mean(.formant, na.rm = T),
-    .S = sd(.formant, na.rm = T),
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = sd(!!sym(".formant"), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .time_col = {{.time_col}},
@@ -607,7 +610,7 @@ norm_track_nearey <- function(
     .by = {{.by}},
     .token_id_col = {{.token_id_col}},
     .by_formant = .by_formant,
-    .L = mean(.formant, na.rm = T),
+    .L = mean(!!sym(".formant"), na.rm = T),
     .S = 1/sqrt(2),
     .pre_trans = log,
     .post_trans = \(x)x,
@@ -676,7 +679,7 @@ norm_track_deltaF <- function(
     .token_id_col = {{.token_id_col}},
     .by_formant = FALSE,
     .L = 0,
-    .S = mean(.formant/(.formant_num - 0.5), na.rm = T),
+    .S = mean(!!sym(".formant")/(!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .time_col = {{.time_col}},
@@ -745,7 +748,7 @@ norm_track_wattfab <- function(
     .token_id_col = {{.token_id_col}},
     .by_formant = TRUE,
     .L = 0,
-    .S = mean(.formant, na.rm = T),
+    .S = mean(!!sym(".formant"), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .time_col = {{.time_col}},
@@ -813,7 +816,7 @@ norm_track_barkz <- function(
     .token_id_col = {{.token_id_col}},
     .by_formant = FALSE,
     .by_token = TRUE,
-    .L = .formant[3],
+    .L = (!!sym(".formant"))[3],
     .S = 1/sqrt(2),
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,

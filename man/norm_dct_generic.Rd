@@ -33,6 +33,8 @@ that identifies token ids.}
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
 
+\item{.param_col}{A column identifying the DCT parameter number.}
+
 \item{.L}{An expression defining the location parameter.
 See Details for more information.}
 
@@ -41,6 +43,9 @@ See Details for more information.}
 
 \item{.by_formant}{Whether or not the normalization method is formant
 intrinsic.}
+
+\item{.by_token}{Whether or not the normalization method is token
+intrinsic}
 
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
 data columns. The \code{"{.formant}"} portion corresponds to the name of the original
@@ -137,10 +142,10 @@ track_norm <- track_dcts |>
     .token_id_col = id,
     .by = speaker,
     .by_formant = TRUE,
-    .L = median(.formant, na.rm = T),
-    .S = mad(.formant, na.rm = T),
+    .L = median(.formant, na.rm = TRUE),
+    .S = mad(.formant, na.rm = TRUE),
     .param_col = .param,
-    .drop_orig = T,
+    .drop_orig = TRUE,
     .names = "{.formant}_mad"
   )
 

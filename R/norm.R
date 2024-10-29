@@ -143,7 +143,7 @@ norm_generic <- function(
         r"{[fF](\d)}",
         group = 1
       ) |> as.numeric(),
-      .formant = .pre_trans(.formant)
+      .formant = .pre_trans(!!sym(".formant"))
     )
 
   # see if the data is grouped
@@ -179,8 +179,8 @@ norm_generic <- function(
     .by = !!norm_grouping,
     .L = {{.L}},
     .S = {{.S}},
-    "{.names2}" := .post_trans((.formant - .L) / .S),
-    .formant = .post_trans(.formant)
+    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S),
+    .formant = .post_trans(!!sym(".formant"))
   )
 
   # set up value columns for pivoting
@@ -390,7 +390,7 @@ norm_nearey <- function(
     .by = {{.by}},
     .pre_trans = log,
     .post_trans = \(x)x,
-    .L = mean(.formant, na.rm = T),
+    .L = mean(!!sym(".formant"), na.rm = T),
     .S = 1,
     .by_formant = .by_formant,
     .drop_orig = .drop_orig,
@@ -459,7 +459,7 @@ norm_deltaF <- function(
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .L = 0,
-    .S = mean(.formant/(.formant_num-0.5), na.rm = T),
+    .S = mean(!!sym(".formant")/(!!sym(".formant_num")-0.5), na.rm = T),
     .by_formant = FALSE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -532,7 +532,7 @@ norm_wattfab <- function(
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .L = 0,
-    .S = mean(.formant, na.rm = T),
+    .S = mean(!!sym(".formant"), na.rm = T),
     .by_formant = TRUE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -594,7 +594,7 @@ norm_barkz <- function(
     .by = {{.by}},
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,
-    .L = .formant[3],
+    .L = (!!sym(".formant"))[3],
     .S = 1,
     .by_formant = FALSE,
     .by_token = TRUE,

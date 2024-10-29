@@ -27,10 +27,10 @@ track_norm <- track_dcts |>
     .token_id_col = id,
     .by = speaker,
     .by_formant = TRUE,
-    .L = median(.formant, na.rm = T),
-    .S = mad(.formant, na.rm = T),
+    .L = median(.formant, na.rm = TRUE),
+    .S = mad(.formant, na.rm = TRUE),
     .param_col = .param,
-    .drop_orig = T,
+    .drop_orig = TRUE,
     .names = "{.formant}_mad"
   )
 

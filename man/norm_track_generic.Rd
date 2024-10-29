@@ -40,6 +40,9 @@ columns to group by. Typically a column of speaker IDs.}
 \item{.by_formant}{Whether or not the normalization method is formant
 intrinsic.}
 
+\item{.by_token}{Whether or not the normalization method is token
+intrinsic}
+
 \item{.time_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A time column.
 (optional)}
 
@@ -52,6 +55,8 @@ See Details for more information.}
 \item{.pre_trans}{A function to apply to formant values before normalization.}
 
 \item{.post_trans}{A function to apply to formant values after normalization.}
+
+\item{.order}{The number of DCT parameters to use.}
 
 \item{.return_dct}{Whether or not the normalized DCT coefficients themselves
 should be returned.}

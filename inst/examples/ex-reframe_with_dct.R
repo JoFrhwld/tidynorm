@@ -6,7 +6,7 @@ speaker_small <- filter(
   id == 0
 )
 
-speaker_dct <- reframe_as_dct(
+speaker_dct <- reframe_with_dct(
   speaker_small,
   F1:F3,
   .by = speaker,

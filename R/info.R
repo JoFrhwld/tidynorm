@@ -1,5 +1,5 @@
 #' check norm
-#' @export
+#' @noRd
 check_norm <- function(data){
   if(!is.null(attr(data, "normalized"))){
     cli_inform(
