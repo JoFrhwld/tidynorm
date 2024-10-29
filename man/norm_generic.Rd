@@ -73,6 +73,7 @@ The following \verb{norm_*} procedures are built on top of \code{norm_generic()}
 \item \link{norm_nearey}
 \item \link{norm_deltaF}
 \item \link{norm_wattfab}
+\item \link{norm_barkz}
 }
 \subsection{Location and Scale expressions}{
 

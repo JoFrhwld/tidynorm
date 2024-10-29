@@ -34,6 +34,7 @@
 #' - [norm_nearey]
 #' - [norm_deltaF]
 #' - [norm_wattfab]
+#' - [norm_barkz]
 #'
 #' ### Location and Scale expressions
 #' All normalization procedures built on [norm_generic] produce normalized
