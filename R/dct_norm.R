@@ -644,6 +644,8 @@ norm_track_nearey <- function(
 #' @returns
 #' A data frame of Delta F normalized formant tracks.
 #'
+#' @example inst/examples/ex-norm_track_deltaF.R
+#'
 #' @references
 #' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
 #' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
