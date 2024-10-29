@@ -81,17 +81,21 @@ norm_generic <- function(
   .silent = FALSE,
   .call = caller_env()
 ){
+  if(env_name(.call) == "global"){
+    .call <- current_env()
+  }
 
-  targets <- expr(...)
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls, .call)
+
+  targets <- expr(c(...))
   cols <- enquos(
     .by = .by
   )
 
   .names2 <- glue::glue(.names, .formant = ".formant")
 
-  if(env_name(.call) == "global"){
-    .call <- current_env()
-  }
 
   prev_attr <- attributes(.data)$norminfo
 
@@ -102,8 +106,6 @@ norm_generic <- function(
     enquo(.by), data = .data
   )
 
-  # evaluating for the number of
-  # targeted columns
   target_pos <- try_fetch(
     tidyselect::eval_select(targets, data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
@@ -291,6 +293,9 @@ norm_lobanov <- function(
     .names = "{.formant}_z",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
 
   targets <- rlang::expr(c(...))
 
@@ -360,6 +365,10 @@ norm_nearey <- function(
     .names = "{.formant}_lm",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- rlang::expr(c(...))
 
   .data <- norm_generic(
@@ -421,6 +430,10 @@ norm_deltaF <- function(
     .names = "{.formant}_df",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- rlang::expr(c(...))
 
   .data <- norm_generic(
@@ -487,6 +500,10 @@ norm_wattfab <- function(
     .names = "{.formant}_wf",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- rlang::expr(c(...))
 
   .data <- norm_generic(
@@ -522,6 +539,10 @@ norm_barkz <- function(
     .names = "{.formant}_bz",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- rlang::expr(c(...))
 
   .data <- norm_generic(

@@ -34,7 +34,7 @@ check_grouping <- function(
 
 check_tokens <- function(
     tokens,
-    call = caller_env
+    call = caller_env()
 ){
   if(length(tokens)<1){
     cli_abort(
@@ -42,6 +42,37 @@ check_tokens <- function(
         "No column passed to {.arg .token_id_col}.",
         "i" = "Provide column name(s) that uniquely identify tokens."
       )
+    )
+  }
+}
+
+check_args <- function(
+    args,
+    fmls,
+    call = caller_env()
+){
+  fmls_undot <- stringr::str_remove(
+    fmls,
+    "^\\."
+  )
+  args <- args[nzchar(args)]
+  if(any(!args %in% fmls)){
+    offenders <- args[!args %in% fmls]
+    indef <- ""
+    message <- c(
+      "{.arg {offenders}} {?is/are} not{? a / }valid argument{?s}"
+    )
+    if(any(args %in% fmls_undot)){
+      undotted <- args[args %in% fmls_undot]
+      redotted <- stringr::str_c(".", undotted)
+      message <- c(
+        message,
+        "i" = "Should {.arg {undotted}} be {.arg {redotted}}?"
+      )
+    }
+    cli_abort(
+      message = message,
+      call = call
     )
   }
 }
@@ -69,7 +100,7 @@ selection_errors <- function(
     )
   } else {
     cli_abort(
-      "Problem with column selection for {.arg arg}",
+      "Problem with column selection for {.arg {arg}}",
       parent = cnd,
       call = call
     )

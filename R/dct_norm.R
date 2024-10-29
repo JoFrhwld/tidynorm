@@ -104,6 +104,13 @@ norm_track_generic <- function(
     .silent = FALSE,
     .call = caller_env()
 ){
+  if(env_name(.call) == "global"){
+    .call2 = current_env()
+  }
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls, .call2)
+
   prev_attr <- attributes(.data)$norminfo
 
   .names2 <- glue::glue(.names, .formant=".formant")
@@ -246,6 +253,13 @@ norm_dct_generic <- function(
     .drop_orig = FALSE,
     .call = caller_env()
 ){
+  if(env_name(.call) == "global"){
+    .call2 = current_env()
+  }
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls, .call2)
+
   .names <- glue::glue(.names, .formant=".formant")
 
   targets <- expr(c(...))
@@ -430,6 +444,10 @@ norm_track_lobanov <- function(
     .names = "{.formant}_z",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
@@ -497,6 +515,10 @@ norm_track_nearey <- function(
     .names = "{.formant}_lm",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
@@ -556,6 +578,10 @@ norm_track_deltaF <- function(
     .names = "{.formant}_df",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
@@ -618,6 +644,10 @@ norm_track_wattfab <- function(
     .names = "{.formant}_wf",
     .silent = FALSE
 ){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
