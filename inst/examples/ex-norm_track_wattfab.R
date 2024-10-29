@@ -13,7 +13,7 @@ track_subset <- speaker_tracks |>
   )
 
 track_norm <- track_subset |>
-  norm_track_lobanov(
+  norm_track_wattfab(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
@@ -24,7 +24,7 @@ track_norm <- track_subset |>
 if(ggplot2_inst){
   track_norm |>
     ggplot(
-      aes(F2_z, F1_z, color = speaker)
+      aes(F2_wf, F1_wf, color = speaker)
     )+
     stat_density_2d(bins = 4)+
     scale_x_reverse()+
@@ -33,28 +33,29 @@ if(ggplot2_inst){
     coord_fixed()
 }
 
+
 # returning the DCT coefficients
 track_norm_dct <- track_subset |>
-  norm_track_lobanov(
+  norm_track_wattfab(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t,
-    .return_dct = TRUE,
     .drop_orig = TRUE,
-    .names = "{.formant}_z"
+    .return_dct = TRUE,
+    .names = "{.formant}_wf"
   )
 
 track_norm_means <- track_norm_dct |>
   summarise(
     .by = c(speaker, vowel, .param),
     across(
-      ends_with("_z"),
+      ends_with("_wf"),
       mean
     )
   ) |>
   reframe_with_idct(
-    ends_with("_z"),
+    ends_with("_wf"),
     .by = speaker,
     .token_id_col = vowel,
     .param_col = .param
@@ -64,7 +65,7 @@ track_norm_means <- track_norm_dct |>
 if(ggplot2_inst){
   track_norm_means|>
     ggplot(
-      aes(F2_z, F1_z, color = speaker)
+      aes(F2_wf, F1_wf, color = speaker)
     )+
     geom_path(
       aes(
@@ -76,4 +77,5 @@ if(ggplot2_inst){
     scale_color_brewer(palette = "Dark2")+
     coord_fixed()
 }
+
 

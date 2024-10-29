@@ -11,6 +11,7 @@
 #' columns to group by. Typically a column of speaker IDs.
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
+#' @param .by_token Whether or not the normalization method is vowel intrinsic
 #' @param .L An expression defining the location parameter.
 #' See Details for more information.
 #' @param .S An expression defining the scale parameter.
@@ -69,6 +70,7 @@ norm_generic <- function(
   ...,
   .by = NULL,
   .by_formant = FALSE,
+  .by_token = FALSE,
   .L = 0,
   .S = 1,
   .pre_trans = \(x)x,
@@ -142,7 +144,7 @@ norm_generic <- function(
 
   # augment grouping as necessary to
   # match .by_formant
-  formant_symbol <- quo(NULL)
+  norm_grouping <- expr({{.by}})
   if(.by_formant & length(grouped_by > 0)){
     .data <- dplyr::group_by(
       .data,
@@ -150,12 +152,22 @@ norm_generic <- function(
       .add = TRUE
     )
   } else if(.by_formant){
-    formant_symbol <- sym(".formant_name")
+    norm_grouping <- expr(c(!!norm_grouping, !!sym(".formant_name")))
+  }
+
+  if(.by_token & length(grouped_by > 0)){
+    .data <- dplyr::group_by(
+      .data,
+      !!sym(".id"),
+      .add = TRUE
+    )
+  } else if(.by_token){
+    norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
   }
 
   .data <- dplyr::mutate(
     .data,
-    .by = c({{.by}}, !!formant_symbol),
+    .by = !!norm_grouping,
     .L = {{.L}},
     .S = {{.S}},
     "{.names2}" := .post_trans((.formant - .L) / .S),
@@ -494,6 +506,42 @@ norm_wattfab <- function(
 
   norminfo <- attr(.data, "norminfo")
   norminfo[[length(norminfo)]]$norm_procedure <- "norm_wattfab"
+  attr(.data, "norminfo") <- norminfo
+
+  return(.data)
+}
+
+#' Bark Difference Normalization
+#' @export
+norm_barkz <- function(
+    .data,
+    ...,
+    .by = TRUE,
+    .drop_orig = FALSE,
+    .keep_params = FALSE,
+    .names = "{.formant}_bz",
+    .silent = FALSE
+){
+  targets <- rlang::expr(c(...))
+
+  .data <- norm_generic(
+    .data,
+    !!targets,
+    .by = {{.by}},
+    .pre_trans = hz_to_bark,
+    .post_trans = \(x)x,
+    .L = .formant[3],
+    .S = 1,
+    .by_formant = FALSE,
+    .by_token = TRUE,
+    .drop_orig = .drop_orig,
+    .keep_params = .keep_params,
+    .names = .names,
+    .silent = .silent
+  )
+
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_barkz"
   attr(.data, "norminfo") <- norminfo
 
   return(.data)

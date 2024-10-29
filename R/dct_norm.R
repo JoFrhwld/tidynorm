@@ -106,9 +106,10 @@ norm_track_generic <- function(
 ){
   prev_attr <- attributes(.data)$norminfo
 
-  .names <- glue::glue(.names, .formant=".formant")
+  .names2 <- glue::glue(.names, .formant=".formant")
 
   targets <- expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
   cols <- enquos(
     .by = .by,
     .token_id_col = .token_id_col,
@@ -177,7 +178,7 @@ norm_track_generic <- function(
     .param_col = !!sym(".param"),
     .L = {{.L}},
     .S = {{.S}},
-    .names = .names,
+    .names = .names2,
     .silent = FALSE,
     .drop_orig = .drop_orig,
     .call = current_env()
@@ -506,6 +507,127 @@ norm_track_nearey <- function(
     .L = mean(.formant, na.rm = T),
     .S = 1/sqrt(2),
     .pre_trans = log,
+    .post_trans = \(x)x,
+    .time_col = {{.time_col}},
+    .order = .order,
+    .return_dct = .return_dct,
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = .silent
+  )
+  return(normed)
+}
+
+
+
+#' Delta F Track Normalization
+#'
+#' @inheritParams norm_track_generic
+#'
+#'
+#' @details
+#' \deqn{
+#'  \hat{F}_{ij} = \frac{F_{ij}}{S}
+#' }
+#' \deqn{
+#'  S = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @references
+#' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+#' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
+#' Article 1. [https://doi.org/10.5334/labphon.196](https://doi.org/10.5334/labphon.196)
+#'
+#' @export
+norm_track_deltaF <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .time_col = NULL,
+    .order = 5,
+    .return_dct = FALSE,
+    .drop_orig = FALSE,
+    .names = "{.formant}_df",
+    .silent = FALSE
+){
+  targets <- expr(...)
+  normed <- norm_track_generic(
+    .data,
+    !!targets,
+    .by = {{.by}},
+    .token_id_col = {{.token_id_col}},
+    .by_formant = FALSE,
+    .L = 0,
+    .S = mean(.formant/(.formant_num - 0.5), na.rm = T),
+    .pre_trans = \(x)x,
+    .post_trans = \(x)x,
+    .time_col = {{.time_col}},
+    .order = .order,
+    .return_dct = .return_dct,
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = .silent
+  )
+  return(normed)
+}
+
+
+#' Watt and Fabricius Track normalization
+#'
+#' @inheritParams norm_track_generic
+#'
+#' @details
+#' This is a modified version of the Watt & Fabricius Method. The original
+#' method identified point vowels over which F1 and F2 centroids were calculated.
+#' The procedure here just identifies centroids by taking the mean of
+#' all formant values.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = \frac{F_{ij}}{S_i}
+#' }
+#'
+#' \deqn{
+#'  S_i = \frac{1}{N}\sum_{j=1}^N F_{ij}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @references
+#' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
+#' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
+#' Leeds Working Papers in Linguistics and Phonetics, 9, 159–173.
+#' @export
+norm_track_wattfab <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .time_col = NULL,
+    .order = 5,
+    .return_dct = FALSE,
+    .drop_orig = FALSE,
+    .names = "{.formant}_wf",
+    .silent = FALSE
+){
+  targets <- expr(...)
+  normed <- norm_track_generic(
+    .data,
+    !!targets,
+    .by = {{.by}},
+    .token_id_col = {{.token_id_col}},
+    .by_formant = TRUE,
+    .L = 0,
+    .S = mean(.formant, na.rm = T),
+    .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .time_col = {{.time_col}},
     .order = .order,

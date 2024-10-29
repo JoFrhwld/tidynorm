@@ -61,6 +61,10 @@ reference:
       - reframe_with_dct
       - reframe_with_idct
       - reframe_with_dct_smooth
+  - title: Transforms
+    contents:
+      - hz_to_bark
+      - bark_to_hz
 
   - title: "Data"
     contents:

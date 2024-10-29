@@ -9,6 +9,7 @@ norm_generic(
   ...,
   .by = NULL,
   .by_formant = FALSE,
+  .by_token = FALSE,
   .L = 0,
   .S = 1,
   .pre_trans = function(x) x,
@@ -32,6 +33,8 @@ columns to group by. Typically a column of speaker IDs.}
 
 \item{.by_formant}{Whether or not the normalization method is formant
 intrinsic.}
+
+\item{.by_token}{Whether or not the normalization method is vowel intrinsic}
 
 \item{.L}{An expression defining the location parameter.
 See Details for more information.}

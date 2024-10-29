@@ -16,6 +16,7 @@ s01_dat <- read_csv(
 
 
 
+
 ```{r}
 speaker_tracks |> 
   norm_track_generic(
@@ -72,14 +73,14 @@ speaker_tracks |>
 
 
 small_tracks |> 
-  norm_track_lobanov(
+  norm_track_deltaF(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
   ) |> 
   ggplot(
-    aes(-F2_z, -F1_z, color = speaker)
+    aes(-F2_df, -F1_df, color = speaker)
   )+
   stat_density_2d()+
   coord_fixed()
