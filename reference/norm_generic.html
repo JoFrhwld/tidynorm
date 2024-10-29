@@ -128,6 +128,10 @@ formant columns.</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A data frame of normalized formant values</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The following <code>norm_*</code> procedures are built on top of <code>norm_generic()</code>.</p><ul><li><p><a href="norm_lobanov.html">norm_lobanov</a></p></li>
 <li><p><a href="norm_nearey.html">norm_nearey</a></p></li>
@@ -169,7 +173,15 @@ you can pass a function to <code>.pre_trans</code> and <code>.post_trans</code>.
 
 
 <p>If <code>.by_formant</code> is <code>TRUE</code>, normalization will be formant intrinsic.
-if <code>.by_formant</code> is <code>FALSE</code>, normalization will be extrinsic.</p>
+If <code>.by_formant</code> is <code>FALSE</code>, normalization will be formant extrinsic.</p>
+</div>
+
+<div class="section">
+<h3 id="token-in-extrinsic-normalization">Token In/Extrinsic Normalization<a class="anchor" aria-label="anchor" href="#token-in-extrinsic-normalization"></a></h3>
+
+
+<p>If <code>.by_token</code> is <code>TRUE</code>, normalization will be token intrinsic.
+If <code>.by_token</code> is <code>FALSE</code>, normalization will be token extrinsic.</p>
 </div>
 
     </div>
@@ -178,14 +190,6 @@ if <code>.by_formant</code> is <code>FALSE</code>, normalization will be extrins
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">speaker_data</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">norm_generic</span><span class="op">(</span></span></span>

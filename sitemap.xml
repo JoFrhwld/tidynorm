@@ -9,14 +9,17 @@
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/dct.matrix.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/dct.numeric.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/hz_to_bark.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/hz_to_mel.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/idct.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/index.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/mel_to_hz.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_barkz.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_dct_generic.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_deltaF.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_generic.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_lobanov.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_nearey.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_track_barkz.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_track_deltaF.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_track_generic.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_track_lobanov.html</loc></url>

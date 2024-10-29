@@ -40,7 +40,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">norm_barkz</span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  .by <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  .by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .drop_orig <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .keep_params <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .names <span class="op">=</span> <span class="st">"{.formant}_bz"</span>,</span>
@@ -48,8 +48,123 @@
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
-  </main></div>
+
+<dl><dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
+<dd><p>A data frame containing vowel formant data</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p><code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">&lt;tidy-select&gt;</a></code> One or more unquoted
+expressions separated by commas. These should target the vowel formant
+data columns.</p></dd>
+
+
+<dt id="arg--by">.by<a class="anchor" aria-label="anchor" href="#arg--by"></a></dt>
+<dd><p><code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">&lt;tidy-select&gt;</a></code> A selection of
+columns to group by. Typically a column of speaker IDs.</p></dd>
+
+
+<dt id="arg--drop-orig">.drop_orig<a class="anchor" aria-label="anchor" href="#arg--drop-orig"></a></dt>
+<dd><p>Whether or not to drop the original formant data columns.</p></dd>
+
+
+<dt id="arg--keep-params">.keep_params<a class="anchor" aria-label="anchor" href="#arg--keep-params"></a></dt>
+<dd><p>Whether or not to keep the Location (<code>*_.L</code>) and Scale
+(<code>*_.S</code>) normalization parameters</p></dd>
+
+
+<dt id="arg--names">.names<a class="anchor" aria-label="anchor" href="#arg--names"></a></dt>
+<dd><p>A <code><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue::glue()</a></code> expression for naming the normalized
+data columns. The <code>"{.formant}"</code> portion corresponds to the name of the original
+formant columns.</p></dd>
+
+
+<dt id="arg--silent">.silent<a class="anchor" aria-label="anchor" href="#arg--silent"></a></dt>
+<dd><p>Whether or not the informational message should be printed.</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A data frame of Bark Difference normalized formant values</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This is a within-token normalization technique. First all formants are
+converted to Bark (see <a href="hz_to_bark.html">hz_to_bark</a>), then, within each token, F3 is
+subtracted from F1 and F2.</p>
+<p>$$
+\hat{F}_{ij} = F_{ij} - L_j
+$$</p>
+<p>$$
+L_j = F_{3j}
+$$</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Syrdal, A. K., &amp; Gopal, H. S. (1986). A perceptual model of vowel
+recognition based on the auditory representation of American English vowels.
+The Journal of the Acoustical Society of America, 79(4), 1086–1100.
+<a href="https://doi.org/10.1121/1.393381" class="external-link">https://doi.org/10.1121/1.393381</a></p>
+    </div>
+
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ggplot2_inst</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: ggplot2</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">speaker_data_barkz</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">norm_barkz</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span></span>
+<span class="r-in"><span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span></span>
+<span class="r-in"><span>    .names <span class="op">=</span> <span class="st">"{.formant}_bz"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Normalization info</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized `F1`, `F2`, and `F3`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized values in `F1_bz`, `F2_bz`, and `F3_bz`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> grouped by `speaker`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> formant extrinsic</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## this is equivalent to</span></span></span>
+<span class="r-in"><span><span class="co"># speaker_data |&gt;</span></span></span>
+<span class="r-in"><span><span class="co">#   norm_generic(</span></span></span>
+<span class="r-in"><span><span class="co">#     F1:F3,</span></span></span>
+<span class="r-in"><span><span class="co">#     .by = speaker,</span></span></span>
+<span class="r-in"><span><span class="co">#     .by_token = T,</span></span></span>
+<span class="r-in"><span><span class="co">#     .L = .formant[3]</span></span></span>
+<span class="r-in"><span><span class="co">#   )</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="va">ggplot2_inst</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">speaker_data_barkz</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="va">F2_bz</span>,</span></span>
+<span class="r-in"><span>      <span class="va">F1_bz</span>,</span></span>
+<span class="r-in"><span>      color <span class="op">=</span> <span class="va">speaker</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html" class="external-link">stat_density_2d</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      bins <span class="op">=</span> <span class="fl">4</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_color_brewer</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      palette <span class="op">=</span> <span class="st">"Dark2"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 42 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_density2d()`).</span>
+<span class="r-plt img"><img src="norm_barkz-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
