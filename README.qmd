@@ -34,6 +34,7 @@ remotes::install_github("jofrhwld/tidynorm")
 #| eval: !expr 'rlang::is_installed("magick")'
 #| echo: false
 knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+set.seed(200)
 ```
 
 ## Example
@@ -185,3 +186,4 @@ speaker_rnearey |>
     title = "Robust Nearey Normalized"
   )
 ```
+
