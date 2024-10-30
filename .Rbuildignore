@@ -13,3 +13,6 @@ dev
 ^docs$
 ^pkgdown$
 ^\.github$
+^vignettes/*_files$
+^vignettes/*_html$
+^vignettes/.quarto

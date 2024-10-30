@@ -1,0 +1,168 @@
+---
+title: Normalization Overview
+format: 
+  html:
+    toc: true
+fig-width: 5
+fig-height: 3
+out-width: 80%
+fig-align: center
+vignette: >
+  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction to the problem
+
+```{r}
+#| message: false
+library(tidynorm)
+library(dplyr)
+library(ggplot2)
+ggplot2_inst <- require(ggplot2)
+```
+
+```{r}
+#| eval: !expr 'ggplot2_inst'
+#| code-fold: true
+#| code-summary: color palette
+options(
+  ggplot2.discrete.colour = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  ),
+  ggplot2.discrete.fill = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  )  
+)
+
+theme_set(
+  theme_minimal()
+)
+```
+
+```{r}
+speaker_data |> 
+  summarise(
+    .by = c(speaker, vowel),
+    across(
+      F1:F3,
+      \(x)mean(x, na.rm = T)
+    )
+  ) ->
+  speaker_means
+```
+
+```{r}
+#| eval: !expr 'ggplot2_inst'
+#| fig-align: center
+#| out-width: 80%
+speaker_means |> 
+  filter(
+    vowel %in% c("IY","UW","AE","AA")
+  ) |> 
+  ggplot(
+    aes(F2, F1)
+  )+
+  geom_label(
+    aes(
+      label = vowel,
+      fill = speaker
+    ),
+    color = "white"
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+
+```
+
+## Sim
+
+```{r}
+#| fig-align: center
+#| out-width: 80%
+speaker_centers <- speaker_data |> 
+  summarise(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~mean(.x, na.rm = T)
+    )
+  )
+
+speaker_data |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  )+
+  stat_density_2d()+
+  geom_point(
+    data = speaker_centers,
+    size = 5
+  )+
+  scale_x_reverse()+
+  scale_y_reverse()
+```
+
+```{r}
+#| fig-align: center
+#| out-width: 80%
+speaker_data |> 
+ mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~.x - mean(.x, na.rm = T)
+    )
+  )  |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  ) +
+  stat_density_2d()+
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+```
+
+```{r}
+#| fig-align: center
+#| out-width: 80%
+speaker_data |> 
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~(.x - mean(.x, na.rm = T))/sd(.x, na.rm = T)
+    )
+  ) |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  )+
+  stat_density_2d()+
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  )+  
+  scale_y_reverse()+
+  scale_x_reverse()
+```
+
+## Generalizing
+
+$$
+\hat{F} = \frac{F-L}{S}
+$$
