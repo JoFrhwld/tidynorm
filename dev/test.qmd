@@ -15,6 +15,26 @@ s01_dat <- read_csv(
 ```
 
 ```{r}
+library(readr)
+speaker_tracks <- read_csv("../inst/extdata/speaker_tracks.csv")
+```
+```{r}
+speaker_tracks |> 
+  filter(
+    .by = c(speaker, id),
+    if_all(
+      F1:F3,
+      ~mean(is.finite(.x)) > 0.9
+    )
+  )->speaker_tracks
+```
+
+```{r}
+usethis::use_data(speaker_tracks, overwrite = TRUE)
+```
+
+
+```{r}
 plot(200:2000, hz_to_mel(200:2000))
 ```
 

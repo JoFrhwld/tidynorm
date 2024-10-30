@@ -1,17 +1,25 @@
 ---
 title: Normalization Overview
+fig-width: 5
+fig-height: 3
 format: 
   html:
     toc: true
-fig-width: 5
-fig-height: 3
-out-width: 80%
-fig-align: center
+    html-math-method: mathjax
+knitr:
+  opts_chunk:
+    crop: !expr 'rlang::check_installed("magick")'
 vignette: >
-  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteIndexEntry{Normalization Overview}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r}
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
 
 # Introduction to the problem
 
@@ -19,12 +27,18 @@ vignette: >
 #| message: false
 library(tidynorm)
 library(dplyr)
-library(ggplot2)
-ggplot2_inst <- require(ggplot2)
+library(tidyr)
 ```
 
 ```{r}
-#| eval: !expr 'ggplot2_inst'
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+library(ggplot2)
+library(ggdensity)
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 #| code-fold: true
 #| code-summary: color palette
 options(
@@ -45,7 +59,7 @@ options(
 )
 
 theme_set(
-  theme_minimal()
+  theme_minimal(base_size = 16)
 )
 ```
 
@@ -62,7 +76,9 @@ speaker_data |>
 ```
 
 ```{r}
-#| eval: !expr 'ggplot2_inst'
+#| code-fold: true
+#| code-summary: Plotting Code
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 #| fig-align: center
 #| out-width: 80%
 speaker_means |> 
@@ -84,11 +100,35 @@ speaker_means |>
 
 ```
 
+```{r}
+#| code-fold: true
+#| code-summary: Vowel Comparison
+speaker_means |> 
+  filter(
+    vowel %in% c("IY","UW","AE","AA")
+  ) |>   
+  pivot_longer(
+    F1:F3,
+    names_to = ".formant_name",
+    values_to = ".formant"
+  ) |> 
+  pivot_wider(
+    names_from = vowel,
+    values_from = .formant
+  ) |> 
+  arrange(
+    .formant_name
+  )
+```
+
 ## Sim
 
 ```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 #| fig-align: center
 #| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
 speaker_centers <- speaker_data |> 
   summarise(
     .by = speaker,
@@ -102,7 +142,12 @@ speaker_data |>
   ggplot(
     aes(F2, F1, color = speaker)
   )+
-  stat_density_2d()+
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
   geom_point(
     data = speaker_centers,
     size = 5
@@ -112,20 +157,32 @@ speaker_data |>
 ```
 
 ```{r}
-#| fig-align: center
-#| out-width: 80%
-speaker_data |> 
+speaker_data_centered <- speaker_data |> 
  mutate(
     .by = speaker,
     across(
       F1:F3,
       ~.x - mean(.x, na.rm = T)
     )
-  )  |> 
+  ) 
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_centered |> 
   ggplot(
     aes(F2, F1, color = speaker)
   ) +
-  stat_density_2d()+
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
   geom_point(
     data = tibble(),
     aes(x = 0, y = 0),
@@ -137,9 +194,23 @@ speaker_data |>
 ```
 
 ```{r}
+speaker_data_scaled <- speaker_data |> 
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~.x/sd(.x, na.rm = T)
+    )
+  ) 
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 #| fig-align: center
 #| out-width: 80%
-speaker_data |> 
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_scaled |> 
   mutate(
     .by = speaker,
     across(
@@ -150,7 +221,12 @@ speaker_data |>
   ggplot(
     aes(F2, F1, color = speaker)
   )+
-  stat_density_2d()+
+ stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
   geom_point(
     data = tibble(),
     aes(x = 0, y = 0),
@@ -161,8 +237,18 @@ speaker_data |>
   scale_x_reverse()
 ```
 
-## Generalizing
+# Generalizing
+
+All normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both. If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
 
 $$
 \hat{F} = \frac{F-L}{S}
 $$
+
+The primary differences between normalization methods are:
+
+-   The calculation function for $L$ and $S$.
+
+-   The scope of calculating $L$ and $S$
+
+The example above is also known as Lobanov Normalization (see `norm_lobanov()`).
