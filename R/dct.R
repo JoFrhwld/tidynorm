@@ -3,7 +3,13 @@
 #' @param norm_forward DCT normalization (see Details)
 #'
 #' @details
-#' The DCT definition here is based on the python scipy.fft.dct definitions.
+#' The DCT definitions here are based on the python `scipy.fft.dct` definitions.
+#' Specifically this use:
+#'
+#' ```python
+#' # python code
+#' scipy.fft.dct(x, orthogonalize = True)
+#' ```
 #'
 #' When `norm_forward = TRUE`
 #'
@@ -30,7 +36,7 @@
 #'  \end{cases}
 #' }
 #'
-#' This second formulation is primarilly to be able to generate the
+#' This second formulation is primarily to be able to generate the
 #' DCT basis functions like so
 #'
 #' ```r
@@ -74,17 +80,29 @@ dct_k <- function(x, k, norm_forward = TRUE){
 #' @export
 #' @keywords internal
 dct.numeric <- function(x, norm_forward = TRUE){
-  nk <- length(x)
-  sapply(
-    0:(nk-1),
-    \(k) dct_k(x, k, norm_forward = norm_forward)
-  )
+
+  p <- fftw::planDCT(x, type = 2)
+  coefs <- fftw::DCT(x, plan = p)
+  coefs[1] <- coefs[1]/sqrt(2)
+
+  if(norm_forward){
+    coefs <- (coefs/2)/length(x)
+  }
+
+  return(coefs)
+
+  # nk <- length(x)
+  # sapply(
+  #   0:(nk-1),
+  #   \(k) dct_k(x, k, norm_forward = norm_forward)
+  # )
 }
 
 #' DCT matrix
 #' @export
 #' @keywords internal
 dct.matrix <- function(x, norm_forward = TRUE){
+
   t(apply(x, MARGIN = 1, \(z) dct.numeric(z, norm_forward = norm_forward)))
 }
 
@@ -94,9 +112,11 @@ registerS3method("dct", "matrix", method = dct.matrix)
 #' regression based dct
 #' @noRd
 dct_reg <- function(y, call = caller_env()){
+
   if(all(is.finite(y))){
     return(dct(y))
   }
+
   basis <- dct(diag(length(y)), norm_forward = FALSE)
   coefs <- try_fetch(
     stats::coef(stats::lm(y ~ -1 + basis)),
@@ -138,9 +158,22 @@ dct_reg <- function(y, call = caller_env()){
 #'
 #' @export
 idct <- function(y, n = length(y)){
-  basis <- dct(diag(n), norm_forward = FALSE)
-  basis <- t(basis[,1:length(y)])
-  x <- (y %*% basis)[1,]
+
+  if(n == length(y)){
+
+    p <- fftw::planDCT(n, type = 2)
+    y[1] <- y[1] * sqrt(2)
+    y <- y * 2 * length(y)
+    x <- fftw::IDCT(y, plan = p, type = 2)
+
+  }else{
+
+    basis <- dct(diag(n), norm_forward = FALSE)
+    basis <- t(basis[,1:length(y)])
+    x <- (y %*% basis)[1,]
+
+  }
+
   return(x)
 }
 

@@ -19,7 +19,12 @@ Discrete Cosine Transform.
 Discrete Cosine Transform
 }
 \details{
-The DCT definition here is based on the python scipy.fft.dct definitions.
+The DCT definitions here are based on the python \code{scipy.fft.dct} definitions.
+specifically
+
+\if{html}{\out{<div class="sourceCode python">}}\preformatted{# python code
+scipy.fft.dct(x, orthogonalize = True)
+}\if{html}{\out{</div>}}
 
 When \code{norm_forward = TRUE}
 
@@ -46,7 +51,7 @@ z = \begin{cases}
  \end{cases}
 }
 
-This second formulation is primarilly to be able to generate the
+This second formulation is primarily to be able to generate the
 DCT basis functions like so
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{dct(diag(10), norm_forward = FALSE)
