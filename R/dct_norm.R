@@ -440,7 +440,7 @@ norm_dct_generic <- function(
   normed <- .dct_with_norm |>
     dplyr::mutate(
       "{.names}" := case_when(
-        !!sym(".param") == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
+        {{.param_col}} == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
         .default = !!sym(".formant")/!!sym(".S")
       )
     ) |>
