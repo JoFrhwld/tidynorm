@@ -402,7 +402,7 @@ norm_dct_generic <- function(
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2 ,
-    !!sym(".param") == min(!!sym(".param"))
+    {{.param_col}} == min({{.param_col}})
   )
 
   if(grouped_by & !.by_token){
