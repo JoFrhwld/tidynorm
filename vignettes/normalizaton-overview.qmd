@@ -13,6 +13,7 @@ vignette: >
   %\VignetteIndexEntry{Normalization Overview}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
 ```{r}
@@ -59,9 +60,14 @@ options(
 )
 
 theme_set(
-  theme_minimal(base_size = 16)
+  theme_minimal(base_size = 16)+
+    theme(
+      panel.grid = element_blank()
+    )
 )
 ```
+
+Vowel formant frequencies are heavily influenced by speakers' vocal tract length, such that equivalent vowels can have dramatically different formant frequencies
 
 ```{r}
 speaker_data |> 
@@ -121,7 +127,11 @@ speaker_means |>
   )
 ```
 
-## Sim
+When conducting an analysis that combines multiple different speakers' data together, we often want to factor out this vocal tract length difference, so that we can instead focus our attention on the *relative* values of these vowel frequencies within speakers.
+
+## An example
+
+When speakers s01 and s03 in the `speakers_data` data set have very different vowel spaces that differ both in the location of their center points, and scaling.
 
 ```{r}
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -156,6 +166,8 @@ speaker_data |>
   scale_y_reverse()
 ```
 
+One approach to moving speakers center points to a common location is to subtract the mean from both F1 and F2.
+
 ```{r}
 speaker_data_centered <- speaker_data |> 
  mutate(
@@ -166,6 +178,8 @@ speaker_data_centered <- speaker_data |>
     )
   ) 
 ```
+
+Now s01 and s03's center points have a common location, but the scale of s03's vowels is still smaller than s01's.
 
 ```{r}
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -193,6 +207,8 @@ speaker_data_centered |>
   scale_x_reverse()
 ```
 
+An approach to putting speakers' vowel spaces on a common scale is to divide by the standard deviation.
+
 ```{r}
 speaker_data_scaled <- speaker_data |> 
   mutate(
@@ -203,6 +219,8 @@ speaker_data_scaled <- speaker_data |>
     )
   ) 
 ```
+
+The result is two vowel spaces with center points in the same location, and on a common scale.
 
 ```{r}
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -237,9 +255,9 @@ speaker_data_scaled |>
   scale_x_reverse()
 ```
 
-# Generalizing
+# Generalizing Normalization Procedures
 
-All normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both. If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
+All speaker normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both. If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
 
 $$
 \hat{F} = \frac{F-L}{S}
@@ -247,8 +265,60 @@ $$
 
 The primary differences between normalization methods are:
 
+-   The use of across-the-board data transformations.
+
 -   The calculation function for $L$ and $S$.
 
--   The scope of calculating $L$ and $S$
+-   The scope of calculating $L$ and $S$.
 
-The example above is also known as Lobanov Normalization (see `norm_lobanov()`).
+The example above is also known as Lobanov Normalization (see `norm_lobanov()`). The `norm_generic()` function allows for flexible definitions of normalization procedures with this in mind.
+
+## Examples
+
+#### $\Delta$F
+
+The $\Delta$F method was described in @johnsonDFMethodVocal2020.
+
+-   It uses no across-the-board data transformation.
+
+-   It uses a scaling factor $S$ called $\Delta$F, which is the mean across all formants of the formant frequency in Hz, divided by the formant number minus 0.5.
+
+-   $S$ is calculated across all formants
+
+$$
+S = \Delta F = \text{mean}\left(\frac{F_{ij}}{i-0.5}\right)
+$$
+
+This can be expressed with `norm_generic()` like so
+
+```{r}
+speaker_data |> 
+  norm_generic(
+    F1:F3,
+    .by = speaker,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = mean(
+      .formant/(.formant_num - 0.5), 
+      na.rm = T
+    ),
+    .names = "{.formant}_df"
+  )->
+  speaker_df_norm
+```
+
+```{r}
+ggplot(
+  speaker_df_norm, 
+  aes(F2_df, F1_df, color = speaker)
+)+
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+```

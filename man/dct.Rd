@@ -20,7 +20,7 @@ Discrete Cosine Transform
 }
 \details{
 The DCT definitions here are based on the python \code{scipy.fft.dct} definitions.
-specifically
+Specifically this use:
 
 \if{html}{\out{<div class="sourceCode python">}}\preformatted{# python code
 scipy.fft.dct(x, orthogonalize = True)
