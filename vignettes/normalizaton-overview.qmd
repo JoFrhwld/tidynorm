@@ -1,0 +1,324 @@
+---
+title: Normalization Overview
+fig-width: 5
+fig-height: 3
+format: 
+  html:
+    toc: true
+    html-math-method: mathjax
+knitr:
+  opts_chunk:
+    crop: !expr 'rlang::check_installed("magick")'
+vignette: >
+  %\VignetteIndexEntry{Normalization Overview}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r}
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+# Introduction to the problem
+
+```{r}
+#| message: false
+library(tidynorm)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+library(ggplot2)
+library(ggdensity)
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| code-fold: true
+#| code-summary: color palette
+options(
+  ggplot2.discrete.colour = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  ),
+  ggplot2.discrete.fill = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  )  
+)
+
+theme_set(
+  theme_minimal(base_size = 16)+
+    theme(
+      panel.grid = element_blank()
+    )
+)
+```
+
+Vowel formant frequencies are heavily influenced by speakers' vocal tract length, such that equivalent vowels can have dramatically different formant frequencies
+
+```{r}
+speaker_data |> 
+  summarise(
+    .by = c(speaker, vowel),
+    across(
+      F1:F3,
+      \(x)mean(x, na.rm = T)
+    )
+  ) ->
+  speaker_means
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: Plotting Code
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+speaker_means |> 
+  filter(
+    vowel %in% c("IY","UW","AE","AA")
+  ) |> 
+  ggplot(
+    aes(F2, F1)
+  )+
+  geom_label(
+    aes(
+      label = vowel,
+      fill = speaker
+    ),
+    color = "white"
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: Vowel Comparison
+speaker_means |> 
+  filter(
+    vowel %in% c("IY","UW","AE","AA")
+  ) |>   
+  pivot_longer(
+    F1:F3,
+    names_to = ".formant_name",
+    values_to = ".formant"
+  ) |> 
+  pivot_wider(
+    names_from = vowel,
+    values_from = .formant
+  ) |> 
+  arrange(
+    .formant_name
+  )
+```
+
+When conducting an analysis that combines multiple different speakers' data together, we often want to factor out this vocal tract length difference, so that we can instead focus our attention on the *relative* values of these vowel frequencies within speakers.
+
+## An example
+
+When speakers s01 and s03 in the `speakers_data` data set have very different vowel spaces that differ both in the location of their center points, and scaling.
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_centers <- speaker_data |> 
+  summarise(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~mean(.x, na.rm = T)
+    )
+  )
+
+speaker_data |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  )+
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
+  geom_point(
+    data = speaker_centers,
+    size = 5
+  )+
+  scale_x_reverse()+
+  scale_y_reverse()
+```
+
+One approach to moving speakers center points to a common location is to subtract the mean from both F1 and F2.
+
+```{r}
+speaker_data_centered <- speaker_data |> 
+ mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~.x - mean(.x, na.rm = T)
+    )
+  ) 
+```
+
+Now s01 and s03's center points have a common location, but the scale of s03's vowels is still smaller than s01's.
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_centered |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  ) +
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+```
+
+An approach to putting speakers' vowel spaces on a common scale is to divide by the standard deviation.
+
+```{r}
+speaker_data_scaled <- speaker_data |> 
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~.x/sd(.x, na.rm = T)
+    )
+  ) 
+```
+
+The result is two vowel spaces with center points in the same location, and on a common scale.
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_scaled |> 
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~(.x - mean(.x, na.rm = T))/sd(.x, na.rm = T)
+    )
+  ) |> 
+  ggplot(
+    aes(F2, F1, color = speaker)
+  )+
+ stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  )+  
+  scale_y_reverse()+
+  scale_x_reverse()
+```
+
+# Generalizing Normalization Procedures
+
+All speaker normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both. If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
+
+$$
+\hat{F} = \frac{F-L}{S}
+$$
+
+The primary differences between normalization methods are:
+
+-   The use of across-the-board data transformations.
+
+-   The calculation function for $L$ and $S$.
+
+-   The scope of calculating $L$ and $S$.
+
+The example above is also known as Lobanov Normalization (see `norm_lobanov()`). The `norm_generic()` function allows for flexible definitions of normalization procedures with this in mind.
+
+## Examples
+
+#### $\Delta$F
+
+The $\Delta$F method was described in @johnsonDFMethodVocal2020.
+
+-   It uses no across-the-board data transformation.
+
+-   It uses a scaling factor $S$ called $\Delta$F, which is the mean across all formants of the formant frequency in Hz, divided by the formant number minus 0.5.
+
+-   $S$ is calculated across all formants
+
+$$
+S = \Delta F = \text{mean}\left(\frac{F_{ij}}{i-0.5}\right)
+$$
+
+This can be expressed with `norm_generic()` like so
+
+```{r}
+speaker_data |> 
+  norm_generic(
+    F1:F3,
+    .by = speaker,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = mean(
+      .formant/(.formant_num - 0.5), 
+      na.rm = T
+    ),
+    .names = "{.formant}_df"
+  )->
+  speaker_df_norm
+```
+
+```{r}
+ggplot(
+  speaker_df_norm, 
+  aes(F2_df, F1_df, color = speaker)
+)+
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  )+
+  scale_y_reverse()+
+  scale_x_reverse()
+```

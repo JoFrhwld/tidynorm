@@ -402,7 +402,7 @@ norm_dct_generic <- function(
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2 ,
-    !!sym(".param") == min(!!sym(".param"))
+    {{.param_col}} == min({{.param_col}})
   )
 
   if(grouped_by & !.by_token){
@@ -440,7 +440,7 @@ norm_dct_generic <- function(
   normed <- .dct_with_norm |>
     dplyr::mutate(
       "{.names}" := case_when(
-        !!sym(".param") == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
+        {{.param_col}} == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
         .default = !!sym(".formant")/!!sym(".S")
       )
     ) |>

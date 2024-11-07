@@ -32,10 +32,41 @@ have dramatically different frequency locations.
 ``` r
 library(tidynorm)
 library(ggplot2)
+```
+
+<details class="code-fold">
+<summary>Plotting Options</summary>
+
+``` r
 options(
-  ggplot2.discrete.colour = \(...) scale_color_brewer(palette = "Dark2", ...)
+  ggplot2.discrete.colour = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  ),
+  ggplot2.discrete.fill = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  )  
 )
 
+theme_set(
+  theme_minimal(
+    base_size = 16
+  )
+)
+```
+
+</details>
+<details class="code-fold">
+<summary>Plotting Code</summary>
+
+``` r
 ggplot(
   speaker_data,
   aes(
@@ -43,8 +74,11 @@ ggplot(
     color = speaker
   )
 )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -54,7 +88,10 @@ ggplot(
   )
 ```
 
-<img src="man/figures/README-unnorm-1.png" style="width:100.0%" />
+</details>
+
+<img src="man/figures/README-unnorm-1.png" style="width:80.0%"
+data-fig-align="center" />
 
 The goal of `{tidynorm}` is to provide tidyverse-friendly and familiar
 functions that will allow you to quickly normalize vowel formant data.
@@ -69,12 +106,18 @@ speaker_data |>
     .names = "{.formant}_nearey"
   ) ->
   speaker_normalized
-#> Normalization info
-#> • normalized `F1`, `F2`, and `F3`
-#> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
-#> • grouped by `speaker`
-#> • formant extrinsic
+```
 
+    #> Normalization info
+    #> • normalized `F1`, `F2`, and `F3`
+    #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
+    #> • grouped by `speaker`
+    #> • formant extrinsic
+
+<details class="code-fold">
+<summary>Plotting Code</summary>
+
+``` r
 speaker_normalized |> 
   ggplot(
     aes(
@@ -82,8 +125,11 @@ speaker_normalized |>
       color = speaker
     )
   )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -93,7 +139,10 @@ speaker_normalized |>
   )
 ```
 
-<img src="man/figures/README-norm-1.png" style="width:100.0%" />
+</details>
+
+<img src="man/figures/README-norm-1.png" style="width:60.0%"
+data-fig-align="center" />
 
 There is also a `tidynorm::norm_generic()` function to allow you to
 define your own bespoke normalization methods. For example, a “robust
@@ -110,12 +159,18 @@ speaker_rnearey <- speaker_data |>
     .L = median(.formant, na.rm = T),
     .names = "{.formant}_rnearey"
   )
-#> Normalization info
-#> • normalized `F1`, `F2`, and `F3`
-#> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
-#> • grouped by `speaker`
-#> • formant extrinsic
+```
 
+    #> Normalization info
+    #> • normalized `F1`, `F2`, and `F3`
+    #> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
+    #> • grouped by `speaker`
+    #> • formant extrinsic
+
+<details class="code-fold">
+<summary>Plotting Code</summary>
+
+``` r
 speaker_rnearey |> 
  ggplot(
     aes(
@@ -123,8 +178,11 @@ speaker_rnearey |>
       color = speaker
     )
   )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -134,5 +192,7 @@ speaker_rnearey |>
   )
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png"
-style="width:100.0%" />
+</details>
+
+<img src="man/figures/README-rnorm-1.png" style="width:60.0%"
+data-fig-align="center" />

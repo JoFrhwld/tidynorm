@@ -2,7 +2,7 @@
 format: gfm
 knitr: 
   opts_chunk: 
-    collapse: true
+    crop: !expr 'rlang::check_installed("magick")'
     comment: "#>"
     fig.path: "man/figures/README-"
     out.width: "100%"
@@ -30,18 +30,58 @@ You can install the development version of tidynorm like so:
 remotes::install_github("jofrhwld/tidynorm")
 ```
 
+```{r}
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+set.seed(200)
+```
+
 ## Example
 
 Vowel formant frequencies are heavily influenced by vocal tract length differences between speakers. Equivalent vowels between speakers can have dramatically different frequency locations.
 
 ```{r}
-#| label: unnorm
 library(tidynorm)
 library(ggplot2)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: Plotting Options
+
 options(
-  ggplot2.discrete.colour = \(...) scale_color_brewer(palette = "Dark2", ...)
+  ggplot2.discrete.colour = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  ),
+  ggplot2.discrete.fill = c(
+    lapply(
+      1:6, 
+      \(x) c("#4477AA", "#EE6677", "#228833", 
+             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+    )
+  )  
 )
 
+theme_set(
+  theme_minimal(
+    base_size = 16
+  )
+)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: Plotting Code
+#| label: unnorm
+#| fig-align: center
+#| out-width: 80%
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 ggplot(
   speaker_data,
   aes(
@@ -49,8 +89,11 @@ ggplot(
     color = speaker
   )
 )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -63,7 +106,6 @@ ggplot(
 The goal of `{tidynorm}` is to provide tidyverse-friendly and familiar functions that will allow you to quickly normalize vowel formant data. There are a number of built in functions based on conventional normalization methods.
 
 ```{r}
-#| label: norm
 speaker_data |> 
   norm_nearey(
     F1:F3,
@@ -71,7 +113,16 @@ speaker_data |>
     .names = "{.formant}_nearey"
   ) ->
   speaker_normalized
+```
 
+```{r}
+#| code-fold: true
+#| code-summary: Plotting Code
+#| label: norm
+#| fig-align: center
+#| out-width: 60%
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 speaker_normalized |> 
   ggplot(
     aes(
@@ -79,8 +130,11 @@ speaker_normalized |>
       color = speaker
     )
   )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -102,7 +156,16 @@ speaker_rnearey <- speaker_data |>
     .L = median(.formant, na.rm = T),
     .names = "{.formant}_rnearey"
   )
+```
 
+```{r}
+#| code-fold: true
+#| code-summary: Plotting Code
+#| label: rnorm
+#| fig-align: center
+#| out-width: 60%
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 speaker_rnearey |> 
  ggplot(
     aes(
@@ -110,8 +173,11 @@ speaker_rnearey |>
       color = speaker
     )
   )+
-  stat_density_2d(
-    bins = 4
+  ggdensity::stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    alpha = 1,
+    fill = NA,
+    linewidth = 1
   )+
   scale_x_reverse()+
   scale_y_reverse()+
@@ -120,3 +186,4 @@ speaker_rnearey |>
     title = "Robust Nearey Normalized"
   )
 ```
+

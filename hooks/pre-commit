@@ -1,3 +1,4 @@
 #!/bin/sh
 quarto render README.qmd
 git add README.md
+git add man/figures/README-*
