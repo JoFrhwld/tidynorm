@@ -3,22 +3,38 @@ title: dct-experiment
 ---
 
 ```{r}
+library(tidynorm)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(reticulate)
+scipy <- import("scipy")
+p_dct <- scipy$fft$dct
+```
+
+```{r}
 x <- seq(0,1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 ```
 
 ```{r}
-plot(x, y)
+coefs <- dct(y, norm_forward = T)
+coefs
 ```
 
 ```{r}
-plot(dct(y))
+plot(idct(coefs))
 ```
 
 ```{r}
-idct(dct(y))
-```
-
-```{r}
-y
+speaker_tracks |> 
+  norm_track_nearey(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t
+  ) |> 
+  filter(
+    plt_vclass == "ay0"
+  )
 ```
