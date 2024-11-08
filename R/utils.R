@@ -169,10 +169,10 @@ wrap_up <- function(
     "*" = "normalized values in {.var {norm_names}}"
   )
 
-  if(length(grouping) > 0){
+  if(length(c(grouping, group_vars(.data))) > 0){
     message <- c(
       message,
-      "*" = "grouped by {.var {names(grouping)}}"
+      "*" = "grouped by {.var {c(names(grouping), group_vars(.data))}}"
     )
   }
 

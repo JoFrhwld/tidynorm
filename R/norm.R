@@ -147,41 +147,18 @@ norm_generic <- function(
       .formant = .pre_trans(!!sym(".formant"))
     )
 
-  # see if the data is grouped
-  grouped_by <- dplyr::group_vars(
-    .data
-  )
-
-  # augment grouping as necessary to
-  # match .by_formant
-  norm_grouping <- expr({{.by}})
-  if(.by_formant & length(grouped_by > 0)){
-    .data <- dplyr::group_by(
-      .data,
-      !!sym(".formant_name"),
-      .add = TRUE
-    )
-  } else if(.by_formant){
-    norm_grouping <- expr(c(!!norm_grouping, !!sym(".formant_name")))
-  }
-
-  if(.by_token & length(grouped_by > 0)){
-    .data <- dplyr::group_by(
-      .data,
-      !!sym(".id"),
-      .add = TRUE
-    )
-  } else if(.by_token){
-    norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
-  }
-
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!norm_grouping,
+  # process_norm is a generic to
+  # handle both grouped_df and
+  # ungrouped
+  .data <- process_norm(
+    .data=.data,
+    .by = {{.by}},
+    .by_formant = .by_formant,
+    .by_token = .by_token,
     .L = {{.L}},
     .S = {{.S}},
-    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S),
-    .formant = .post_trans(!!sym(".formant"))
+    .post_trans = .post_trans,
+    .names =  .names2
   )
 
   # set up value columns for pivoting
@@ -260,6 +237,102 @@ norm_generic <- function(
 
   return(.data)
 }
+
+#' generic
+#' @noRd
+process_norm <- function(
+    .data,
+    .by = NULL,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = 1,
+    .post_trans = \(x)x,
+    .names = "{.formant}_n"
+){
+   UseMethod("process_norm")
+}
+
+#' grouped process
+#' @noRd
+process_norm.grouped_df <- function(
+    .data,
+    .by = NULL,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = 1,
+    .post_trans = \(x) x,
+    .names = "{.formant}_n"
+){
+  # augment grouping as necessary to
+  # match .by_formant
+  if(.by_formant){
+    .data <- dplyr::group_by(
+      .data,
+      !!sym(".formant_name"),
+      .add = TRUE
+    )
+  }
+
+  if(.by_token){
+    .data <- dplyr::group_by(
+      .data,
+      !!sym(".id"),
+      .add = TRUE
+    )
+  }
+
+  .data <- dplyr::mutate(
+    .data,
+    .L = {{.L}},
+    .S = {{.S}},
+    "{.names}" := .post_trans((!!sym(".formant") - .L) / .S),
+    .formant = .post_trans(!!sym(".formant"))
+  )
+
+  return(.data)
+}
+
+#' process data.frame
+#' @noRd
+process_norm.data.frame <- function(
+    .data,
+    .by = NULL,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = 1,
+    .post_trans = \(x) x,
+    .names = "{.formant}_n"
+){
+  # see if the data is grouped
+  # augment grouping as necessary to
+  # match .by_formant
+  norm_grouping <- expr({{.by}})
+
+  if(.by_formant){
+    norm_grouping <- expr(c(!!norm_grouping, !!sym(".formant_name")))
+  }
+
+  if(.by_token){
+    norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
+  }
+
+  .data <- dplyr::mutate(
+    .data,
+    .by = !!norm_grouping,
+    .L = {{.L}},
+    .S = {{.S}},
+    "{.names}" := .post_trans((!!sym(".formant") - .L) / .S),
+    .formant = .post_trans(!!sym(".formant"))
+  )
+
+  return(.data)
+}
+
+registerS3method("process_norm", "grouped_df", process_norm.grouped_df)
+registerS3method("process_norm", "data.frame", process_norm.data.frame)
 
 #' Lobanov Normalize
 #' @inheritParams norm_generic
