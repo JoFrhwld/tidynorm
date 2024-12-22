@@ -63,6 +63,7 @@ theme_set(
 ```
 
 </details>
+
 <details class="code-fold">
 <summary>Plotting Code</summary>
 
