@@ -242,6 +242,18 @@ norm_track_generic <- function(
       .fn = \(x) stringr::str_remove(x, "_.formant")
     )
 
+  if(!.silent){
+    wrap_up(
+      .data,
+      target_pos,
+      {{.by}},
+      .by_formant,
+      .L,
+      .S,
+      .names
+    )
+  }
+
   return(normed_track)
 }
 

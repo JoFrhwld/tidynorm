@@ -152,11 +152,13 @@ wrap_up <- function(
     target_pos,
     .by,
     .by_formant,
+    .L,
+    .S,
     .names
 ){
   message <- c("Normalization info")
 
-  grouping <- tidyselect::eval_select(.by, data = .data)
+  grouping <- tidyselect::eval_select(enquo(.by), data = .data)
   target_names <- names(target_pos)
   message <- c(
     message,
@@ -175,6 +177,16 @@ wrap_up <- function(
       "*" = "grouped by {.var {names(grouping)}}"
     )
   }
+
+  # message <- c(
+  #   message,
+  #   "*" = glue::glue(
+  #     "L = {as_label(.L)}"
+  #   ),
+  #   "*" = glue::glue(
+  #     "S = {as_label(.S)}"
+  #   )
+  # )
 
   message <- c(
     message,

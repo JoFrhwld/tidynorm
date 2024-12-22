@@ -252,8 +252,10 @@ norm_generic <- function(
     wrap_up(
       .data,
       target_pos,
-      enquo(.by),
+      {{.by}},
       .by_formant,
+      .L,
+      .S,
       .names
     )
   }
