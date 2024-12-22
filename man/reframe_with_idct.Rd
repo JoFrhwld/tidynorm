@@ -10,7 +10,9 @@ reframe_with_idct(
   .token_id_col = NULL,
   .by = NULL,
   .param_col = NULL,
-  .n = 20
+  .n = 20,
+  .rate = FALSE,
+  .accel = FALSE
 )
 }
 \arguments{

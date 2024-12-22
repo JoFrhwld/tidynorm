@@ -2,22 +2,22 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cos_fun <- function(j, k, N) {
-    .Call('_tidynorm_cos_fun', PACKAGE = 'tidynorm', j, k, N)
+    .Call(`_tidynorm_cos_fun`, j, k, N)
 }
 
 idct_fun <- function(y, n) {
-    .Call('_tidynorm_idct_fun', PACKAGE = 'tidynorm', y, n)
+    .Call(`_tidynorm_idct_fun`, y, n)
 }
 
 idct_prime <- function(y, n) {
-    .Call('_tidynorm_idct_prime', PACKAGE = 'tidynorm', y, n)
+    .Call(`_tidynorm_idct_prime`, y, n)
 }
 
 idct_dprime <- function(y, n) {
-    .Call('_tidynorm_idct_dprime', PACKAGE = 'tidynorm', y, n)
+    .Call(`_tidynorm_idct_dprime`, y, n)
 }
 
 idct_interp <- function(y, n, p) {
-    .Call('_tidynorm_idct_interp', PACKAGE = 'tidynorm', y, n, p)
+    .Call(`_tidynorm_idct_interp`, y, n, p)
 }
 

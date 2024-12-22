@@ -158,22 +158,69 @@ dct_reg <- function(y, call = caller_env()){
 #'
 #' @export
 idct <- function(y, n = length(y)){
+  x <- idct_fun(y, n = n)
+  return(x)
+}
 
-  if(n == length(y)){
+#' Inverse Discrete Cosine Transform Rate
+#'
+#' The first derivative of the Inverse DCT
+#'
+#' @param y DCT coefficients
+#' @param n The desired length of the idct
+#'
+#' @details
+#' See the [dct].
+#'
+#' @returns
+#' A vector with the first derivative
+#' of the inverse DCT
+#'
+#'
+#' @examples
+#' x <- seq(0,1, length = 10)
+#' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+#'
+#' dct_coefs <- dct(y)
+#' y_rate <- idct_rate(dct_coefs)
+#'
+#' plot(y)
+#' plot(y_rate)
+#'
+#' @export
+idct_rate <- function(y, n = length(y)){
+  x <- idct_prime(y, n = n)
+  return(x)
+}
 
-    p <- fftw::planDCT(n, type = 2)
-    y[1] <- y[1] * sqrt(2)
-    y <- y * 2 * length(y)
-    x <- fftw::IDCT(y, plan = p, type = 2)
-
-  }else{
-
-    basis <- dct(diag(n), norm_forward = FALSE)
-    basis <- t(basis[,1:length(y)])
-    x <- (y %*% basis)[1,]
-
-  }
-
+#' Inverse Discrete Cosine Transform Acceleration
+#'
+#' The second derivative of the Inverse DCT
+#'
+#' @param y DCT coefficients
+#' @param n The desired length of the idct
+#'
+#' @details
+#' See the [dct].
+#'
+#' @returns
+#' A vector with the second derivative
+#' of the inverse DCT
+#'
+#'
+#' @examples
+#' x <- seq(0,1, length = 10)
+#' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+#'
+#' dct_coefs <- dct(y)
+#' y_accel <- idct_accel(dct_coefs)
+#'
+#' plot(y)
+#' plot(y_accel)
+#'
+#' @export
+idct_accel <- function(y, n = length(y)){
+  x <- idct_dprime(y, n = n)
   return(x)
 }
 
@@ -365,7 +412,9 @@ reframe_with_idct <- function(
     .token_id_col=NULL,
     .by = NULL,
     .param_col = NULL,
-    .n = 20
+    .n = 20,
+    .rate = FALSE,
+    .accel = FALSE
 ){
   targets <- expr(c(...))
   cols = enquos(
@@ -421,6 +470,19 @@ reframe_with_idct <- function(
       1
     )
 
+  if(!.rate & !.accel){
+    idct_operation <- \(x) idct(x, n = dplyr::first({{.n}}))
+  } else {
+    idct_operation <- list(
+      idct = \(x) idct(x, n = dplyr::first({{.n}}))
+    )
+    if(.rate){
+      idct_operation$rate = \(x) idct_prime(x, n = dplyr::first({{.n}}))
+    }
+    if(.accel){
+      idct_operation$accel = \(x) idct_dprime(x, n = dplyr::first({{.n}}))
+    }
+  }
 
   idct_df <- .data |>
     dplyr::reframe(
@@ -428,7 +490,7 @@ reframe_with_idct <- function(
       .time = 1:dplyr::first({{.n}}),
       dplyr::across(
         !!targets,
-        \(x) idct(x, n = dplyr::first({{.n}}))
+        idct_operation
       )
     )
 
@@ -573,5 +635,3 @@ reframe_with_dct_smooth <- function(
 
   return(.dct_smooth)
 }
-
-
