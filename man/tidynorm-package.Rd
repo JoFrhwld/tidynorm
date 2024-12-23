@@ -22,4 +22,8 @@ Useful links:
 \strong{Maintainer}: Josef Fruehwald \email{JoFrhwld@gmail.com}
 
 }
+\keyword{##}
 \keyword{internal}
+\keyword{namespace:}
+\keyword{start}
+\keyword{usethis}
