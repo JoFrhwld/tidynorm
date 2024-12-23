@@ -19,7 +19,12 @@ of the inverse DCT
 The second derivative of the Inverse DCT
 }
 \details{
-See the \link{dct}.
+Returns the second derivative (acceleration) of
+the Inverse DCT (see \link{dct} for more details).
+
+\deqn{
+\frac{\delta^2 x_j}{\delta j^2} = -2\left(\frac{\pi k}{J}\right)^2\sum_{k=1}^{N-1} y_k \cos\left(\frac{\pi k(2j+1)}{2J}\right)
+}
 }
 \examples{
 x <- seq(0,1, length = 10)

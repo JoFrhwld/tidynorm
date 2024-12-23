@@ -19,7 +19,12 @@ of the inverse DCT
 The first derivative of the Inverse DCT
 }
 \details{
-See the \link{dct}.
+Returns the first derivative (rate of change) of
+the Inverse DCT (see \link{dct} for more details).
+
+\deqn{
+\frac{\delta x_j}{\delta j} = -2\frac{\pi k}{J}\sum_{k=1}^{N-1} y_k \sin\left(\frac{\pi k(2j+1)}{2J}\right)
+}
 }
 \examples{
 x <- seq(0,1, length = 10)

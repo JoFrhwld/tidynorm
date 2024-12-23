@@ -10,7 +10,9 @@ reframe_with_dct_smooth(
   .token_id_col,
   .by = NULL,
   .time_col = NULL,
-  .order = 5
+  .order = 5,
+  .rate = F,
+  .accel = F
 )
 }
 \arguments{
@@ -27,6 +29,10 @@ expressions separated by commas. These should target the vowel formant.}
 
 \item{.order}{The number of DCT parameters to return. If \code{NA}, all DCT
 parameters will be returned.}
+
+\item{.rate}{Whether or not to include the rate of change of signal.}
+
+\item{.accel}{Whether or not to include acceleration of signal.}
 }
 \value{
 A data frame where the target columns have been smoothed using the

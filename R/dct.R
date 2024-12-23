@@ -141,7 +141,11 @@ dct_reg <- function(y, call = caller_env()){
 #' @param n The desired length of the idct
 #'
 #' @details
-#' See the [dct].
+#' Applies the Inverse DCT (see [dct] for more details).
+#'
+#' \deqn{
+#' x_j = \sqrt{2}y_0 + 2\sum_{k=1}^{N-1} y_k \cos\left(\frac{\pi k(2j+1)}{2J}\right)
+#' }
 #'
 #' @returns
 #' A vector with the inverse DCT values
@@ -170,7 +174,12 @@ idct <- function(y, n = length(y)){
 #' @param n The desired length of the idct
 #'
 #' @details
-#' See the [dct].
+#' Returns the first derivative (rate of change) of
+#' the Inverse DCT (see [dct] for more details).
+#'
+#' \deqn{
+#' \frac{\delta x_j}{\delta j} = -2\frac{\pi k}{J}\sum_{k=1}^{N-1} y_k \sin\left(\frac{\pi k(2j+1)}{2J}\right)
+#' }
 #'
 #' @returns
 #' A vector with the first derivative
@@ -201,7 +210,12 @@ idct_rate <- function(y, n = length(y)){
 #' @param n The desired length of the idct
 #'
 #' @details
-#' See the [dct].
+#' Returns the second derivative (acceleration) of
+#' the Inverse DCT (see [dct] for more details).
+#'
+#' \deqn{
+#' \frac{\delta^2 x_j}{\delta j^2} = -2\left(\frac{\pi k}{J}\right)^2\sum_{k=1}^{N-1} y_k \cos\left(\frac{\pi k(2j+1)}{2J}\right)
+#' }
 #'
 #' @returns
 #' A vector with the second derivative
@@ -376,6 +390,8 @@ reframe_with_dct <- function(
 #' @inheritParams reframe_with_dct
 #' @param .param_col A column identifying the DCT parameter number
 #' @param .n The size of the outcome of the IDCT
+#' @param .rate Whether or not to include the rate of change of signal.
+#' @param .accel Whether or not to include acceleration of signal.
 #'
 #' @details
 #' This will apply the Inverse Discrete Cosine Transform to the targeted
@@ -471,28 +487,36 @@ reframe_with_idct <- function(
     )
 
   if(!.rate & !.accel){
-    idct_operation <- \(x) idct(x, n = dplyr::first({{.n}}))
+    idct_df <- .data |>
+      dplyr::reframe(
+        .by = !!by_grouping,
+        .time = 1:dplyr::first({{.n}}),
+        dplyr::across(
+          !!targets,
+          \(x) idct(x, n = {{.n}}[1])
+        )
+      )
   } else {
     idct_operation <- list(
-      idct = \(x) idct(x, n = dplyr::first({{.n}}))
+      idct = \(x) idct(x, n = {{.n}}[1])
     )
     if(.rate){
-      idct_operation$rate = \(x) idct_prime(x, n = dplyr::first({{.n}}))
+      idct_operation$rate = \(x) idct_prime(x, {{.n}}[1])
     }
     if(.accel){
-      idct_operation$accel = \(x) idct_dprime(x, n = dplyr::first({{.n}}))
+      idct_operation$accel = \(x) idct_dprime(x, n = {{.n}}[1])
     }
-  }
 
-  idct_df <- .data |>
-    dplyr::reframe(
-      .by = !!by_grouping,
-      .time = 1:dplyr::first({{.n}}),
-      dplyr::across(
-        !!targets,
-        idct_operation
+    idct_df <- .data |>
+      dplyr::reframe(
+        .by = !!by_grouping,
+        .time = 1:({{.n}}[1]),
+        dplyr::across(
+          !!targets,
+          idct_operation
+        )
       )
-    )
+  }
 
   out_df <- dplyr::left_join(
     orig,
@@ -508,6 +532,7 @@ reframe_with_idct <- function(
 #' Apply a DCT Smooth to the targeted data
 #'
 #' @inheritParams reframe_with_dct
+#' @inheritParams reframe_with_idct
 #'
 #' @details
 #' This is roughly equivalent to applying [reframe_with_dct] followed by
@@ -551,7 +576,9 @@ reframe_with_dct_smooth <- function(
     .token_id_col,
     .by = NULL,
     .time_col = NULL,
-    .order = 5
+    .order = 5,
+    .rate = F,
+    .accel = F
 ){
   targets <- expr(...)
   cols = enquos(
@@ -580,6 +607,7 @@ reframe_with_dct_smooth <- function(
     {{.by}},
     {{.token_id_col}}
   )
+
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
@@ -598,7 +626,6 @@ reframe_with_dct_smooth <- function(
       )
   }
 
-
   .dct_data <- reframe_with_dct(
     .data,
     !!targets,
@@ -608,14 +635,15 @@ reframe_with_dct_smooth <- function(
     .order = .order
   )
 
-
   .dct_smooth <- reframe_with_idct(
     .dct_data,
     !!targets,
     .token_id_col = {{.token_id_col}},
     .by = !!by_grouping,
     .param_col = !!sym(".param"),
-    .n = !!sym(".n")
+    .n = !!sym(".n"),
+    .rate = .rate,
+    .accel = .accel
   )
 
   if(!quo_is_null(cols$.time_col)){
