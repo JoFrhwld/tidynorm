@@ -18,6 +18,7 @@ s01_dat <- read_csv(
 library(readr)
 speaker_tracks <- read_csv("../inst/extdata/speaker_tracks.csv")
 ```
+
 ```{r}
 speaker_tracks |> 
   filter(
@@ -33,7 +34,6 @@ speaker_tracks |>
 usethis::use_data(speaker_tracks, overwrite = TRUE)
 ```
 
-
 ```{r}
 plot(200:2000, hz_to_mel(200:2000))
 ```
@@ -46,7 +46,6 @@ speaker_data |>
   ) 
 ```
 
-
 ```{r}
 speaker_tracks |> 
   norm_track_lobanov(
@@ -56,6 +55,7 @@ speaker_tracks |>
     .time_col = t
   )
 ```
+
 ```{r}
 speaker_tracks |>
   norm_track_generic(
@@ -81,6 +81,7 @@ speaker_tracks |>
     .drop_orig = T
   ) 
 ```
+
 ```{r}
 speaker_tracks |> 
   filter(
@@ -97,6 +98,7 @@ small_tracks |>
     .time_col = t
   )
 ```
+
 ```{r}
 foo$call |> 
   purrr::map(as_label) |> 
@@ -117,6 +119,3 @@ bar <- function(x){
 ```{r}
 as.character(foo()$call[[1]])
 ```
-
-
-

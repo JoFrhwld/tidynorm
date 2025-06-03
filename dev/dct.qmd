@@ -23,7 +23,7 @@ coefs
 ```
 
 ```{r}
-plot(idct(coefs))
+plot(idct(coefs[1:5], n = 200))
 ```
 
 ```{r}
@@ -35,6 +35,35 @@ speaker_tracks |>
     .time_col = t
   ) |> 
   filter(
-    plt_vclass == "ay0"
+    plt_vclass == "ay0", 
+    id == 9
+  ) |> 
+  pull(F2)->
+  examp_f2
+```
+
+```{r}
+examp_dct2 <- dct(examp_f2)[1:5]
+```
+
+```{r}
+tibble(
+  y = idct(examp_dct, n = 200),
+  rate = idct_rate(examp_dct, n = 200),
+  accel = idct_accel(examp_dct, n = 200)
+) |> 
+  mutate(
+    time = (row_number()-1)/(n()-1)
+  ) |> 
+  ggplot(
+    aes(time, y)
+  )+
+  geom_point()+
+  geom_vline(
+    xintercept = c(0.15, 0.85)
   )
+```
+
+```{r}
+library(tidyverse)
 ```
