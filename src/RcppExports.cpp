@@ -23,6 +23,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dct_fun
+NumericVector dct_fun(NumericVector x, int kk);
+RcppExport SEXP _tidynorm_dct_fun(SEXP xSEXP, SEXP kkSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type kk(kkSEXP);
+    rcpp_result_gen = Rcpp::wrap(dct_fun(x, kk));
+    return rcpp_result_gen;
+END_RCPP
+}
 // idct_fun
 NumericVector idct_fun(NumericVector y, int n);
 RcppExport SEXP _tidynorm_idct_fun(SEXP ySEXP, SEXP nSEXP) {
@@ -75,6 +87,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_tidynorm_cos_fun", (DL_FUNC) &_tidynorm_cos_fun, 3},
+    {"_tidynorm_dct_fun", (DL_FUNC) &_tidynorm_dct_fun, 2},
     {"_tidynorm_idct_fun", (DL_FUNC) &_tidynorm_idct_fun, 2},
     {"_tidynorm_idct_prime", (DL_FUNC) &_tidynorm_idct_prime, 2},
     {"_tidynorm_idct_dprime", (DL_FUNC) &_tidynorm_idct_dprime, 2},

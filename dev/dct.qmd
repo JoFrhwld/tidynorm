@@ -23,6 +23,10 @@ coefs
 ```
 
 ```{r}
+idct_rate(coefs)
+```
+
+```{r}
 plot(idct(coefs[1:5], n = 200))
 ```
 

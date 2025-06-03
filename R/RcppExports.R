@@ -5,6 +5,10 @@ cos_fun <- function(j, k, N) {
     .Call(`_tidynorm_cos_fun`, j, k, N)
 }
 
+dct_fun <- function(x, kk) {
+    .Call(`_tidynorm_dct_fun`, x, kk)
+}
+
 idct_fun <- function(y, n) {
     .Call(`_tidynorm_idct_fun`, y, n)
 }

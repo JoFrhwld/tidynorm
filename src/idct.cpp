@@ -25,6 +25,25 @@ double sin_fun(double j, int k, int N){
 }
 
 // [[Rcpp::export]]
+NumericVector dct_fun(NumericVector x, int kk){
+  NumericVector j_vec = seqC(0, x.size()-1, x.size());
+  NumericVector y(kk);
+  int j_size = y.size();
+
+  for(int k = 0; k <= kk; ++k){
+    y[k] = 0;
+    for(int j; j < j_size; ++j){
+      y[k] += x[j] * cos_fun(j, k, j_size);
+    }
+    y[k] = y[k]/j_size;
+  }
+
+  return y;
+
+}
+
+
+// [[Rcpp::export]]
 NumericVector idct_fun(NumericVector y,int n){
   int N = y.size();
   // double adjust = (N*1.0)/(n*1.0);
