@@ -17,6 +17,7 @@ Imports:
     fftw,
     glue,
     purrr,
+    quickr,
     rlang,
     stringr,
     tidyr,
