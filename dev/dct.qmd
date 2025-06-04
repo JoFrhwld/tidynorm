@@ -16,8 +16,11 @@ p_dct <- scipy$fft$dct
 x <- seq(0,1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 y2 <- y
-y2[9] <- NA
+y2[7] <- NA
+```
 
+```{r}
+dct_fun(y, 5)
 ```
 
 ```{r}
@@ -85,4 +88,8 @@ tibble(
 
 ```{r}
 library(tidyverse)
+```
+
+```{r}
+matplot(cos_bank(20, 2))
 ```

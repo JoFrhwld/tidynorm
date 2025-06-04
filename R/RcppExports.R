@@ -7,8 +7,13 @@ cos_fun <- function(j, k, N) {
 }
 
 #' @export
-dct_fun <- function(x, kk = 0L, forward = 1L, orth = 1L) {
-    .Call(`_tidynorm_dct_fun`, x, kk, forward, orth)
+cos_bank <- function(jj, kk) {
+    .Call(`_tidynorm_cos_bank`, jj, kk)
+}
+
+#' @export
+dct_fun <- function(y, kk) {
+    .Call(`_tidynorm_dct_fun`, y, kk)
 }
 
 idct_fun <- function(y, n) {

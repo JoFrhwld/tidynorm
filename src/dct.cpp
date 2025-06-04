@@ -1,5 +1,5 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+// [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
 #include <math.h>
 using namespace Rcpp;
 
@@ -27,39 +27,42 @@ double sin_fun(double j, int k, int N){
 
 //' @export
 // [[Rcpp::export]]
-NumericVector dct_fun(
-    NumericVector x,
-    int kk = 0,
-    bool forward = 1,
-    bool orth = 1){
-  if(kk < 1){
-    kk = x.size();
-  }
-  NumericVector y(kk);
-  double j_size = x.size();
-  NumericVector j_vec = seqC(0, j_size-1, x.size());
-  NumericVector k_vec = seqC(0, kk-1, kk);
+arma::mat cos_bank(int jj, int kk){
+  arma::mat bank = arma::mat(jj, kk);
   double o = 1/sqrt(2);
-  double c = 1/j_size;
 
-  if(!forward){
-    c = 2;
-  }
-
-  if(!orth){
-    o = 1;
-  }
-
-  for(int k = 0; k < kk; ++k){
-    if(k>0){
-      o = 1;
-    }
-    for(int j=0; j < j_size; ++j){
-      y[k] += (x[j] * cos_fun(j_vec[j], k, j_size)) * c * o;
+  for(int j = 0; j < jj; ++j){
+    for(int k = 0; k < kk; ++k){
+      bank(j,k) = cos_fun(j, k, jj)*2;
     }
   }
 
-  return y;
+  bank.col(0) = bank.col(0) * o;
+
+  return bank;
+}
+
+//' @export
+// [[Rcpp::export]]
+NumericVector dct_fun(arma::vec y, int kk){
+
+  arma::mat x_init = cos_bank(y.size(), kk);
+  arma::uvec finites = arma::find_finite(y);
+  arma::vec y2 = y(arma::find_finite(y));
+  int nfinite = finites.n_rows;
+  arma::mat x(nfinite, kk);
+
+  int new_row = 0;
+  for(int i = 0; i < y.n_rows; ++i){
+    if(arma::is_finite(y.row(i))){
+      x.row(new_row) = x_init.row(i);
+      new_row +=1;
+    }
+  }
+
+  arma::vec coefs = arma::inv(x.t() * x) * x.t() * y2;
+
+  return NumericVector(wrap(coefs.col(0)));
 }
 
 
