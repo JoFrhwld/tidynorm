@@ -23,7 +23,7 @@ coefs
 ```
 
 ```{r}
-idct_rate(coefs)
+plot(idct_rate(coefs, n = 100))
 ```
 
 ```{r}
