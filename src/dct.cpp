@@ -24,6 +24,7 @@ double sin_fun(double j, int k, int N){
   return sin((M_PI*k*(2*j+1))/(2*N));
 }
 
+//' @export
 // [[Rcpp::export]]
 NumericVector dct_fun(NumericVector x, int kk){
   NumericVector j_vec = seqC(0, x.size()-1, x.size());
