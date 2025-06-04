@@ -15,6 +15,7 @@ NumericVector seqC(double startNum, double endNum, int n){
   return out;
 }
 
+//' @export
 // [[Rcpp::export]]
 double cos_fun(double j, int k, int N){
   return cos((M_PI*k*(2*j+1))/(2*N));
@@ -26,21 +27,39 @@ double sin_fun(double j, int k, int N){
 
 //' @export
 // [[Rcpp::export]]
-NumericVector dct_fun(NumericVector x, int kk){
-  NumericVector j_vec = seqC(0, x.size()-1, x.size());
+NumericVector dct_fun(
+    NumericVector x,
+    int kk = 0,
+    bool forward = 1,
+    bool orth = 1){
+  if(kk < 1){
+    kk = x.size();
+  }
   NumericVector y(kk);
-  int j_size = y.size();
+  double j_size = x.size();
+  NumericVector j_vec = seqC(0, j_size-1, x.size());
+  NumericVector k_vec = seqC(0, kk-1, kk);
+  double o = 1/sqrt(2);
+  double c = 1/j_size;
 
-  for(int k = 0; k <= kk; ++k){
-    y[k] = 0;
-    for(int j; j < j_size; ++j){
-      y[k] += x[j] * cos_fun(j, k, j_size);
+  if(!forward){
+    c = 2;
+  }
+
+  if(!orth){
+    o = 1;
+  }
+
+  for(int k = 0; k < kk; ++k){
+    if(k>0){
+      o = 1;
     }
-    y[k] = y[k]/j_size;
+    for(int j=0; j < j_size; ++j){
+      y[k] += (x[j] * cos_fun(j_vec[j], k, j_size)) * c * o;
+    }
   }
 
   return y;
-
 }
 
 

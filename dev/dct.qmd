@@ -15,11 +15,26 @@ p_dct <- scipy$fft$dct
 ```{r}
 x <- seq(0,1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+y2 <- y
+y2[9] <- NA
+
 ```
 
 ```{r}
 coefs <- dct(y, norm_forward = T)
-coefs
+p_dct(y2, norm = "forward", orthogonalize = TRUE)
+```
+
+```{r}
+cbind(dct_fun(y), p_dct(y, norm = "forward", orthogonalize = TRUE))
+```
+
+```{r}
+plot(idct(dct_fun(y2), n = 100))
+```
+
+```{r}
+cos_fun(2L, 1L, 10L)
 ```
 
 ```{r}

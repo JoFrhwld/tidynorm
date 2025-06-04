@@ -1,0 +1,30 @@
+---
+title: "cpp_tests"
+format: html
+editor: visual
+---
+
+```{r}
+library(Rcpp)
+```
+
+```{r}
+x <- seq(0,1, length = 10)
+y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+```
+
+```{r}
+sourceCpp("dct_test.cpp")
+```
+
+```{r}
+dct_fun2(y)
+```
+
+```{r}
+x = 0:10
+```
+
+```{r}
+x == 0
+```
