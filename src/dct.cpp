@@ -15,7 +15,6 @@ NumericVector seqC(double startNum, double endNum, int n){
   return out;
 }
 
-//' @export
 // [[Rcpp::export]]
 double cos_fun(double j, int k, int N){
   return cos((M_PI*k*(2*j+1))/(2*N));
@@ -25,7 +24,6 @@ double sin_fun(double j, int k, int N){
   return sin((M_PI*k*(2*j+1))/(2*N));
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat cos_bank(int jj, int kk){
   arma::mat bank = arma::mat(jj, kk);
@@ -42,7 +40,6 @@ arma::mat cos_bank(int jj, int kk){
   return bank;
 }
 
-//' @export
 // [[Rcpp::export]]
 NumericVector dct_fun(arma::vec y, int kk){
 
