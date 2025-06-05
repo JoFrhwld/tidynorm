@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   normalizaton-overview: normalizaton-overview.html
-last_built: 2025-06-05T20:11Z
+last_built: 2025-06-05T20:21Z
 urls:
   reference: https://jofrhwld.github.io/tidynorm/reference
   article: https://jofrhwld.github.io/tidynorm/articles
