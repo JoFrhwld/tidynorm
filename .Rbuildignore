@@ -17,3 +17,4 @@ dev
 ^vignettes/*_html$
 ^vignettes/.quarto
 .python-version
+inst/extdata/speaker_tracks.csv

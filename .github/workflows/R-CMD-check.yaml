@@ -49,8 +49,10 @@ jobs:
       - name: install locally
         shell: Rscript {0}
         run: |
-          install.packages("devtools")
-          devtools::install()
+          if(.Platform$OS.type == "windows"){
+            install.packages("devtools")
+            devtools::install()
+          }
 
       - uses: r-lib/actions/check-r-package@v2
         with:
