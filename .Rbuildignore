@@ -16,3 +16,4 @@ dev
 ^vignettes/*_files$
 ^vignettes/*_html$
 ^vignettes/.quarto
+.python-version
