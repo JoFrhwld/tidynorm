@@ -205,7 +205,7 @@ idct_accel <- function(y, n = length(y)) {
   return(x)
 }
 
-#' Reframe DCT
+#' Reframe with DCT
 #'
 #' Reframe data columns using the Discrete Cosine Transform
 #'
@@ -490,7 +490,7 @@ reframe_with_idct <- function(
   return(out_df)
 }
 
-#' Reframe as DCT Smooth
+#' Reframe with DCT Smooth
 #'
 #' Apply a DCT Smooth to the targeted data
 #'
@@ -527,7 +527,8 @@ reframe_with_idct <- function(
 #'
 #' @returns
 #' A data frame where the target columns have been smoothed using the
-#' DCT.
+#' DCT, as well as the signal rate of change and acceleration,
+#' if requested.
 #'
 #' @example inst/examples/ex-reframe_with_dct_smooth.R
 #'
