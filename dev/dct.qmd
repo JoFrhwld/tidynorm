@@ -93,3 +93,42 @@ library(tidyverse)
 ```{r}
 matplot(cos_bank(20, 2))
 ```
+
+```{r}
+speaker_tracks
+```
+
+```{r}
+speaker_tracks |> 
+  reframe_with_dct(
+   F1:F3,
+  .by = speaker,
+  .token_id_col = id,
+  .time_col = t
+)
+```
+
+```{r}
+speaker_tracks  |> 
+  reframe_with_dct_smooth(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t,
+    .rate = T
+  )
+  # reframe_with_dct(
+  #   F1:F3, 
+  #   .by = speaker,
+  #   .token_id_col = id,
+  #   .time_col = t
+  # ) |> 
+  # reframe_with_idct(
+  #   F1:F3,
+  #   .by = speaker,
+  #   .token_id_col = id,
+  #   .param_col = .param,
+  #   .rate = T,
+  #   .n = 10
+  # )
+```

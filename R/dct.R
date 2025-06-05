@@ -79,31 +79,19 @@ dct_k <- function(x, k, norm_forward = TRUE){
 #' DCT numeric
 #' @export
 #' @keywords internal
-dct.numeric <- function(x, norm_forward = TRUE){
+dct.numeric <- function(x){
 
-  p <- fftw::planDCT(x, type = 2)
-  coefs <- fftw::DCT(x, plan = p)
-  coefs[1] <- coefs[1]/sqrt(2)
-
-  if(norm_forward){
-    coefs <- (coefs/2)/length(x)
-  }
-
+  coefs = dct_fun(x, kk = length(x))
   return(coefs)
 
-  # nk <- length(x)
-  # sapply(
-  #   0:(nk-1),
-  #   \(k) dct_k(x, k, norm_forward = norm_forward)
-  # )
 }
 
 #' DCT matrix
 #' @export
 #' @keywords internal
-dct.matrix <- function(x, norm_forward = TRUE){
+dct.matrix <- function(x){
 
-  t(apply(x, MARGIN = 1, \(z) dct.numeric(z, norm_forward = norm_forward)))
+  t(apply(x, MARGIN = 1, \(z) dct.numeric(z)))
 }
 
 registerS3method("dct", "numeric", method = dct.numeric)
@@ -352,7 +340,7 @@ reframe_with_dct <- function(
 
   dct_df <- .data |>
     dplyr::mutate(
-      .by =!!by_grouping,
+      .by = !!by_grouping,
       dplyr::across(
         !!targets,
         \(x){
@@ -368,7 +356,7 @@ reframe_with_dct <- function(
       .param = (1:!!order)-1,
       dplyr::across(
         !!targets,
-        \(x) dct_reg(x)[1:!!order]
+        \(x) dct(x)[1:!!order]
       ),
       .n = dplyr::n()
     )
@@ -641,7 +629,7 @@ reframe_with_dct_smooth <- function(
     .token_id_col = {{.token_id_col}},
     .by = !!by_grouping,
     .param_col = !!sym(".param"),
-    .n = !!sym(".n"),
+    .n = first(!!sym(".n")),
     .rate = .rate,
     .accel = .accel
   )

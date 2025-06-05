@@ -4,7 +4,7 @@
 \alias{dct.numeric}
 \title{DCT numeric}
 \usage{
-\method{dct}{numeric}(x, norm_forward = TRUE)
+\method{dct}{numeric}(x)
 }
 \description{
 DCT numeric
