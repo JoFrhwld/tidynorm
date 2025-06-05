@@ -14,11 +14,9 @@ RoxygenNote: 7.3.2
 Imports: 
     cli,
     dplyr,
-    fftw,
     glue,
     purrr,
     Rcpp,
-    RcppArmadillo,
     rlang,
     stringr,
     tidyr,
