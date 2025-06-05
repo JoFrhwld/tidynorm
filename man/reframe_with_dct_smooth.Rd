@@ -2,7 +2,7 @@
 % Please edit documentation in R/dct.R
 \name{reframe_with_dct_smooth}
 \alias{reframe_with_dct_smooth}
-\title{Reframe as DCT Smooth}
+\title{Reframe with DCT Smooth}
 \usage{
 reframe_with_dct_smooth(
   .data,
@@ -36,7 +36,8 @@ parameters will be returned.}
 }
 \value{
 A data frame where the target columns have been smoothed using the
-DCT.
+DCT, as well as the signal rate of change and acceleration,
+if requested.
 }
 \description{
 Apply a DCT Smooth to the targeted data
