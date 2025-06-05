@@ -129,7 +129,7 @@ dct_reg <- function(y, call = caller_env()) {
 #'
 #' @export
 idct <- function(y, n = length(y)) {
-  x <- idct_fun(y, n = n)
+  x <- idct_fun(y, n = n)[,1]
   return(x)
 }
 

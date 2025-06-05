@@ -64,19 +64,11 @@ NumericVector dct_fun(arma::vec y, int kk){
 
 
 // [[Rcpp::export]]
-NumericVector idct_fun(NumericVector y,int n){
+NumericVector idct_fun(arma::vec y, int n){
   int N = y.size();
-  // double adjust = (N*1.0)/(n*1.0);
-  NumericVector j = seqC(0, n-1, n);
-  NumericVector x(n);
+  arma::mat basis = cos_bank(n, N);
+  NumericVector x = NumericVector(wrap(basis * y));
 
-  for(int i = 0; i < n; ++i){
-    for(int k = 1; k < N; ++k){
-      //x[i] = adjust;
-      x[i] += y[k] * cos_fun(j[i], k, n);
-    }
-    x[i] = (2*x[i]) + (sqrt(2) * y[0]);
-  }
   return x;
 }
 
@@ -93,6 +85,7 @@ NumericVector idct_prime(NumericVector y,int n){
       x[i] += (-2 * y[k] * midterm * sin_fun(j[i], k, n));
     }
   }
+
   return x;
 }
 

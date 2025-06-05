@@ -49,12 +49,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // idct_fun
-NumericVector idct_fun(NumericVector y, int n);
+NumericVector idct_fun(arma::vec y, int n);
 RcppExport SEXP _tidynorm_idct_fun(SEXP ySEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     rcpp_result_gen = Rcpp::wrap(idct_fun(y, n));
     return rcpp_result_gen;
