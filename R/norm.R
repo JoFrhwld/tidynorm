@@ -324,9 +324,9 @@ norm_lobanov <- function(
     .silent = .silent
   )
 
-  # norminfo <- attr(.data, "norminfo")
-  # norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
-  # attr(.data, "norminfo") <- norminfo
+  norminfo <- attr(.data, "norminfo")
+  norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
+  attr(.data, "norminfo") <- norminfo
 
   return(.data)
 }
