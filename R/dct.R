@@ -55,7 +55,7 @@
 #' dct_coefs <- dct(y)
 #'
 #' @export
-dct <- function(x, norm_forward = TRUE) {
+dct <- function(x) {
   UseMethod("dct")
 }
 
