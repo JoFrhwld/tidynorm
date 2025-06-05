@@ -9,6 +9,3 @@
 #' @useDynLib tidynorm, .registration = TRUE
 ## usethis namespace: end
 "_PACKAGE"
-
-
-

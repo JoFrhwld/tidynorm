@@ -13,7 +13,7 @@ p_dct <- scipy$fft$dct
 ```
 
 ```{r}
-x <- seq(0,1, length = 10)
+x <- seq(0, 1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 y2 <- y
 y2[7] <- NA
@@ -49,19 +49,19 @@ plot(idct(coefs[1:5], n = 200))
 ```
 
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   norm_track_nearey(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   filter(
-    plt_vclass == "ay0", 
+    plt_vclass == "ay0",
     id == 9
-  ) |> 
-  pull(F2)->
-  examp_f2
+  ) |>
+  pull(F2) ->
+examp_f2
 ```
 
 ```{r}
@@ -73,14 +73,14 @@ tibble(
   y = idct(examp_dct, n = 200),
   rate = idct_rate(examp_dct, n = 200),
   accel = idct_accel(examp_dct, n = 200)
-) |> 
+) |>
   mutate(
-    time = (row_number()-1)/(n()-1)
-  ) |> 
+    time = (row_number() - 1) / (n() - 1)
+  ) |>
   ggplot(
     aes(time, y)
-  )+
-  geom_point()+
+  ) +
+  geom_point() +
   geom_vline(
     xintercept = c(0.15, 0.85)
   )
@@ -99,17 +99,17 @@ speaker_tracks
 ```
 
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   reframe_with_dct(
-   F1:F3,
-  .by = speaker,
-  .token_id_col = id,
-  .time_col = t
-)
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id,
+    .time_col = t
+  )
 ```
 
 ```{r}
-speaker_tracks  |> 
+speaker_tracks |>
   reframe_with_dct_smooth(
     F1:F3,
     .by = speaker,
@@ -117,18 +117,18 @@ speaker_tracks  |>
     .time_col = t,
     .rate = T
   )
-  # reframe_with_dct(
-  #   F1:F3, 
-  #   .by = speaker,
-  #   .token_id_col = id,
-  #   .time_col = t
-  # ) |> 
-  # reframe_with_idct(
-  #   F1:F3,
-  #   .by = speaker,
-  #   .token_id_col = id,
-  #   .param_col = .param,
-  #   .rate = T,
-  #   .n = 10
-  # )
+# reframe_with_dct(
+#   F1:F3,
+#   .by = speaker,
+#   .token_id_col = id,
+#   .time_col = t
+# ) |>
+# reframe_with_idct(
+#   F1:F3,
+#   .by = speaker,
+#   .token_id_col = id,
+#   .param_col = .param,
+#   .rate = T,
+#   .n = 10
+# )
 ```

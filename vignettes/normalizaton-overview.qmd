@@ -45,22 +45,26 @@ library(ggdensity)
 options(
   ggplot2.discrete.colour = c(
     lapply(
-      1:6, 
-      \(x) c("#4477AA", "#EE6677", "#228833", 
-             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
     )
   ),
   ggplot2.discrete.fill = c(
     lapply(
-      1:6, 
-      \(x) c("#4477AA", "#EE6677", "#228833", 
-             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
     )
-  )  
+  )
 )
 
 theme_set(
-  theme_minimal(base_size = 16)+
+  theme_minimal(base_size = 16) +
     theme(
       panel.grid = element_blank()
     )
@@ -70,7 +74,7 @@ theme_set(
 Vowel formant frequencies are heavily influenced by speakers' vocal tract length, such that equivalent vowels can have dramatically different formant frequencies
 
 ```{r}
-speaker_data |> 
+speaker_data |>
   summarise(
     .by = c(speaker, vowel),
     across(
@@ -78,7 +82,7 @@ speaker_data |>
       \(x)mean(x, na.rm = T)
     )
   ) ->
-  speaker_means
+speaker_means
 ```
 
 ```{r}
@@ -87,41 +91,40 @@ speaker_data |>
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
 #| fig-align: center
 #| out-width: 80%
-speaker_means |> 
+speaker_means |>
   filter(
-    vowel %in% c("IY","UW","AE","AA")
-  ) |> 
+    vowel %in% c("IY", "UW", "AE", "AA")
+  ) |>
   ggplot(
     aes(F2, F1)
-  )+
+  ) +
   geom_label(
     aes(
       label = vowel,
       fill = speaker
     ),
     color = "white"
-  )+
-  scale_y_reverse()+
+  ) +
+  scale_y_reverse() +
   scale_x_reverse()
-
 ```
 
 ```{r}
 #| code-fold: true
 #| code-summary: Vowel Comparison
-speaker_means |> 
+speaker_means |>
   filter(
-    vowel %in% c("IY","UW","AE","AA")
-  ) |>   
+    vowel %in% c("IY", "UW", "AE", "AA")
+  ) |>
   pivot_longer(
     F1:F3,
     names_to = ".formant_name",
     values_to = ".formant"
-  ) |> 
+  ) |>
   pivot_wider(
     names_from = vowel,
     values_from = .formant
-  ) |> 
+  ) |>
   arrange(
     .formant_name
   )
@@ -139,44 +142,44 @@ When speakers s01 and s03 in the `speakers_data` data set have very different vo
 #| out-width: 80%
 #| code-fold: true
 #| code-summary: Plotting code
-speaker_centers <- speaker_data |> 
+speaker_centers <- speaker_data |>
   summarise(
     .by = speaker,
     across(
       F1:F3,
-      ~mean(.x, na.rm = T)
+      ~ mean(.x, na.rm = T)
     )
   )
 
-speaker_data |> 
+speaker_data |>
   ggplot(
     aes(F2, F1, color = speaker)
-  )+
+  ) +
   stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     fill = NA,
     alpha = 1,
     linewidth = 1
-  )+
+  ) +
   geom_point(
     data = speaker_centers,
     size = 5
-  )+
-  scale_x_reverse()+
+  ) +
+  scale_x_reverse() +
   scale_y_reverse()
 ```
 
 One approach to moving speakers center points to a common location is to subtract the mean from both F1 and F2.
 
 ```{r}
-speaker_data_centered <- speaker_data |> 
- mutate(
+speaker_data_centered <- speaker_data |>
+  mutate(
     .by = speaker,
     across(
       F1:F3,
-      ~.x - mean(.x, na.rm = T)
+      ~ .x - mean(.x, na.rm = T)
     )
-  ) 
+  )
 ```
 
 Now s01 and s03's center points have a common location, but the scale of s03's vowels is still smaller than s01's.
@@ -187,7 +190,7 @@ Now s01 and s03's center points have a common location, but the scale of s03's v
 #| out-width: 80%
 #| code-fold: true
 #| code-summary: Plotting code
-speaker_data_centered |> 
+speaker_data_centered |>
   ggplot(
     aes(F2, F1, color = speaker)
   ) +
@@ -196,28 +199,28 @@ speaker_data_centered |>
     fill = NA,
     alpha = 1,
     linewidth = 1
-  )+
+  ) +
   geom_point(
     data = tibble(),
     aes(x = 0, y = 0),
     color = "black",
     size = 5,
-  )+
-  scale_y_reverse()+
+  ) +
+  scale_y_reverse() +
   scale_x_reverse()
 ```
 
 An approach to putting speakers' vowel spaces on a common scale is to divide by the standard deviation.
 
 ```{r}
-speaker_data_scaled <- speaker_data |> 
+speaker_data_scaled <- speaker_data |>
   mutate(
     .by = speaker,
     across(
       F1:F3,
-      ~.x/sd(.x, na.rm = T)
+      ~ .x / sd(.x, na.rm = T)
     )
-  ) 
+  )
 ```
 
 The result is two vowel spaces with center points in the same location, and on a common scale.
@@ -228,30 +231,30 @@ The result is two vowel spaces with center points in the same location, and on a
 #| out-width: 80%
 #| code-fold: true
 #| code-summary: Plotting code
-speaker_data_scaled |> 
+speaker_data_scaled |>
   mutate(
     .by = speaker,
     across(
       F1:F3,
-      ~(.x - mean(.x, na.rm = T))/sd(.x, na.rm = T)
+      ~ (.x - mean(.x, na.rm = T)) / sd(.x, na.rm = T)
     )
-  ) |> 
+  ) |>
   ggplot(
     aes(F2, F1, color = speaker)
-  )+
- stat_hdr(
+  ) +
+  stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     fill = NA,
     alpha = 1,
     linewidth = 1
-  )+
+  ) +
   geom_point(
     data = tibble(),
     aes(x = 0, y = 0),
     color = "black",
     size = 5,
-  )+  
-  scale_y_reverse()+
+  ) +
+  scale_y_reverse() +
   scale_x_reverse()
 ```
 
@@ -292,7 +295,7 @@ $$
 This can be expressed with `norm_generic()` like so
 
 ```{r}
-speaker_data |> 
+speaker_data |>
   norm_generic(
     F1:F3,
     .by = speaker,
@@ -300,25 +303,25 @@ speaker_data |>
     .by_token = FALSE,
     .L = 0,
     .S = mean(
-      .formant/(.formant_num - 0.5), 
+      .formant / (.formant_num - 0.5),
       na.rm = T
     ),
     .names = "{.formant}_df"
-  )->
-  speaker_df_norm
+  ) ->
+speaker_df_norm
 ```
 
 ```{r}
 ggplot(
-  speaker_df_norm, 
+  speaker_df_norm,
   aes(F2_df, F1_df, color = speaker)
-)+
+) +
   stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     fill = NA,
     alpha = 1,
     linewidth = 1
-  )+
-  scale_y_reverse()+
+  ) +
+  scale_y_reverse() +
   scale_x_reverse()
 ```

@@ -74,22 +74,21 @@
 #' @example inst/examples/ex-norm_generic.R
 #' @export
 norm_generic <- function(
-  .data,
-  ...,
-  .by = NULL,
-  .by_formant = FALSE,
-  .by_token = FALSE,
-  .L = 0,
-  .S = 1,
-  .pre_trans = \(x)x,
-  .post_trans = \(x)x,
-  .drop_orig = FALSE,
-  .keep_params = FALSE,
-  .names = "{.formant}_n",
-  .silent = FALSE,
-  .call = caller_env()
-){
-  if(env_name(.call) == "global"){
+    .data,
+    ...,
+    .by = NULL,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = 1,
+    .pre_trans = \(x)x,
+    .post_trans = \(x)x,
+    .drop_orig = FALSE,
+    .keep_params = FALSE,
+    .names = "{.formant}_n",
+    .silent = FALSE,
+    .call = caller_env()) {
+  if (env_name(.call) == "global") {
     .call <- current_env()
   }
 
@@ -107,11 +106,12 @@ norm_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-  check_grouping(.data, {{.by}}, call = .call)
+  check_grouping(.data, {{ .by }}, call = .call)
 
-  #grouping <- rlang::enquo(.by)
+  # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
-    enquo(.by), data = .data
+    enquo(.by),
+    data = .data
   )
 
   target_pos <- try_fetch(
@@ -154,39 +154,39 @@ norm_generic <- function(
 
   # augment grouping as necessary to
   # match .by_formant
-  norm_grouping <- expr({{.by}})
-  if(.by_formant & length(grouped_by > 0)){
+  norm_grouping <- expr({{ .by }})
+  if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
       .data,
       !!sym(".formant_name"),
       .add = TRUE
     )
-  } else if(.by_formant){
+  } else if (.by_formant) {
     norm_grouping <- expr(c(!!norm_grouping, !!sym(".formant_name")))
   }
 
-  if(.by_token & length(grouped_by > 0)){
+  if (.by_token & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
       .data,
       !!sym(".id"),
       .add = TRUE
     )
-  } else if(.by_token){
+  } else if (.by_token) {
     norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
   }
 
   .data <- dplyr::mutate(
     .data,
     .by = !!norm_grouping,
-    .L = {{.L}},
-    .S = {{.S}},
+    .L = {{ .L }},
+    .S = {{ .S }},
     "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S),
     .formant = .post_trans(!!sym(".formant"))
   )
 
   # set up value columns for pivoting
   # back wide
-  if(!.keep_params){
+  if (!.keep_params) {
     .data <- dplyr::select(
       .data,
       -c(!!sym(".L"), !!sym(".S"))
@@ -204,7 +204,7 @@ norm_generic <- function(
     values_from = c(
       tidyselect::starts_with(".formant") & !tidyselect::all_of(".formant_name"),
       tidyselect::any_of(c(".L", ".S"))
-      ),
+    ),
     names_glue = "{.formant_name}_{.value}"
   )
 
@@ -228,7 +228,7 @@ norm_generic <- function(
   )
 
   # if .drop_orig
-  if(.drop_orig){
+  if (.drop_orig) {
     .data <- dplyr::select(
       .data,
       -(!!targets)
@@ -248,7 +248,7 @@ norm_generic <- function(
     )
   )
 
-  if(!.silent){
+  if (!.silent) {
     wrap_up(
       .data,
       target_pos,
@@ -302,8 +302,7 @@ norm_lobanov <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -313,7 +312,7 @@ norm_lobanov <- function(
   .data <- norm_generic(
     .data,
     !!targets,
-    .by = {{.by}},
+    .by = {{ .by }},
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -330,7 +329,6 @@ norm_lobanov <- function(
   # attr(.data, "norminfo") <- norminfo
 
   return(.data)
-
 }
 
 #' Nearey Normalize
@@ -377,8 +375,7 @@ norm_nearey <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -388,7 +385,7 @@ norm_nearey <- function(
   .data <- norm_generic(
     .data,
     !!targets,
-    .by = {{.by}},
+    .by = {{ .by }},
     .pre_trans = log,
     .post_trans = \(x)x,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -405,7 +402,6 @@ norm_nearey <- function(
   attr(.data, "norminfo") <- norminfo
 
   return(.data)
-
 }
 
 #' Delta F Normalize
@@ -445,8 +441,7 @@ norm_deltaF <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -456,11 +451,11 @@ norm_deltaF <- function(
   .data <- norm_generic(
     .data,
     !!targets,
-    .by = {{.by}},
+    .by = {{ .by }},
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .L = 0,
-    .S = mean(!!sym(".formant")/(!!sym(".formant_num")-0.5), na.rm = T),
+    .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .by_formant = FALSE,
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
@@ -473,7 +468,6 @@ norm_deltaF <- function(
   attr(.data, "norminfo") <- norminfo
 
   return(.data)
-
 }
 
 #' Watt & Fabricius Normalize
@@ -518,8 +512,7 @@ norm_wattfab <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -529,7 +522,7 @@ norm_wattfab <- function(
   .data <- norm_generic(
     .data,
     !!targets,
-    .by = {{.by}},
+    .by = {{ .by }},
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .L = 0,
@@ -581,8 +574,7 @@ norm_barkz <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -592,7 +584,7 @@ norm_barkz <- function(
   .data <- norm_generic(
     .data,
     !!targets,
-    .by = {{.by}},
+    .by = {{ .by }},
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,
     .L = (!!sym(".formant"))[3],

@@ -101,7 +101,7 @@ norm_track_generic <- function(
     .by_token = FALSE,
     .time_col = NULL,
     .L = 0,
-    .S = 1/sqrt(2),
+    .S = 1 / sqrt(2),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
     .order = 5,
@@ -109,10 +109,9 @@ norm_track_generic <- function(
     .drop_orig = FALSE,
     .names = "{.formant}_n",
     .silent = FALSE,
-    .call = caller_env()
-){
-  if(env_name(.call) == "global"){
-    .call2 = current_env()
+    .call = caller_env()) {
+  if (env_name(.call) == "global") {
+    .call2 <- current_env()
   }
   args <- names(call_match())
   fmls <- names(fn_fmls())
@@ -120,7 +119,7 @@ norm_track_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-  .names2 <- glue::glue(.names, .formant=".formant")
+  .names2 <- glue::glue(.names, .formant = ".formant")
 
   targets <- expr(c(...))
   target_pos <- tidyselect::eval_select(targets, .data)
@@ -130,30 +129,30 @@ norm_track_generic <- function(
     .time_col = .time_col
   )
 
-  for(x in cols){
+  for (x in cols) {
     try_fetch(
       tidyselect::eval_select(x, data = .data),
       error = \(cnd) selection_errors(cnd)
     )
   }
 
-  check_grouping(.data, {{.by}}, .call)
+  check_grouping(.data, {{ .by }}, .call)
 
   grouping_list <- make_dct_grouping(
     .data,
-    {{.by}},
-    {{.token_id_col}}
+    {{ .by }},
+    {{ .token_id_col }}
   )
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
 
-  if(!quo_is_null(cols$.time_col)){
-    .time_data <- dplyr::arrange(.data, {{.time_col}}) |>
+  if (!quo_is_null(cols$.time_col)) {
+    .time_data <- dplyr::arrange(.data, {{ .time_col }}) |>
       dplyr::select(
-        {{.by}},
-        {{.token_id_col}},
-        {{.time_col}},
+        {{ .by }},
+        {{ .token_id_col }},
+        {{ .time_col }},
         dplyr::group_cols()
       ) |>
       dplyr::mutate(
@@ -172,34 +171,34 @@ norm_track_generic <- function(
     dplyr::mutate(
       across(
         !!targets,
-        .fns=\(x) .pre_trans(x)
+        .fns = \(x) .pre_trans(x)
       )
     ) |>
     reframe_with_dct(
       !!targets,
-      .token_id_col = {{.token_id_col}},
+      .token_id_col = {{ .token_id_col }},
       .by = !!by_grouping,
-      .time_col = {{.time_col}},
+      .time_col = {{ .time_col }},
       .order = .order
     )
 
   normed <- norm_dct_generic(
     .dct_data,
     !!targets,
-    .token_id_col = {{.token_id_col}},
-    .by = {{.by}},
+    .token_id_col = {{ .token_id_col }},
+    .by = {{ .by }},
     .by_formant = .by_formant,
     .by_token = .by_token,
     .param_col = !!sym(".param"),
-    .L = {{.L}},
-    .S = {{.S}},
+    .L = {{ .L }},
+    .S = {{ .S }},
     .names = .names2,
     .silent = FALSE,
     .drop_orig = .drop_orig,
     .call = current_env()
   )
 
-  if(.return_dct){
+  if (.return_dct) {
     normed <- normed |>
       dplyr::rename_with(
         .fn = \(x) stringr::str_remove(x, "_.formant")
@@ -210,8 +209,8 @@ norm_track_generic <- function(
   normed_track <- reframe_with_idct(
     normed,
     matches("_.formant"),
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .param_col = !!sym(".param"),
     .n = !!sym(".n")
   ) |>
@@ -222,7 +221,7 @@ norm_track_generic <- function(
       )
     )
 
-  if(!quo_is_null(cols$.time_col)){
+  if (!quo_is_null(cols$.time_col)) {
     normed_track <- normed_track |>
       dplyr::select(
         -sym(".time")
@@ -308,22 +307,21 @@ norm_dct_generic <- function(
     .by = NULL,
     .param_col = NULL,
     .L = 0,
-    .S = 1/sqrt(2),
+    .S = 1 / sqrt(2),
     .by_formant = FALSE,
     .by_token = FALSE,
     .names = "{.formant}_n",
     .silent = FALSE,
     .drop_orig = FALSE,
-    .call = caller_env()
-){
-  if(env_name(.call) == "global"){
-    .call2 = current_env()
+    .call = caller_env()) {
+  if (env_name(.call) == "global") {
+    .call2 <- current_env()
   }
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls, .call2)
 
-  .names <- glue::glue(.names, .formant=".formant")
+  .names <- glue::glue(.names, .formant = ".formant")
 
   targets <- expr(c(...))
   cols <- enquos(
@@ -332,19 +330,19 @@ norm_dct_generic <- function(
     .param_col = .param_col
   )
 
-  for(x in cols){
+  for (x in cols) {
     try_fetch(
       tidyselect::eval_select(x, data = .data),
       error = \(cnd) selection_errors(cnd)
     )
   }
 
-  check_grouping(.data, {{.by}}, .call)
+  check_grouping(.data, {{ .by }}, .call)
 
   grouping_list <- make_dct_grouping(
     .data,
-    {{.by}},
-    {{.token_id_col}}
+    {{ .by }},
+    {{ .token_id_col }}
   )
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
@@ -356,20 +354,20 @@ norm_dct_generic <- function(
       names_to = ".formant_name",
       values_to = ".formant"
     ) |>
-      dplyr::mutate(
-        .formant_num = stringr::str_extract(
-          !!sym(".formant_name"),
-          r"{\d}"
-        ) |>
-          as.numeric()
-      )
+    dplyr::mutate(
+      .formant_num = stringr::str_extract(
+        !!sym(".formant_name"),
+        r"{\d}"
+      ) |>
+        as.numeric()
+    )
 
   grouped_by <- length(dplyr::group_vars(.dct_data)) > 0
 
   # augment grouping as necessary to
   # match .by_formant
-  #byformant <- NULL
-  if(.by_formant & grouped_by){
+  # byformant <- NULL
+  if (.by_formant & grouped_by) {
     .dct_data <- dplyr::group_by(
       .dct_data,
       !!sym(".formant_name"),
@@ -377,50 +375,50 @@ norm_dct_generic <- function(
     )
     by_grouping2 <- expr(NULL)
     by_grouping_noid <- expr(NULL)
-  }else if (.by_token & grouped_by){
+  } else if (.by_token & grouped_by) {
     .dct_data <- dplyr::group_by(
       .dct_data,
-      {{.token_id_col}},
+      {{ .token_id_col }},
       .add = TRUE
     )
     by_grouping2 <- expr(NULL)
     by_grouping_noid <- expr(NULL)
-  } else if(grouped_by){
+  } else if (grouped_by) {
     by_grouping2 <- expr(NULL)
     by_grouping_noid <- expr(NULL)
-  }else if(.by_formant){
+  } else if (.by_formant) {
     by_grouping2 <- expr(c(!!by_grouping, sym(".formant_name")))
-    by_grouping_noid <- expr(c({{.by}}, sym(".formant_name")))
-  }else if(.by_token){
-    by_grouping2 <- expr(c(!!by_grouping, {{.token_id_col}}))
-    by_grouping_noid <- expr(c({{.by}}, {{.token_id_col}}))
+    by_grouping_noid <- expr(c({{ .by }}, sym(".formant_name")))
+  } else if (.by_token) {
+    by_grouping2 <- expr(c(!!by_grouping, {{ .token_id_col }}))
+    by_grouping_noid <- expr(c({{ .by }}, {{ .token_id_col }}))
   } else {
     by_grouping2 <- by_grouping
-    by_grouping_noid <- expr({{.by}})
+    by_grouping_noid <- expr({{ .by }})
   }
 
   zeroth <- dplyr::filter(
     .dct_data,
-    .by = !!by_grouping2 ,
-    {{.param_col}} == min({{.param_col}})
+    .by = !!by_grouping2,
+    {{ .param_col }} == min({{ .param_col }})
   )
 
-  if(grouped_by & !.by_token){
+  if (grouped_by & !.by_token) {
     zeroth <- zeroth |>
-      dplyr::ungroup({{.token_id_col}})
+      dplyr::ungroup({{ .token_id_col }})
   }
 
-  if(grouped_by){
+  if (grouped_by) {
     keepit <- "keep"
-  }else{
+  } else {
     keepit <- NULL
   }
 
   norm_params <- zeroth |>
     dplyr::summarise(
       .by = !!by_grouping_noid,
-      .L = {{.L}},
-      .S = {{.S}} * sqrt(2),
+      .L = {{ .L }},
+      .S = {{ .S }} * sqrt(2),
       .groups = keepit
     )
 
@@ -440,8 +438,8 @@ norm_dct_generic <- function(
   normed <- .dct_with_norm |>
     dplyr::mutate(
       "{.names}" := case_when(
-        {{.param_col}} == 0 ~ (!!sym(".formant") - !!sym(".L"))/!!sym(".S"),
-        .default = !!sym(".formant")/!!sym(".S")
+        {{ .param_col }} == 0 ~ (!!sym(".formant") - !!sym(".L")) / !!sym(".S"),
+        .default = !!sym(".formant") / !!sym(".S")
       )
     ) |>
     dplyr::select(
@@ -452,7 +450,7 @@ norm_dct_generic <- function(
       )
     )
 
-  if(.drop_orig){
+  if (.drop_orig) {
     normed <- dplyr::select(
       normed,
       -!!sym(".formant")
@@ -470,7 +468,7 @@ norm_dct_generic <- function(
     purrr::map(as_label) |>
     unlist()
 
-  if(!"norm_track_generic(...)" %in% call_tree){
+  if (!"norm_track_generic(...)" %in% call_tree) {
     normed <- normed |>
       dplyr::rename_with(
         .fn = \(x) stringr::str_remove(x, "_.formant")
@@ -478,7 +476,6 @@ norm_dct_generic <- function(
   }
 
   return(normed)
-
 }
 
 #' Lobanov Track Normalization
@@ -523,8 +520,7 @@ norm_track_lobanov <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -533,14 +529,14 @@ norm_track_lobanov <- function(
   normed <- norm_track_generic(
     .data,
     !!targets,
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order,
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
@@ -597,8 +593,7 @@ norm_track_nearey <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -607,14 +602,14 @@ norm_track_nearey <- function(
   normed <- norm_track_generic(
     .data,
     !!targets,
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = 1/sqrt(2),
+    .S = 1 / sqrt(2),
     .pre_trans = log,
     .post_trans = \(x)x,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order,
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
@@ -665,8 +660,7 @@ norm_track_deltaF <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -675,14 +669,14 @@ norm_track_deltaF <- function(
   normed <- norm_track_generic(
     .data,
     !!targets,
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
     .L = 0,
-    .S = mean(!!sym(".formant")/(!!sym(".formant_num") - 0.5), na.rm = T),
+    .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order,
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
@@ -736,8 +730,7 @@ norm_track_wattfab <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -746,14 +739,14 @@ norm_track_wattfab <- function(
   normed <- norm_track_generic(
     .data,
     !!targets,
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .pre_trans = \(x)x,
     .post_trans = \(x)x,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order,
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
@@ -804,8 +797,7 @@ norm_track_barkz <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE
-){
+    .silent = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -814,15 +806,15 @@ norm_track_barkz <- function(
   normed <- norm_track_generic(
     .data,
     !!targets,
-    .by = {{.by}},
-    .token_id_col = {{.token_id_col}},
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
     .by_token = TRUE,
     .L = (!!sym(".formant"))[3],
-    .S = 1/sqrt(2),
+    .S = 1 / sqrt(2),
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order,
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,

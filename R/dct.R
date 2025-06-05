@@ -49,7 +49,7 @@
 #' Discrete Cosine Transform.
 #'
 #' @examples
-#' x <- seq(0,1, length = 10)
+#' x <- seq(0, 1, length = 10)
 #' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 #'
 #' dct_coefs <- dct(y)
@@ -61,36 +61,33 @@ dct <- function(x, norm_forward = TRUE) {
 
 #' DCT k
 #' @noRd
-dct_k <- function(x, k, norm_forward = TRUE){
+dct_k <- function(x, k, norm_forward = TRUE) {
   N <- length(x)
-  j <- (1:N)-1
+  j <- (1:N) - 1
 
-  denom <- pi * k * ((2*j )+1)
-  num <- 2*N
+  denom <- pi * k * ((2 * j) + 1)
+  num <- 2 * N
 
-  cos_term <- sum(x * cos(denom/num))
+  cos_term <- sum(x * cos(denom / num))
 
-  z <- ifelse(k==0, sqrt(2), 1) * ifelse(norm_forward, N, 1)
+  z <- ifelse(k == 0, sqrt(2), 1) * ifelse(norm_forward, N, 1)
   s <- ifelse(norm_forward, 1, 2)
 
-  return((s*cos_term)/z)
+  return((s * cos_term) / z)
 }
 
 #' DCT numeric
 #' @export
 #' @keywords internal
-dct.numeric <- function(x){
-
-  coefs = dct_fun(x, kk = length(x))
+dct.numeric <- function(x) {
+  coefs <- dct_fun(x, kk = length(x))
   return(coefs)
-
 }
 
 #' DCT matrix
 #' @export
 #' @keywords internal
-dct.matrix <- function(x){
-
+dct.matrix <- function(x) {
   t(apply(x, MARGIN = 1, \(z) dct.numeric(z)))
 }
 
@@ -99,9 +96,8 @@ registerS3method("dct", "matrix", method = dct.matrix)
 
 #' regression based dct
 #' @noRd
-dct_reg <- function(y, call = caller_env()){
-
-  if(all(is.finite(y))){
+dct_reg <- function(y, call = caller_env()) {
+  if (all(is.finite(y))) {
     return(dct(y))
   }
 
@@ -116,7 +112,7 @@ dct_reg <- function(y, call = caller_env()){
       return(NA)
     }
   )
-  coefs <- coefs |> rlang::set_names(nm =NULL)
+  coefs <- coefs |> rlang::set_names(nm = NULL)
   coefs <- coefs[is.finite(coefs)]
   return(coefs)
 }
@@ -140,7 +136,7 @@ dct_reg <- function(y, call = caller_env()){
 #'
 #'
 #' @examples
-#' x <- seq(0,1, length = 10)
+#' x <- seq(0, 1, length = 10)
 #' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 #'
 #' dct_coefs <- dct(y)
@@ -149,7 +145,7 @@ dct_reg <- function(y, call = caller_env()){
 #' plot(y, recovered_y)
 #'
 #' @export
-idct <- function(y, n = length(y)){
+idct <- function(y, n = length(y)) {
   x <- idct_fun(y, n = n)
   return(x)
 }
@@ -175,7 +171,7 @@ idct <- function(y, n = length(y)){
 #'
 #'
 #' @examples
-#' x <- seq(0,1, length = 10)
+#' x <- seq(0, 1, length = 10)
 #' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 #'
 #' dct_coefs <- dct(y)
@@ -185,7 +181,7 @@ idct <- function(y, n = length(y)){
 #' plot(y_rate)
 #'
 #' @export
-idct_rate <- function(y, n = length(y)){
+idct_rate <- function(y, n = length(y)) {
   x <- idct_prime(y, n = n)
   return(x)
 }
@@ -211,7 +207,7 @@ idct_rate <- function(y, n = length(y)){
 #'
 #'
 #' @examples
-#' x <- seq(0,1, length = 10)
+#' x <- seq(0, 1, length = 10)
 #' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 #'
 #' dct_coefs <- dct(y)
@@ -221,7 +217,7 @@ idct_rate <- function(y, n = length(y)){
 #' plot(y_accel)
 #'
 #' @export
-idct_accel <- function(y, n = length(y)){
+idct_accel <- function(y, n = length(y)) {
   x <- idct_dprime(y, n = n)
   return(x)
 }
@@ -276,37 +272,36 @@ idct_accel <- function(y, n = length(y)){
 reframe_with_dct <- function(
     .data,
     ...,
-    .token_id_col=NULL,
+    .token_id_col = NULL,
     .by = NULL,
     .time_col = NULL,
-    .order = 5
-){
+    .order = 5) {
   targets <- expr(...)
 
-  cols = enquos(
+  cols <- enquos(
     .token_id_col = .token_id_col,
     .time = .time_col,
     .by = .by
   )
 
-  for(col in cols){
+  for (col in cols) {
     try_fetch(
       tidyselect::eval_select(col, data = .data),
       error = \(cnd) selection_errors(cnd)
     )
   }
 
-  order <- if(!is.finite(.order)){
+  order <- if (!is.finite(.order)) {
     expr(dplyr::n())
   } else {
     expr(.order)
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{.by}})
+  check_grouping(.data, {{ .by }})
 
 
-  if(quo_is_null(enquo(.time_col))){
+  if (quo_is_null(enquo(.time_col))) {
     cli_par()
     cli_inform(
       c(
@@ -316,14 +311,14 @@ reframe_with_dct <- function(
     )
     cli_end()
   } else {
-    .data <- dplyr::arrange(.data, {{.time_col}}) |>
-      dplyr::select(-{{.time_col}})
+    .data <- dplyr::arrange(.data, {{ .time_col }}) |>
+      dplyr::select(-{{ .time_col }})
   }
 
   grouping_list <- make_dct_grouping(
     .data,
-    {{.by}},
-    {{.token_id_col}}
+    {{ .by }},
+    {{ .token_id_col }}
   )
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
@@ -344,7 +339,7 @@ reframe_with_dct <- function(
       dplyr::across(
         !!targets,
         \(x){
-          if(mean(is.finite(x)) < 0.9){
+          if (mean(is.finite(x)) < 0.9) {
             x <- NA
           }
           return(x)
@@ -353,7 +348,7 @@ reframe_with_dct <- function(
     ) |>
     dplyr::reframe(
       .by = !!by_grouping,
-      .param = (1:!!order)-1,
+      .param = (1:!!order) - 1,
       dplyr::across(
         !!targets,
         \(x) dct(x)[1:!!order]
@@ -368,7 +363,6 @@ reframe_with_dct <- function(
   )
 
   return(out_df)
-
 }
 
 #' Reframe with IDCT
@@ -413,15 +407,14 @@ reframe_with_dct <- function(
 reframe_with_idct <- function(
     .data,
     ...,
-    .token_id_col=NULL,
+    .token_id_col = NULL,
     .by = NULL,
     .param_col = NULL,
     .n = 20,
     .rate = FALSE,
-    .accel = FALSE
-){
+    .accel = FALSE) {
   targets <- expr(c(...))
-  cols = enquos(
+  cols <- enquos(
     .token_id_col = .token_id_col,
     .param_col = .param_col,
     .by = .by
@@ -432,7 +425,7 @@ reframe_with_idct <- function(
     error = \(cnd) selection_errors(cnd)
   )
 
-  for(col in cols){
+  for (col in cols) {
     try_fetch(
       tidyselect::eval_select(col, data = .data),
       error = \(cnd) selection_errors(cnd)
@@ -440,9 +433,9 @@ reframe_with_idct <- function(
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{.by}})
+  check_grouping(.data, {{ .by }})
 
-  if(quo_is_null(cols$.param_col)){
+  if (quo_is_null(cols$.param_col)) {
     cli_par()
     cli_inform(
       c(
@@ -452,14 +445,14 @@ reframe_with_idct <- function(
     )
     cli_end()
   } else {
-    .data <- dplyr::arrange(.data, {{.param_col}}) |>
-      dplyr::select(-{{.param_col}})
+    .data <- dplyr::arrange(.data, {{ .param_col }}) |>
+      dplyr::select(-{{ .param_col }})
   }
 
   grouping_list <- make_dct_grouping(
     .data,
-    {{.by}},
-    {{.token_id_col}}
+    {{ .by }},
+    {{ .token_id_col }}
   )
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
@@ -474,31 +467,31 @@ reframe_with_idct <- function(
       1
     )
 
-  if(!.rate & !.accel){
+  if (!.rate & !.accel) {
     idct_df <- .data |>
       dplyr::reframe(
         .by = !!by_grouping,
-        .time = 1:dplyr::first({{.n}}),
+        .time = 1:dplyr::first({{ .n }}),
         dplyr::across(
           !!targets,
-          \(x) idct(x, n = {{.n}}[1])
+          \(x) idct(x, n = {{ .n }}[1])
         )
       )
   } else {
     idct_operation <- list(
-      idct = \(x) idct(x, n = {{.n}}[1])
+      idct = \(x) idct(x, n = {{ .n }}[1])
     )
-    if(.rate){
-      idct_operation$rate = \(x) idct_prime(x, {{.n}}[1])
+    if (.rate) {
+      idct_operation$rate <- \(x) idct_prime(x, {{ .n }}[1])
     }
-    if(.accel){
-      idct_operation$accel = \(x) idct_dprime(x, n = {{.n}}[1])
+    if (.accel) {
+      idct_operation$accel <- \(x) idct_dprime(x, n = {{ .n }}[1])
     }
 
     idct_df <- .data |>
       dplyr::reframe(
         .by = !!by_grouping,
-        .time = 1:({{.n}}[1]),
+        .time = 1:({{ .n }}[1]),
         dplyr::across(
           !!targets,
           idct_operation
@@ -512,7 +505,6 @@ reframe_with_idct <- function(
     by = unique(joining)
   )
   return(out_df)
-
 }
 
 #' Reframe as DCT Smooth
@@ -566,10 +558,9 @@ reframe_with_dct_smooth <- function(
     .time_col = NULL,
     .order = 5,
     .rate = F,
-    .accel = F
-){
+    .accel = F) {
   targets <- expr(...)
-  cols = enquos(
+  cols <- enquos(
     .token_id_col = .token_id_col,
     .time_col = .time_col,
     .by = .by
@@ -580,7 +571,7 @@ reframe_with_dct_smooth <- function(
     error = \(cnd) selection_errors(cnd)
   )
 
-  for(col in cols){
+  for (col in cols) {
     try_fetch(
       tidyselect::eval_select(col, data = .data),
       error = \(cnd) selection_errors(cnd)
@@ -588,24 +579,24 @@ reframe_with_dct_smooth <- function(
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{.by}})
+  check_grouping(.data, {{ .by }})
 
   grouping_list <- make_dct_grouping(
     .data,
-    {{.by}},
-    {{.token_id_col}}
+    {{ .by }},
+    {{ .token_id_col }}
   )
 
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
 
-  if(!quo_is_null(cols$.time_col)){
-    .time_data <- dplyr::arrange(.data, {{.time_col}}) |>
+  if (!quo_is_null(cols$.time_col)) {
+    .time_data <- dplyr::arrange(.data, {{ .time_col }}) |>
       dplyr::select(
-        {{.by}},
-        {{.token_id_col}},
-        {{.time_col}},
+        {{ .by }},
+        {{ .token_id_col }},
+        {{ .time_col }},
         dplyr::group_cols()
       ) |>
       dplyr::mutate(
@@ -617,16 +608,16 @@ reframe_with_dct_smooth <- function(
   .dct_data <- reframe_with_dct(
     .data,
     !!targets,
-    .token_id_col = {{.token_id_col}},
+    .token_id_col = {{ .token_id_col }},
     .by = !!by_grouping,
-    .time_col = {{.time_col}},
+    .time_col = {{ .time_col }},
     .order = .order
   )
 
   .dct_smooth <- reframe_with_idct(
     .dct_data,
     !!targets,
-    .token_id_col = {{.token_id_col}},
+    .token_id_col = {{ .token_id_col }},
     .by = !!by_grouping,
     .param_col = !!sym(".param"),
     .n = first(!!sym(".n")),
@@ -634,7 +625,7 @@ reframe_with_dct_smooth <- function(
     .accel = .accel
   )
 
-  if(!quo_is_null(cols$.time_col)){
+  if (!quo_is_null(cols$.time_col)) {
     .dct_smooth <- dplyr::select(
       .dct_smooth,
       -!!sym(".time")

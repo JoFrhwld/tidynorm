@@ -41,18 +41,22 @@ library(ggplot2)
 options(
   ggplot2.discrete.colour = c(
     lapply(
-      1:6, 
-      \(x) c("#4477AA", "#EE6677", "#228833", 
-             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
     )
   ),
   ggplot2.discrete.fill = c(
     lapply(
-      1:6, 
-      \(x) c("#4477AA", "#EE6677", "#228833", 
-             "#CCBB44", "#66CCEE", "#AA3377")[1:x]
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
     )
-  )  
+  )
 )
 
 theme_set(
@@ -74,16 +78,16 @@ ggplot(
     F2, F1,
     color = speaker
   )
-)+
+) +
   ggdensity::stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     alpha = 1,
     fill = NA,
     linewidth = 1
-  )+
-  scale_x_reverse()+
-  scale_y_reverse()+
-  coord_fixed()+
+  ) +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  coord_fixed() +
   labs(
     title = "unnormalized"
   )
@@ -100,13 +104,13 @@ There are a number of built in functions based on conventional
 normalization methods.
 
 ``` r
-speaker_data |> 
+speaker_data |>
   norm_nearey(
     F1:F3,
     .by = speaker,
     .names = "{.formant}_nearey"
   ) ->
-  speaker_normalized
+speaker_normalized
 ```
 
     #> Normalization info
@@ -119,21 +123,21 @@ speaker_data |>
 <summary>Plotting Code</summary>
 
 ``` r
-speaker_normalized |> 
+speaker_normalized |>
   ggplot(
     aes(
       F2_nearey, F1_nearey,
       color = speaker
     )
-  )+
+  ) +
   ggdensity::stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     alpha = 1,
     fill = NA,
     linewidth = 1
-  )+
-  scale_x_reverse()+
-  scale_y_reverse()+
+  ) +
+  scale_x_reverse() +
+  scale_y_reverse() +
   coord_fixed() +
   labs(
     title = "Nearey Normalized"
@@ -151,7 +155,7 @@ Nearey” normalization method using the median, instead of the mean,
 could be done like so.
 
 ``` r
-speaker_rnearey <- speaker_data |> 
+speaker_rnearey <- speaker_data |>
   norm_generic(
     F1:F3,
     .by = speaker,
@@ -172,21 +176,21 @@ speaker_rnearey <- speaker_data |>
 <summary>Plotting Code</summary>
 
 ``` r
-speaker_rnearey |> 
- ggplot(
+speaker_rnearey |>
+  ggplot(
     aes(
       F2_rnearey, F1_rnearey,
       color = speaker
     )
-  )+
+  ) +
   ggdensity::stat_hdr(
     probs = c(0.95, 0.8, 0.5),
     alpha = 1,
     fill = NA,
     linewidth = 1
-  )+
-  scale_x_reverse()+
-  scale_y_reverse()+
+  ) +
+  scale_x_reverse() +
+  scale_y_reverse() +
   coord_fixed() +
   labs(
     title = "Robust Nearey Normalized"

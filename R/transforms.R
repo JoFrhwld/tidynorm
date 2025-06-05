@@ -7,8 +7,8 @@
 #' @details
 #' \deqn{
 #' \hat{b} = \frac{26.81 hz}{1960 + hz} - 0.53
-#'}
-#'\deqn{
+#' }
+#' \deqn{
 #' b = \begin{cases}
 #' \hat{b} + 0.15(2-\hat{b}) & \text{if}~\hat{b} < 2\\
 #' \hat{b} + 0.22(\hat{b} - 20.1) & \text{if}~\hat{b} > 20.1\\
@@ -31,11 +31,11 @@
 #' plot(hz, bark)
 #'
 #' @export
-hz_to_bark <- function(hz){
-  bark <- ((26.81 * hz) / (1960 + hz))-0.53
+hz_to_bark <- function(hz) {
+  bark <- ((26.81 * hz) / (1960 + hz)) - 0.53
 
   bark <- dplyr::case_when(
-    bark < 2    ~ bark + ((0.15)*(2-bark)),
+    bark < 2 ~ bark + ((0.15) * (2 - bark)),
     bark > 20.1 ~ bark + (0.22 * (bark - 20.1)),
     .default = bark
   )
@@ -75,13 +75,13 @@ hz_to_bark <- function(hz){
 #' hz <- bark_to_hz(bark)
 #' plot(bark, hz)
 #' @export
-bark_to_hz <- function(bark){
+bark_to_hz <- function(bark) {
   bark <- dplyr::case_when(
-    bark < 2 ~ (bark-0.3)/0.85,
-    bark > 20.1 ~ (bark + 4.422)/1.22,
+    bark < 2 ~ (bark - 0.3) / 0.85,
+    bark > 20.1 ~ (bark + 4.422) / 1.22,
     .default = bark
   )
-  hz <- 1960 * ((bark + 0.53)/(25.28-bark))
+  hz <- 1960 * ((bark + 0.53) / (25.28 - bark))
   return(hz)
 }
 
@@ -121,24 +121,22 @@ bark_to_hz <- function(bark){
 #' @export
 hz_to_mel <- function(
     hz,
-    htk = FALSE
-){
-  if(htk){
+    htk = FALSE) {
+  if (htk) {
     mels <- 2595.0 * log10(1.0 + (hz / 700.0))
     return(mels)
   }
-  f_sp <- 200/3
-  min_log_hz = 1000.0
-  min_log_mel = min_log_hz / f_sp
-  logstep = log(6.4) / 27.0
+  f_sp <- 200 / 3
+  min_log_hz <- 1000.0
+  min_log_mel <- min_log_hz / f_sp
+  logstep <- log(6.4) / 27.0
 
   mels <- dplyr::case_when(
-    hz >= 1000 ~ min_log_mel + (log(hz/min_log_hz)/logstep),
-    .default = hz/f_sp
+    hz >= 1000 ~ min_log_mel + (log(hz / min_log_hz) / logstep),
+    .default = hz / f_sp
   )
 
   return(mels)
-
 }
 
 #' Mel to Hz
@@ -177,18 +175,16 @@ hz_to_mel <- function(
 #' @export
 mel_to_hz <- function(
     mel,
-    htk = F
-){
-
-  if(htk){
-    hz = 700.0 * (10.0^(mel / 2595.0) - 1.0)
+    htk = F) {
+  if (htk) {
+    hz <- 700.0 * (10.0^(mel / 2595.0) - 1.0)
     return(hz)
   }
 
-  f_sp = 200.0 / 3
-  min_log_hz = 1000.0
-  min_log_mel = min_log_hz / f_sp
-  logstep = log(6.4) / 27.0
+  f_sp <- 200.0 / 3
+  min_log_hz <- 1000.0
+  min_log_mel <- min_log_hz / f_sp
+  logstep <- log(6.4) / 27.0
 
   hz <- dplyr::case_when(
     mel >= min_log_mel ~ min_log_hz * exp(logstep * (mel - min_log_mel)),
@@ -197,6 +193,3 @@ mel_to_hz <- function(
 
   return(hz)
 }
-
-
-
