@@ -2,7 +2,7 @@
 % Please edit documentation in R/dct.R
 \name{reframe_with_dct_smooth}
 \alias{reframe_with_dct_smooth}
-\title{Reframe as DCT Smooth}
+\title{Reframe with DCT Smooth}
 \usage{
 reframe_with_dct_smooth(
   .data,
@@ -10,7 +10,9 @@ reframe_with_dct_smooth(
   .token_id_col,
   .by = NULL,
   .time_col = NULL,
-  .order = 5
+  .order = 5,
+  .rate = F,
+  .accel = F
 )
 }
 \arguments{
@@ -27,10 +29,15 @@ expressions separated by commas. These should target the vowel formant.}
 
 \item{.order}{The number of DCT parameters to return. If \code{NA}, all DCT
 parameters will be returned.}
+
+\item{.rate}{Whether or not to include the rate of change of signal.}
+
+\item{.accel}{Whether or not to include acceleration of signal.}
 }
 \value{
 A data frame where the target columns have been smoothed using the
-DCT.
+DCT, as well as the signal rate of change and acceleration,
+if requested.
 }
 \description{
 Apply a DCT Smooth to the targeted data

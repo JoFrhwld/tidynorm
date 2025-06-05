@@ -18,6 +18,4 @@ test_that("grouping managed", {
         .silent = T
       )
   })
-
-
 })

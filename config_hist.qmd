@@ -100,12 +100,12 @@ readr::write_lines(
 fs::file_chmod(here::here("hooks", "pre-commit"), "+x")
 
 fs::file_delete(
-   here::here(".git", "hooks", "pre-commit")
+  here::here(".git", "hooks", "pre-commit")
 )
 
 fs::link_create(
-   here::here("hooks", "pre-commit"),
-   here::here(".git", "hooks", "pre-commit")
+  here::here("hooks", "pre-commit"),
+  here::here(".git", "hooks", "pre-commit")
 )
 ```
 
@@ -117,7 +117,7 @@ gitignore <- c(
   gitignore,
   "*_files",
   "*.html"
-) |> 
+) |>
   unique()
 
 readr::write_lines(
@@ -134,7 +134,7 @@ rbuildignore <- c(
   "^README\\.qmd$",
   "^config_hist.*",
   "hooks"
-) |> 
+) |>
   unique()
 
 readr::write_lines(
@@ -146,13 +146,13 @@ readr::write_lines(
 ## Code management
 
 ```{r}
-if(fs::file_exists("R/hello.R")){
+if (fs::file_exists("R/hello.R")) {
   fs::file_delete("R/hello.R")
 }
 ```
 
 ```{r}
-if(!fs::file_exists("R/tidynorm-package.R")){
+if (!fs::file_exists("R/tidynorm-package.R")) {
   usethis::use_package_doc()
 }
 ```
@@ -179,12 +179,10 @@ usethis::use_package("tidyr", "Imports")
 usethis::use_package("stringr")
 
 usethis::use_package("cli")
-
-usethis::use_package("Rdpack")
 ```
 
 ```{r}
-desc::desc_set(RdMacros = "Rdpack")
+usethis::use_rcpp()
 ```
 
 ```{r}

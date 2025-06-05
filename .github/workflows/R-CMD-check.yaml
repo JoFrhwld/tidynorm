@@ -46,6 +46,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: install locally
+        shell: Rscript {0}
+        run: |
+          if(.Platform$OS.type == "windows"){
+            install.packages("devtools")
+            devtools::install()
+          }
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

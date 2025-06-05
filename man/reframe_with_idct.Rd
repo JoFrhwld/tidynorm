@@ -10,7 +10,9 @@ reframe_with_idct(
   .token_id_col = NULL,
   .by = NULL,
   .param_col = NULL,
-  .n = 20
+  .n = 20,
+  .rate = FALSE,
+  .accel = FALSE
 )
 }
 \arguments{
@@ -26,6 +28,10 @@ expressions separated by commas. These should target the vowel formant.}
 \item{.param_col}{A column identifying the DCT parameter number}
 
 \item{.n}{The size of the outcome of the IDCT}
+
+\item{.rate}{Whether or not to include the rate of change of signal.}
+
+\item{.accel}{Whether or not to include acceleration of signal.}
 }
 \value{
 A data frame with the IDCT of the targeted columns along with an

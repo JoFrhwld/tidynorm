@@ -4,7 +4,7 @@
 \alias{dct.matrix}
 \title{DCT matrix}
 \usage{
-\method{dct}{matrix}(x, norm_forward = TRUE)
+\method{dct}{matrix}(x)
 }
 \description{
 DCT matrix

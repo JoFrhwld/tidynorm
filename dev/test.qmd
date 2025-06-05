@@ -11,44 +11,43 @@ library(ggdensity)
 
 s01_dat <- read_csv(
   "https://lin611-2024.github.io/notes/meetings/data/s01_dat.csv"
-) 
+)
 ```
 
 ```{r}
 library(readr)
 speaker_tracks <- read_csv("../inst/extdata/speaker_tracks.csv")
 ```
+
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   filter(
     .by = c(speaker, id),
     if_all(
       F1:F3,
-      ~mean(is.finite(.x)) > 0.9
+      ~ mean(is.finite(.x)) > 0.9
     )
-  )->speaker_tracks
+  ) -> speaker_tracks
 ```
 
 ```{r}
 usethis::use_data(speaker_tracks, overwrite = TRUE)
 ```
 
-
 ```{r}
 plot(200:2000, hz_to_mel(200:2000))
 ```
 
 ```{r}
-speaker_data |> 
+speaker_data |>
   norm_lobanov(
     F1:F3,
     by = speaker
-  ) 
+  )
 ```
 
-
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   norm_track_lobanov(
     F1:F3,
     .by = speaker,
@@ -56,6 +55,7 @@ speaker_tracks |>
     .time_col = t
   )
 ```
+
 ```{r}
 speaker_tracks |>
   norm_track_generic(
@@ -68,8 +68,8 @@ speaker_tracks |>
     .time_col = t
   )
 
-speaker_tracks |> 
- norm_track_generic(
+speaker_tracks |>
+  norm_track_generic(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
@@ -79,17 +79,18 @@ speaker_tracks |>
     .by_formant = T,
     .return_dct = F,
     .drop_orig = T
-  ) 
+  )
 ```
+
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   filter(
     .by = c(speaker, id),
     row_number() %% 2 == 1
   ) -> small_tracks
 
 
-small_tracks |> 
+small_tracks |>
   norm_track_lobanov(
     F1:F3,
     .by = speaker,
@@ -97,19 +98,20 @@ small_tracks |>
     .time_col = t
   )
 ```
+
 ```{r}
-foo$call |> 
-  purrr::map(as_label) |> 
+foo$call |>
+  purrr::map(as_label) |>
   unlist()
 ```
 
 ```{r}
-foo <- function(x){
+foo <- function(x) {
   out <- bar(x)
   return(out)
 }
 
-bar <- function(x){
+bar <- function(x) {
   return(rlang::trace_back())
 }
 ```
@@ -117,6 +119,3 @@ bar <- function(x){
 ```{r}
 as.character(foo()$call[[1]])
 ```
-
-
-
