@@ -55,6 +55,9 @@ reference:
     contents:
       - dct
       - idct
+      - idct_rate
+      - idct_accel
+      - dct_basis
 
   - subtitle: Tidy DCT Functions
     contents:

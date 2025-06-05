@@ -4,7 +4,7 @@
 \alias{dct}
 \title{Discrete Cosine Transform}
 \usage{
-dct(x, norm_forward = TRUE)
+dct(x)
 }
 \arguments{
 \item{x}{A vector or matrix to which the discrete cosine transform is applied}
@@ -23,10 +23,8 @@ The DCT definitions here are based on the python \code{scipy.fft.dct} definition
 Specifically this use:
 
 \if{html}{\out{<div class="sourceCode python">}}\preformatted{# python code
-scipy.fft.dct(x, orthogonalize = True)
+scipy.fft.dct(x, norm = "forward", orthogonalize = True)
 }\if{html}{\out{</div>}}
-
-When \code{norm_forward = TRUE}
 
 \deqn{
 y_k = \frac{1}{zN} \sum_{j=0}^{N-1}x_j\cos\left(\frac{\pi k(2j+1)}{2N}\right)
@@ -38,24 +36,6 @@ z = \begin{cases}
    1 & \text{for }k>0
  \end{cases}
 }
-
-When \code{norm_forward = FALSE}
-\deqn{
- y_k = \frac{2}{z} \sum_{j=0}^{N-1}x_j\cos\left(\frac{\pi k(2j+1)}{2N}\right)
-}
-
-\deqn{
-z = \begin{cases}
-   \sqrt{2}& \text{for }k=0\\
-   1 & \text{for }k>0
- \end{cases}
-}
-
-This second formulation is primarily to be able to generate the
-DCT basis functions like so
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{dct(diag(10), norm_forward = FALSE)
-}\if{html}{\out{</div>}}
 
 For the Inverse Discrete Cosine Transform, see \link{idct}.
 }

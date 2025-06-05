@@ -8,10 +8,8 @@
 #'
 #' ```python
 #' # python code
-#' scipy.fft.dct(x, orthogonalize = True)
+#' scipy.fft.dct(x, norm = "forward", orthogonalize = True)
 #' ```
-#'
-#' When `norm_forward = TRUE`
 #'
 #' \deqn{
 #' y_k = \frac{1}{zN} \sum_{j=0}^{N-1}x_j\cos\left(\frac{\pi k(2j+1)}{2N}\right)
@@ -24,24 +22,7 @@
 #'  \end{cases}
 #' }
 #'
-#' When `norm_forward = FALSE`
-#' \deqn{
-#'  y_k = \frac{2}{z} \sum_{j=0}^{N-1}x_j\cos\left(\frac{\pi k(2j+1)}{2N}\right)
-#' }
 #'
-#' \deqn{
-#' z = \begin{cases}
-#'    \sqrt{2}& \text{for }k=0\\
-#'    1 & \text{for }k>0
-#'  \end{cases}
-#' }
-#'
-#' This second formulation is primarily to be able to generate the
-#' DCT basis functions like so
-#'
-#' ```r
-#' dct(diag(10), norm_forward = FALSE)
-#' ```
 #' For the Inverse Discrete Cosine Transform, see [idct].
 #'
 #' @returns
@@ -63,7 +44,7 @@ dct <- function(x) {
 #' @export
 #' @keywords internal
 dct.numeric <- function(x) {
-  coefs <- dct_fun(x, kk = length(x))
+  coefs <- dct_fun(x, kk = length(x))[,1]
   return(coefs)
 }
 
@@ -71,11 +52,35 @@ dct.numeric <- function(x) {
 #' @export
 #' @keywords internal
 dct.matrix <- function(x) {
-  t(apply(x, MARGIN = 1, \(z) dct.numeric(z)))
+  out <- dct_mat(x, kk = nrow(x))
+  colnames(out) <- colnames(x)
+  out
 }
 
 registerS3method("dct", "numeric", method = dct.numeric)
 registerS3method("dct", "matrix", method = dct.matrix)
+
+#' DCT Basis
+#'
+#' The Discrete Cosine Transform basis functions
+#'
+#' @param n The length of the basis.
+#' @param k The number of basis functions.
+#'
+#' @details
+#' This function will generate the DCT basis functions.
+#'
+#' @returns
+#' A \eqn{n\times k} matrix
+#'
+#' @examples
+#' basis <- dct_basis(100, 5)
+#' matplot(basis, type = 'l', lty = 1)
+#'
+#' @export
+dct_basis <- function(n, k){
+  cos_bank(n, k)
+}
 
 #' Inverse Discrete Cosine Transform
 #'
@@ -105,10 +110,29 @@ registerS3method("dct", "matrix", method = dct.matrix)
 #' plot(y, recovered_y)
 #'
 #' @export
-idct <- function(y, n = length(y)) {
+idct <- function(x, n) {
+  UseMethod("idct")
+}
+
+#' IDCT numeric
+#' @export
+#' @keywords internal
+idct.numeric <- function(y, n = length(y)) {
   x <- idct_fun(y, n = n)[,1]
   return(x)
 }
+
+#' IDCT numeric
+#' @export
+#' @keywords internal
+idct.matrix <- function(y, n = nrow(y)) {
+  x <- idct_mat(y, n = n)
+  colnames(x) <- colnames(y)
+  return(x)
+}
+
+registerS3method("idct", "numeric", method = idct.numeric)
+registerS3method("idct", "matrix", method = idct.matrix)
 
 #' Inverse Discrete Cosine Transform Rate
 #'
@@ -439,7 +463,7 @@ reframe_with_idct <- function(
       )
   } else {
     idct_operation <- list(
-      idct = \(x) idct(x, n = {{ .n }}[1])
+      s = \(x) idct(x, n = {{ .n }}[1])
     )
     if (.rate) {
       idct_operation$rate <- \(x) idct_prime(x, {{ .n }}[1])
@@ -580,7 +604,7 @@ reframe_with_dct_smooth <- function(
     .token_id_col = {{ .token_id_col }},
     .by = !!by_grouping,
     .param_col = !!sym(".param"),
-    .n = first(!!sym(".n")),
+    #.n = !!sym(".n"),
     .rate = .rate,
     .accel = .accel
   )

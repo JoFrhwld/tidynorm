@@ -41,7 +41,7 @@ arma::mat cos_bank(int jj, int kk){
 }
 
 // [[Rcpp::export]]
-NumericVector dct_fun(arma::vec y, int kk){
+arma::mat dct_fun(arma::vec y, int kk){
 
   arma::mat x_init = cos_bank(y.size(), kk);
   arma::uvec finites = arma::find_finite(y);
@@ -59,15 +59,36 @@ NumericVector dct_fun(arma::vec y, int kk){
 
   arma::vec coefs = arma::inv(x.t() * x) * x.t() * y2;
 
-  return NumericVector(wrap(coefs.col(0)));
+  return coefs.col(0);
 }
 
+// [[Rcpp::export]]
+arma::mat dct_mat(arma::mat y, int kk){
+  arma::mat coefs(kk, y.n_cols);
+
+  for(int i = 0; i < y.n_cols; ++i){
+    coefs.col(i) = dct_fun(y.col(i), kk);
+  }
+
+  return coefs;
+}
 
 // [[Rcpp::export]]
-NumericVector idct_fun(arma::vec y, int n){
+arma::mat idct_fun(arma::vec y, int n){
   int N = y.size();
   arma::mat basis = cos_bank(n, N);
-  NumericVector x = NumericVector(wrap(basis * y));
+  arma::mat x = basis * y;
+
+  return x;
+}
+
+// [[Rcpp::export]]
+arma::mat idct_mat(arma::mat y, int n){
+  arma::mat x(n, y.n_cols);
+
+  for(int i = 0; i < y.n_cols; ++i){
+    x.col(i) = idct_fun(y.col(i), n);
+  }
 
   return x;
 }
@@ -108,7 +129,7 @@ NumericVector idct_dprime(NumericVector y,int n){
 
 // [[Rcpp::export]]
 NumericVector idct_interp(NumericVector y, int n, double p){
-  NumericVector x = idct_fun(y, n);
+  NumericVector x = NumericVector(wrap(idct_fun(y, n)));
   NumericVector rate = idct_prime(y, n);
   NumericVector accel = idct_dprime(y, n);
   NumericVector j = seqC(0, n-1, n);

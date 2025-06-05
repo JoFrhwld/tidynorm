@@ -13,8 +13,16 @@ dct_fun <- function(y, kk) {
     .Call(`_tidynorm_dct_fun`, y, kk)
 }
 
+dct_mat <- function(y, kk) {
+    .Call(`_tidynorm_dct_mat`, y, kk)
+}
+
 idct_fun <- function(y, n) {
     .Call(`_tidynorm_idct_fun`, y, n)
+}
+
+idct_mat <- function(y, n) {
+    .Call(`_tidynorm_idct_mat`, y, n)
 }
 
 idct_prime <- function(y, n) {

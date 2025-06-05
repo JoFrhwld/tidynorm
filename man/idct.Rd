@@ -4,12 +4,12 @@
 \alias{idct}
 \title{Inverse Discrete Cosine Transform}
 \usage{
-idct(y, n = length(y))
+idct(x, n)
 }
 \arguments{
-\item{y}{DCT coefficients}
-
 \item{n}{The desired length of the idct}
+
+\item{y}{DCT coefficients}
 }
 \value{
 A vector with the inverse DCT values

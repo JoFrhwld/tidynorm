@@ -2,8 +2,11 @@
 
 S3method(dct,matrix)
 S3method(dct,numeric)
+S3method(idct,matrix)
+S3method(idct,numeric)
 export(bark_to_hz)
 export(dct)
+export(dct_basis)
 export(hz_to_bark)
 export(hz_to_mel)
 export(idct)
