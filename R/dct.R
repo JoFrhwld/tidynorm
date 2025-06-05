@@ -59,23 +59,6 @@ dct <- function(x, norm_forward = TRUE) {
   UseMethod("dct")
 }
 
-#' DCT k
-#' @noRd
-dct_k <- function(x, k, norm_forward = TRUE) {
-  N <- length(x)
-  j <- (1:N) - 1
-
-  denom <- pi * k * ((2 * j) + 1)
-  num <- 2 * N
-
-  cos_term <- sum(x * cos(denom / num))
-
-  z <- ifelse(k == 0, sqrt(2), 1) * ifelse(norm_forward, N, 1)
-  s <- ifelse(norm_forward, 1, 2)
-
-  return((s * cos_term) / z)
-}
-
 #' DCT numeric
 #' @export
 #' @keywords internal
