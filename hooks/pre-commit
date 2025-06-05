@@ -1,4 +1,7 @@
 #!/bin/sh
-quarto render README.qmd
-git add README.md
-git add man/figures/README-*
+READMECHANGE=$(git diff --name-only README.qmd | wc -l )
+if [ $READMECHANGE -gt 0 ]; then
+  quarto render README.qmd
+  git add README.md
+  git add man/figures/README-*
+fi
