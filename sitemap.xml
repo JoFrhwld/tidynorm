@@ -9,9 +9,14 @@
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/dct.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/dct.matrix.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/dct.numeric.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/dct_basis.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/hz_to_bark.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/hz_to_mel.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/idct.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/idct.matrix.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/idct.numeric.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/idct_accel.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/idct_rate.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/index.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/mel_to_hz.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_barkz.html</loc></url>
