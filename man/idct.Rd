@@ -25,7 +25,7 @@ x_j = \sqrt{2}y_0 + 2\sum_{k=1}^{N-1} y_k \cos\left(\frac{\pi k(2j+1)}{2J}\right
 }
 }
 \examples{
-x <- seq(0,1, length = 10)
+x <- seq(0, 1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 
 dct_coefs <- dct(y)

@@ -27,7 +27,7 @@ the Inverse DCT (see \link{dct} for more details).
 }
 }
 \examples{
-x <- seq(0,1, length = 10)
+x <- seq(0, 1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 
 dct_coefs <- dct(y)
