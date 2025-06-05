@@ -1,5 +1,7 @@
 ---
 format: gfm
+execute:
+  freeze: auto
 knitr: 
   opts_chunk: 
     crop: !expr 'rlang::check_installed("magick")'
@@ -39,7 +41,8 @@ set.seed(200)
 
 ## Example
 
-Vowel formant frequencies are heavily influenced by vocal tract length differences between speakers. Equivalent vowels between speakers can have dramatically different frequency locations.
+Vowel formant frequencies are heavily influenced by vocal tract length differences between speakers.
+Equivalent vowels between speakers can have dramatically different frequency locations.
 
 ```{r}
 library(tidynorm)
@@ -107,7 +110,8 @@ ggplot(
   )
 ```
 
-The goal of `{tidynorm}` is to provide tidyverse-friendly and familiar functions that will allow you to quickly normalize vowel formant data. There are a number of built in functions based on conventional normalization methods.
+The goal of `{tidynorm}` is to provide tidyverse-friendly and familiar functions that will allow you to quickly normalize vowel formant data.
+There are a number of built in functions based on conventional normalization methods.
 
 ```{r}
 speaker_data |>
@@ -148,7 +152,8 @@ speaker_normalized |>
   )
 ```
 
-There is also a `tidynorm::norm_generic()` function to allow you to define your own bespoke normalization methods. For example, a "robust Nearey" normalization method using the median, instead of the mean, could be done like so.
+There is also a `tidynorm::norm_generic()` function to allow you to define your own bespoke normalization methods.
+For example, a "robust Nearey" normalization method using the median, instead of the mean, could be done like so.
 
 ```{r}
 speaker_rnearey <- speaker_data |>
