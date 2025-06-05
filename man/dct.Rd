@@ -8,8 +8,6 @@ dct(x)
 }
 \arguments{
 \item{x}{A vector or matrix to which the discrete cosine transform is applied}
-
-\item{norm_forward}{DCT normalization (see Details)}
 }
 \value{
 A vector or matrix the same size as \code{x} containing the

@@ -1,6 +1,5 @@
 #' Discrete Cosine Transform
 #' @param x A vector or matrix to which the discrete cosine transform is applied
-#' @param norm_forward DCT normalization (see Details)
 #'
 #' @details
 #' The DCT definitions here are based on the python `scipy.fft.dct` definitions.
@@ -110,7 +109,7 @@ dct_basis <- function(n, k){
 #' plot(y, recovered_y)
 #'
 #' @export
-idct <- function(x, n) {
+idct <- function(y, n) {
   UseMethod("idct")
 }
 
@@ -604,7 +603,6 @@ reframe_with_dct_smooth <- function(
     .token_id_col = {{ .token_id_col }},
     .by = !!by_grouping,
     .param_col = !!sym(".param"),
-    #.n = !!sym(".n"),
     .rate = .rate,
     .accel = .accel
   )
