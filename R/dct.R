@@ -77,29 +77,6 @@ dct.matrix <- function(x) {
 registerS3method("dct", "numeric", method = dct.numeric)
 registerS3method("dct", "matrix", method = dct.matrix)
 
-#' regression based dct
-#' @noRd
-dct_reg <- function(y, call = caller_env()) {
-  if (all(is.finite(y))) {
-    return(dct(y))
-  }
-
-  basis <- dct(diag(length(y)), norm_forward = FALSE)
-  coefs <- try_fetch(
-    stats::coef(stats::lm(y ~ -1 + basis)),
-    error = \(cnd) {
-      cli_warn(
-        c("A DCT failed"),
-        parent = cnd
-      )
-      return(NA)
-    }
-  )
-  coefs <- coefs |> rlang::set_names(nm = NULL)
-  coefs <- coefs[is.finite(coefs)]
-  return(coefs)
-}
-
 #' Inverse Discrete Cosine Transform
 #'
 #' The Inverse DCT
