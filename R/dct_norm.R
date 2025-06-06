@@ -331,7 +331,7 @@ norm_dct_lobanov <- function(
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = sd(!!sym(".formant"), na.rm = T),
+    .S = sd(!!sym(".formant"), na.rm = T)/sqrt(2),
     .param_col = {{ .param_col }},
     .drop_orig = .drop_orig,
     .names = .names,
@@ -341,6 +341,93 @@ norm_dct_lobanov <- function(
   normed <- update_norm_info(
     normed,
     list(.norm_procedure = "tidynorm::norm_dct_lobanov")
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+
+#' Nearey DCT Normalization
+#'
+#'
+#' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
+#'
+#' @details
+#'
+#' **Important**: This function assumes that the DCT
+#' coefficients were estimated over log-transormed
+#' formant values.
+#'
+#' When formant extrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L
+#' }
+#' \deqn{
+#'  L = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \log(F_{ij})
+#' }
+#'
+#' When formant intrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L_{i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}\log(F_{ij})
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Nearey normalized DCT coefficients
+#'
+#' @example inst/examples/ex-norm_dct_nearey.R
+#'
+#' @references
+#' Nearey, T. M. (1978). Phonetic Feature Systems for Vowels \[Ph.D.\].
+#' University of Alberta.
+#' @export
+norm_dct_nearey <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .by_formant = FALSE,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_lm",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = .by_formant,
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = 1 / sqrt(2),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_nearey"
+    )
   )
 
   if (!.silent) {
