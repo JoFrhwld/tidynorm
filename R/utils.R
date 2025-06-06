@@ -164,64 +164,56 @@ update_norm_info <- function(
 ){
   norminfo <- attr(.data, "norminfo")
   last_norm <- norminfo[[length(norminfo)]]
-  last_norm <- c(last_norm, info)
+
+  last_names <- names(last_norm)
+  new_names <- names(info)
+
+  for (n in new_names) {
+    last_norm[[n]] <- info[[n]]
+  }
+
   norminfo[[length(norminfo)]] <- last_norm
   attr(.data, "norminfo") <- norminfo
 
   .data
 }
 
+wrap_up <- function(.data){
 
-wrap_up <- function(
-    .data,
-    target_pos,
-    .by,
-    .by_formant,
-    .names,
-    procedure
-  ) {
+  if (is.null(attr(.data, "norminfo"))) {
+    cli_info(
+      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+    )
+    return()
+  }
+
+  norminfo <- attr(.data, "norminfo")
+  last_norm <- norminfo[[length(norminfo)]]
+
+  norm_messages = list(
+    .norm_procedure = "normalized with {.fn { .norm_procedure}}",
+    .targets = "normalized {.var { .targets}}",
+    .norm_cols = "normalized values in {.var { .norm_cols}}",
+    .by = "grouped by {.var { .by}}",
+    .by_formant = "formant intrinsic: { .by_formant}"
+  )
+
   message <- c("Normalization info")
 
-  grouping <- tidyselect::eval_select(enquo(.by), data = .data)
-  target_names <- names(target_pos)
-
-  if ("procedure" %in% names(call_match())) {
-    message <- c(
-      message,
-      "*" = "{procedure} applied"
-    )
+  for (n in names(norm_messages)) {
+    if (n %in% names(last_norm)) {
+      message <- c(
+        message,
+        "*" = norm_messages[[n]]
+      )
+    }
   }
-
-  message <- c(
-    message,
-    "*" = "normalized {.var {target_names}}"
-  )
-
-  norm_names <- glue::glue(.names, .formant = target_names)
-  message <- c(
-    message,
-    "*" = "normalized values in {.var {norm_names}}"
-  )
-
-  if (length(grouping) > 0) {
-    message <- c(
-      message,
-      "*" = "grouped by {.var {names(grouping)}}"
-    )
-  }
-
-  message <- c(
-    message,
-    "*" = ifelse(
-      .by_formant,
-      "formant intrinsic",
-      "formant extrinsic"
-    )
-  )
 
   cli_par()
   cli_inform(
-    message
+    message,
+    .envir = last_norm
   )
   cli_end()
+
 }
