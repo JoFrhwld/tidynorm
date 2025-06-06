@@ -330,8 +330,9 @@ norm_dct_lobanov <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
+    .by_token = FALSE,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = sd(!!sym(".formant"), na.rm = T)/sqrt(2),
+    .S = sd(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},
     .drop_orig = .drop_orig,
     .names = .names,
@@ -415,6 +416,7 @@ norm_dct_nearey <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
+    .by_token = FALSE,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = 1 / sqrt(2),
     .param_col = {{ .param_col }},
@@ -427,6 +429,77 @@ norm_dct_nearey <- function(
     normed,
     list(
       .norm_procedure = "tidynorm::norm_dct_nearey"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+
+#' Delta F DCT Normalization
+#'
+#' @inheritParams norm_track_generic
+#'
+#'
+#' @details
+#' \deqn{
+#'  \hat{F}_{ij} = \frac{F_{ij}}{S}
+#' }
+#' \deqn{
+#'  S = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Delta F normalized DCT coefficients.
+#'
+#' @example inst/examples/ex-norm_dct_deltaF.R
+#'
+#' @references
+#' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+#' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
+#' Article 1. [https://doi.org/10.5334/labphon.196](https://doi.org/10.5334/labphon.196)
+#'
+#' @export
+norm_dct_deltaF <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_df",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = FALSE,
+    .L = 0,
+    .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_deltaF"
     )
   )
 

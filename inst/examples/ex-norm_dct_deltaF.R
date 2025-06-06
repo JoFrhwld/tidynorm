@@ -3,12 +3,6 @@ library(dplyr)
 ggplot2_inst <- require(ggplot2)
 
 speaker_dct <- speaker_tracks |>
-  mutate(
-    across(
-      F1:F3,
-      log
-    )
-  ) |>
   reframe_with_dct(
     F1:F3,
     .by = speaker,
@@ -16,9 +10,9 @@ speaker_dct <- speaker_tracks |>
     .time_col = t
   )
 
-#' Normalize DCT coefficients
+# Normalize DCT coefficients
 speaker_dct_norm <- speaker_dct |>
-  norm_dct_nearey(
+  norm_dct_deltaF(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
@@ -31,12 +25,12 @@ track_norm_means <- speaker_dct_norm |>
   summarise(
     .by = c(speaker, vowel, .param),
     across(
-      ends_with("_lm"),
+      ends_with("_df"),
       mean
     )
   ) |>
   reframe_with_idct(
-    ends_with("_lm"),
+    ends_with("_df"),
     .by = speaker,
     .token_id_col = vowel,
     .param_col = .param
@@ -46,7 +40,7 @@ track_norm_means <- speaker_dct_norm |>
 if (ggplot2_inst) {
   track_norm_means |>
     ggplot(
-      aes(F2_lm, F1_lm, color = speaker)
+      aes(F2_df, F1_df, color = speaker)
     ) +
     geom_path(
       aes(
