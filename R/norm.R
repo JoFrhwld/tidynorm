@@ -235,6 +235,7 @@ norm_generic <- function(
     )
   }
 
+  attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
   .data <- append_norm_info(
     .data,
