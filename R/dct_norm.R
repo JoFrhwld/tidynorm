@@ -77,7 +77,7 @@ norm_dct_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-  .names <- glue::glue(.names, .formant = ".formant")
+  .names2 <- glue::glue(.names, .formant = ".formant")
 
   targets <- expr(c(...))
 
@@ -85,6 +85,20 @@ norm_dct_generic <- function(
     tidyselect::eval_select(targets, data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
+
+  group_pos <- tidyselect::eval_select(
+    enquo(.by),
+    data = .data
+  )
+
+  token_pos <- tidyselect::eval_select(
+    enquo(.token_id_col),
+    data = .data
+  )
+
+  if (!".param_col" %in% names(args)) {
+    .param_col = sym(".param")
+  }
 
   cols <- enquos(
     .by = .by,
@@ -199,7 +213,7 @@ norm_dct_generic <- function(
 
   normed <- .dct_with_norm |>
     dplyr::mutate(
-      "{.names}" := case_when(
+      "{.names2}" := case_when(
         {{ .param_col }} == 0 ~ (!!sym(".formant") - !!sym(".L")) / !!sym(".S"),
         .default = !!sym(".formant") / !!sym(".S")
       )
@@ -237,26 +251,25 @@ norm_dct_generic <- function(
       )
   }
 
-  attr(normed_track, "normalized") <- TRUE
-  attr(normed_track, "norminfo") <- c(
-    prev_attr,
+  attr(normed, "norminfo") <- prev_attr
+  attr(normed, "normalized") <- TRUE
+  normed <- append_norm_info(
+    normed,
     list(
-      list(
-        .by_col = .by_formant,
-        .targets = names(target_pos),
-        .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-        .by = names(group_pos)
-      )
+      .norm_procedure = "tidynorm::norm_dct_generic",
+      .by_col = .by_formant,
+      .targets = names(target_pos),
+      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+      .by = names(group_pos),
+      .token_id_col = quo_name(enquo(.token_id_col)),
+      .param_col = quo_name(enquo(.param_col)),
+      .by_formant = .by_formant
     )
   )
 
   if (!.silent) {
     wrap_up(
-      .data,
-      target_pos,
-      enquo(.by),
-      .by_formant,
-      .names
+      normed
     )
   }
 
@@ -293,7 +306,17 @@ norm_dct_lobanov <- function(
     .param_col = {{ .param_col }},
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(.norm_procedure = "tidynorm::norm_dct_lobanov")
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
