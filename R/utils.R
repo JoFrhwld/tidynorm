@@ -142,6 +142,35 @@ make_dct_grouping <- function(
   )
 }
 
+append_norm_info <- function(
+    .data,
+    info
+){
+  prev_attr <- attributes(.data)$norminfo
+  attr(.data, "norminfo") <- c(
+    prev_attr,
+    list(
+      info
+    )
+  )
+
+  .data
+
+}
+
+update_norm_info <- function(
+    .data,
+    info
+){
+  norminfo <- attr(.data, "norminfo")
+  last_norm <- norminfo[[length(norminfo)]]
+  last_norm <- c(last_norm, info)
+  norminfo[[length(norminfo)]] <- last_norm
+  attr(.data, "norminfo") <- norminfo
+
+  .data
+}
+
 
 wrap_up <- function(
     .data,

@@ -236,15 +236,13 @@ norm_generic <- function(
   }
 
   attr(.data, "normalized") <- TRUE
-  attr(.data, "norminfo") <- c(
-    prev_attr,
+  .data <- append_norm_info(
+    .data,
     list(
-      list(
-        .by_col = .by_formant,
-        .targets = names(target_pos),
-        .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-        .by = names(group_pos)
-      )
+      .by_col = .by_formant,
+      .targets = names(target_pos),
+      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+      .by = names(group_pos)
     )
   )
 
@@ -254,9 +252,8 @@ norm_generic <- function(
       target_pos,
       {{.by}},
       .by_formant,
-      .L,
-      .S,
-      .names
+      .names,
+      procedure = "point normalization"
     )
   }
 
@@ -326,9 +323,10 @@ norm_lobanov <- function(
     .silent = .silent
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(norm_procedure = "norm_lobanov")
+  )
 
   return(.data)
 }
