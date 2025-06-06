@@ -50,7 +50,7 @@ formant columns.}
 A data frame of either normalized formant tracks, or normalized DCT
 parameters.
 
-A data frame of Watt & Fabricius normalized formant tracks.
+A data frame of Bark difference normalized formant tracks.
 }
 \description{
 Bark Difference Track Normalization
