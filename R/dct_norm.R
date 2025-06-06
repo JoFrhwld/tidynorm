@@ -69,15 +69,23 @@ norm_dct_generic <- function(
     .drop_orig = FALSE,
     .call = caller_env()) {
   if (env_name(.call) == "global") {
-    .call2 <- current_env()
+    .call <- current_env()
   }
   args <- names(call_match())
   fmls <- names(fn_fmls())
-  check_args(args, fmls, .call2)
+  check_args(args, fmls, .call)
+
+  prev_attr <- attributes(.data)$norminfo
 
   .names <- glue::glue(.names, .formant = ".formant")
 
   targets <- expr(c(...))
+
+  target_pos <- try_fetch(
+    tidyselect::eval_select(targets, data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
   cols <- enquos(
     .by = .by,
     .token_id_col = .token_id_col,
@@ -229,5 +237,63 @@ norm_dct_generic <- function(
       )
   }
 
+  attr(normed_track, "normalized") <- TRUE
+  attr(normed_track, "norminfo") <- c(
+    prev_attr,
+    list(
+      list(
+        .by_col = .by_formant,
+        .targets = names(target_pos),
+        .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+        .by = names(group_pos)
+      )
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(
+      .data,
+      target_pos,
+      enquo(.by),
+      .by_formant,
+      .names
+    )
+  }
+
+  return(normed)
+}
+
+#' Lobanov DCT Normalization
+#'
+#' @inheritParams norm_dct_generic
+#' @export
+norm_dct_lobanov <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .names = "{.formant}_z",
+    .silent = FALSE,
+    .drop_orig = FALSE
+){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = TRUE,
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = sd(!!sym(".formant"), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = .silent
+  )
   return(normed)
 }

@@ -193,7 +193,7 @@ norm_track_generic <- function(
     .L = {{ .L }},
     .S = {{ .S }},
     .names = .names2,
-    .silent = FALSE,
+    .silent = TRUE,
     .drop_orig = .drop_orig,
     .call = current_env()
   )
@@ -240,6 +240,9 @@ norm_track_generic <- function(
     dplyr::rename_with(
       .fn = \(x) stringr::str_remove(x, "_.formant")
     )
+
+
+
 
   return(normed_track)
 }

@@ -47,7 +47,8 @@ check_tokens <- function(
 check_args <- function(
     args,
     fmls,
-    call = caller_env()) {
+    call = caller_env()
+    ) {
   fmls_undot <- stringr::str_remove(
     fmls,
     "^\\."
@@ -147,11 +148,21 @@ wrap_up <- function(
     target_pos,
     .by,
     .by_formant,
-    .names) {
+    .names,
+    procedure
+  ) {
   message <- c("Normalization info")
 
   grouping <- tidyselect::eval_select(enquo(.by), data = .data)
   target_names <- names(target_pos)
+
+  if ("procedure" %in% names(call_match())) {
+    message <- c(
+      message,
+      "*" = "{procedure} applied"
+    )
+  }
+
   message <- c(
     message,
     "*" = "normalized {.var {target_names}}"
@@ -169,16 +180,6 @@ wrap_up <- function(
       "*" = "grouped by {.var {names(grouping)}}"
     )
   }
-
-  # message <- c(
-  #   message,
-  #   "*" = glue::glue(
-  #     "L = {as_label(.L)}"
-  #   ),
-  #   "*" = glue::glue(
-  #     "S = {as_label(.S)}"
-  #   )
-  # )
 
   message <- c(
     message,
