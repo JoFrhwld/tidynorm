@@ -14,3 +14,14 @@ check_norm(.data)
 about which normalization procedures have been applied to the
 data.
 }
+\examples{
+speaker_norm <- speaker_data |>
+  norm_nearey(
+    F1:F3,
+    .by = speaker,
+    .silent = TRUE
+  )
+
+check_norm(speaker_norm)
+
+}

@@ -232,6 +232,16 @@ wrap_up <- function(.data){
 #'
 #' @param .data A data frame produced by a tidynorm function.
 #'
+#' @examples
+#' speaker_norm <- speaker_data |>
+#'   norm_nearey(
+#'     F1:F3,
+#'     .by = speaker,
+#'     .silent = TRUE
+#'   )
+#'
+#' check_norm(speaker_norm)
+#'
 #' @export
 check_norm <- function(.data){
 
