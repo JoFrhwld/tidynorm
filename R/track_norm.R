@@ -138,6 +138,8 @@ norm_track_generic <- function(
 
   check_grouping(.data, {{ .by }}, .call)
 
+  by_pos = tidyselect::eval_select(enquo(.by), .data)
+
   grouping_list <- make_dct_grouping(
     .data,
     {{ .by }},
@@ -182,6 +184,17 @@ norm_track_generic <- function(
       .order = .order
     )
 
+  .dct_data <- append_norm_info(
+    .dct_data,
+    list(
+      .step = "DCT applied to tracks",
+      .token_id_col = quo_name(enquo(.token_id_col)),
+      .time_col = quo_name(enquo(.time_col)),
+      .by = names(by_pos),
+      .token_id_col = quo_name(enquo(.token_id_col))
+    )
+  )
+
   normed <- norm_dct_generic(
     .dct_data,
     !!targets,
@@ -192,7 +205,7 @@ norm_track_generic <- function(
     .param_col = !!sym(".param"),
     .L = {{ .L }},
     .S = {{ .S }},
-    .names = .names2,
+    .names = .names,
     .silent = TRUE,
     .drop_orig = .drop_orig,
     .call = current_env()
@@ -221,6 +234,16 @@ norm_track_generic <- function(
       )
     )
 
+  normed_track <- append_norm_info(
+    normed_track,
+    list(
+      .step = "Inverse DCT applied",
+      .param_col = ".param",
+      .by = names(by_pos),
+      .token_id_col = quo_name(enquo(.token_id_col))
+    )
+  )
+
   if (!quo_is_null(cols$.time_col)) {
     normed_track <- normed_track |>
       dplyr::select(
@@ -241,8 +264,21 @@ norm_track_generic <- function(
       .fn = \(x) stringr::str_remove(x, "_.formant")
     )
 
+  normed_track <- append_norm_info(
+    normed_track,
+    list(
+      .norm_procedure = "tidynorm::norm_track_generic",
+      .targets = names(target_pos),
+      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+      .by = names(by_pos),
+      .token_id_col = quo_name(enquo(.token_id_col)),
+      .by_formant = .by_formant
+    )
+  )
 
-
+  if(!.silent){
+    wrap_up(normed_track)
+  }
 
   return(normed_track)
 }
@@ -310,8 +346,20 @@ norm_track_lobanov <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_lobanov"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -383,8 +431,20 @@ norm_track_nearey <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_nearey"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -450,8 +510,19 @@ norm_track_deltaF <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_deltaF"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -520,8 +591,20 @@ norm_track_wattfab <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_wattfab"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -588,8 +671,20 @@ norm_track_barkz <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_barkz"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
+
 }
