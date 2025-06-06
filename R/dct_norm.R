@@ -279,6 +279,35 @@ norm_dct_generic <- function(
 #' Lobanov DCT Normalization
 #'
 #' @inheritParams norm_dct_generic
+#' @inheritParams norm_track_lobanov
+#'
+#' @details
+#'
+#' \deqn{
+#'   \hat{F}_{ij} = \frac{F_{ij} - L_i}{S_i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}F_{ij}
+#' }
+#'
+#' \deqn{
+#'   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Lobanov normalized DCT Coefficients.
+#'
+#' @references
+#' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
+#' Journal of the Acoustical Society of America, 49, 606–608.
+#'
+#' @example inst/examples/ex-norm_dct_lobanov.R
 #' @export
 norm_dct_lobanov <- function(
     .data,

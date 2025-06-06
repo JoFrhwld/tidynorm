@@ -46,9 +46,9 @@ reference:
   #   contents:
   #     - ends_with("_norm_fun")
 #
-#   - title: "Info Functions"
-#     contents:
-#       - check_norm
+  - title: "Info Functions"
+    contents:
+      - check_norm
 
   - title: DCT
   - subtitle: Basic DCT Functions

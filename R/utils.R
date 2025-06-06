@@ -224,6 +224,14 @@ wrap_up <- function(.data){
 
 }
 
+#' Check Normalization Procedures
+#'
+#' `check_norm()` will generate a message with information
+#' about which normalization procedures have been applied to the
+#' data.
+#'
+#' @param .data A data frame produced by a tidynorm function.
+#'
 #' @export
 check_norm <- function(.data){
 
