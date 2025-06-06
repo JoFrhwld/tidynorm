@@ -2,7 +2,7 @@
 % Please edit documentation in R/dct.R
 \name{reframe_with_dct}
 \alias{reframe_with_dct}
-\title{Reframe DCT}
+\title{Reframe with DCT}
 \usage{
 reframe_with_dct(
   .data,

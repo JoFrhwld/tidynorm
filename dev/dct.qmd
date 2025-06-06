@@ -13,28 +13,49 @@ p_dct <- scipy$fft$dct
 ```
 
 ```{r}
-x <- seq(0,1, length = 10)
+x <- seq(0, 1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 ```
 
 ```{r}
-coefs <- dct(y, norm_forward = T)
-coefs
+idct()
 ```
 
 ```{r}
-plot(idct(coefs))
+scipy <- reticulate::import("scipy")
+py_dct <- scipy$fft$dct
+
+x <- seq(0, 1, length = 10)
+y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
+
+py_coefs <- py_dct(y, norm = "forward", orthogonalize = TRUE)
+r_coefs <- dct(y)
+```
+
+```{r}
+basis <- dct_basis(100, 5)
+matplot(basis, type = 'l', lty = 1)
+```
+
+```{r}
+x <- dct(cbind(y,y))
+
+colnames(x) <- colnames(x)
+
+dimnames(x)
 ```
 
 ```{r}
 speaker_tracks |> 
-  norm_track_nearey(
+  reframe_with_dct_smooth(
     F1:F3,
     .by = speaker,
-    .token_id_col = id,
-    .time_col = t
+    .token_id_col = id, 
+    .time_col = t,
+    .rate = TRUE
   ) |> 
   filter(
-    plt_vclass == "ay0"
-  )
+    speaker == "s01",
+    id == 0
+  ) 
 ```

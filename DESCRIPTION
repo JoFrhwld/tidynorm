@@ -14,9 +14,9 @@ RoxygenNote: 7.3.2
 Imports: 
     cli,
     dplyr,
-    fftw,
     glue,
     purrr,
+    Rcpp,
     rlang,
     stringr,
     tidyr,
@@ -30,8 +30,11 @@ Suggests:
     knitr,
     magick,
     quarto,
+    reticulate,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 VignetteBuilder: quarto
+LinkingTo: 
+    Rcpp, RcppArmadillo 
