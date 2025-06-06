@@ -361,7 +361,7 @@ norm_dct_lobanov <- function(
 #' @details
 #'
 #' **Important**: This function assumes that the DCT
-#' coefficients were estimated over log-transormed
+#' coefficients were estimated over log-transformed
 #' formant values.
 #'
 #' When formant extrinsic:
@@ -508,4 +508,159 @@ norm_dct_deltaF <- function(
   }
 
   return(normed)
+}
+
+#' Watt and Fabricius DCT normalization
+#'
+#' @inheritParams norm_track_generic
+#'
+#' @details
+#' This is a modified version of the Watt & Fabricius Method. The original
+#' method identified point vowels over which F1 and F2 centroids were calculated.
+#' The procedure here just identifies centroids by taking the mean of
+#' all formant values.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = \frac{F_{ij}}{S_i}
+#' }
+#'
+#' \deqn{
+#'  S_i = \frac{1}{N}\sum_{j=1}^N F_{ij}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Watt & Fabricius normalized DCT coefficients.
+#'
+#' @example inst/examples/ex-norm_dct_wattfab.R
+#'
+#' @references
+#' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
+#' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
+#' Leeds Working Papers in Linguistics and Phonetics, 9, 159–173.
+#' @export
+norm_dct_wattfab <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_wf",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = TRUE,
+    .L = 0,
+    .S = mean(!!sym(".formant"), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_wattfab"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+#' Bark Difference DCT Normalization
+#' @inheritParams norm_track_generic
+#' @details
+#'
+#' **Important**: This function assumes that the DCT
+#' coefficients were estimated over bark-transformed
+#' formant values.
+#'
+#' This is a within-token normalization technique. First all formants are
+#' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
+#' subtracted from F1 and F2.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = F_{ij} - L_j
+#' }
+#'
+#' \deqn{
+#' L_j = F_{3j}
+#' }
+#'
+#' @returns
+#' A data frame of normalized DCT
+#' parameters.
+#'
+#' @returns
+#' A data frame of Back Difference normalized dct coefficients.
+#'
+#' @references
+#' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
+#' recognition based on the auditory representation of American English vowels.
+#' The Journal of the Acoustical Society of America, 79(4), 1086–1100.
+#' [https://doi.org/10.1121/1.393381](https://doi.org/10.1121/1.393381)
+#'
+#' @example inst/examples/ex-norm_dct_barkz.R
+#'
+#' @export
+norm_dct_barkz <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_bz",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = FALSE,
+    .by_token = TRUE,
+    .L = (!!sym(".formant"))[3],
+    .S = 1 / sqrt(2),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_barkz"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+
 }
