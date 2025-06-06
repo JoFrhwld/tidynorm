@@ -1,3 +1,15 @@
+norm_messages = list(
+  .step = "{ .step}",
+  .norm_procedure = "normalized with {.fn { .norm_procedure}}",
+  .targets = "normalized {.var { .targets}}",
+  .norm_cols = "normalized values in {.var { .norm_cols}}",
+  .by = "grouped by {.var { .by}}",
+  .token_id_col = "token id column: {.var { .token_id_col}}",
+  .param_col = "DCT parameter column {.var { .param_col}}",
+  .by_formant = "formant intrinsic: { .by_formant}"
+)
+
+
 check_grouping <- function(
     .data,
     .by,
@@ -181,22 +193,16 @@ update_norm_info <- function(
 wrap_up <- function(.data){
 
   if (is.null(attr(.data, "norminfo"))) {
+    cli_par()
     cli_info(
       "x" = "Not normalized with a {.pkg tidynorm} procedure."
     )
     return()
+    cli_end()
   }
 
   norminfo <- attr(.data, "norminfo")
   last_norm <- norminfo[[length(norminfo)]]
-
-  norm_messages = list(
-    .norm_procedure = "normalized with {.fn { .norm_procedure}}",
-    .targets = "normalized {.var { .targets}}",
-    .norm_cols = "normalized values in {.var { .norm_cols}}",
-    .by = "grouped by {.var { .by}}",
-    .by_formant = "formant intrinsic: { .by_formant}"
-  )
 
   message <- c("Normalization info")
 
@@ -215,5 +221,38 @@ wrap_up <- function(.data){
     .envir = last_norm
   )
   cli_end()
+
+}
+
+#' @export
+check_norm <- function(.data){
+
+  if (is.null(attr(.data, "norminfo"))) {
+    cli_par()
+    cli_info(
+      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+    )
+    return()
+    cli_end()
+
+    return()
+  }
+
+  norminfo = attr(.data, "norminfo")
+
+  for (step in norminfo) {
+    message <- "Normalization Step"
+    for (n in names(norm_messages)) {
+      if (n %in% names(step)) {
+        message <- c(
+          message,
+          "*" = norm_messages[[n]]
+        )
+      }
+    }
+    cli_par()
+    cli_inform(message, .envir = step)
+    cli_end()
+  }
 
 }
