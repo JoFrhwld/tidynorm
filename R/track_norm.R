@@ -628,7 +628,7 @@ norm_track_wattfab <- function(
 #' parameters.
 #'
 #' @returns
-#' A data frame of Watt & Fabricius normalized formant tracks.
+#' A data frame of Bark difference normalized formant tracks.
 #'
 #' @references
 #' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
