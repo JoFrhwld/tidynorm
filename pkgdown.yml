@@ -2,8 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  normalizaton-overview: normalizaton-overview.html
-last_built: 2025-06-05T20:21Z
+  checking: checking.html
+  dct: dct.html
+  norm-methods: norm-methods.html
+  normalization-overview: normalization-overview.html
+  normalizing_formant_tracks: normalizing_formant_tracks.html
+last_built: 2025-06-07T21:29Z
 urls:
   reference: https://jofrhwld.github.io/tidynorm/reference
   article: https://jofrhwld.github.io/tidynorm/articles

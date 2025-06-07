@@ -34,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tidynorm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,15 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/normalizaton-overview.html">Normalization Overview</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Get Started</h6></li>
+    <li><a class="dropdown-item" href="articles/normalization-overview.html">Normalization Overview</a></li>
+    <li><a class="dropdown-item" href="articles/norm-methods.html">Normalization Methods</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Details</h6></li>
+    <li><a class="dropdown-item" href="articles/normalizing_formant_tracks.html">Normalizing Formant Tracks</a></li>
+    <li><a class="dropdown-item" href="articles/checking.html">Checking Normalization Procedures</a></li>
+    <li><a class="dropdown-item" href="articles/dct.html">The Discrete Cosine Transform</a></li>
   </ul>
 </li>
       </ul>
@@ -151,10 +159,12 @@ Plotting Code
 <span>  <span class="op">)</span> <span class="op">-&gt;</span></span>
 <span><span class="va">speaker_normalized</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#&gt; Normalization info</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; • formant extrinsic</span></span></code></pre></div>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; • normalized with `tidynorm::norm_nearey()`</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 <details class="code-fold"><summary>
 Plotting Code
 </summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -190,10 +200,12 @@ Plotting Code
 <span>    .names <span class="op">=</span> <span class="st">"{.formant}_rnearey"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">#&gt; Normalization info</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; • formant extrinsic</span></span></code></pre></div>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; • normalized with `tidynorm::norm_generic()`</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; • (.formant - median(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 <details class="code-fold"><summary>
 Plotting Code
 </summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -252,7 +264,8 @@ Plotting Code
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg"></a></li>
+<li><a href="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=tidynorm" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidynorm.png" alt="CRAN status"></a></li>
 </ul>
 </div>
 

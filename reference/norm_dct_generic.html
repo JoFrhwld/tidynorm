@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tidynorm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,15 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/normalizaton-overview.html">Normalization Overview</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Get Started</h6></li>
+    <li><a class="dropdown-item" href="../articles/normalization-overview.html">Normalization Overview</a></li>
+    <li><a class="dropdown-item" href="../articles/norm-methods.html">Normalization Methods</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Details</h6></li>
+    <li><a class="dropdown-item" href="../articles/normalizing_formant_tracks.html">Normalizing Formant Tracks</a></li>
+    <li><a class="dropdown-item" href="../articles/checking.html">Checking Normalization Procedures</a></li>
+    <li><a class="dropdown-item" href="../articles/dct.html">The Discrete Cosine Transform</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -130,13 +138,23 @@ formant columns.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This will normalize vowel formant data that has already had the
+    <p>The following <code>norm_dct_*</code> procedures were built on top of
+<code>norm_dct_generic()</code>.</p><ul><li><p><a href="norm_dct_lobanov.html">norm_dct_lobanov</a></p></li>
+<li><p><a href="norm_dct_nearey.html">norm_dct_nearey</a></p></li>
+<li><p><a href="norm_dct_deltaF.html">norm_dct_deltaF</a></p></li>
+<li><p><a href="norm_dct_wattfab.html">norm_dct_wattfab</a></p></li>
+<li><p><a href="norm_dct_barkz.html">norm_dct_barkz</a></p></li>
+</ul><div class="section">
+<h3 id="normalizing-dct-coefficients">Normalizing DCT Coefficients<a class="anchor" aria-label="anchor" href="#normalizing-dct-coefficients"></a></h3>
+
+
+<p>This will normalize vowel formant data that has already had the
 Discrete Cosine Transform applied (see <a href="dct.html">dct</a>) with the following
 procedure:</p><ol><li><p>Location <code>.L</code> and Scale <code>.S</code> expressions will be used to summarize
 the zero<sup>th</sup> DCT coefficients.</p></li>
 <li><p>These location and scale will be used to normalize the DCT coefficients.</p></li>
 </ol><div class="section">
-<h3 id="location-and-scale-expressions">Location and Scale expressions<a class="anchor" aria-label="anchor" href="#location-and-scale-expressions"></a></h3>
+<h4 id="location-and-scale-expressions">Location and Scale expressions<a class="anchor" aria-label="anchor" href="#location-and-scale-expressions"></a></h4>
 
 
 <p>norm_dct_generic normalizes DCT coefficients directly.
@@ -154,6 +172,8 @@ $$</p>
 <p>Rather than requiring users to remember to multiply expressions for \(S\)
 by \(\sqrt{2}\), this is done by norm_dct_generic itself, to allow greater
 parallelism with how <a href="norm_generic.html">norm_generic</a> works.</p>
+<p><strong>Note</strong>: If you want to scale values by a constant in the normalization,
+you'll need to divide the constant by <code>sqrt(2)</code>.</p>
 <p>The expressions for calculating \(L\) and \(S\) can be
 passed to <code>.L</code> and <code>.S</code>, respectively. Available values for
 these expressions are</p>
@@ -168,13 +188,16 @@ these expressions are</p>
 </div>
 
 <div class="section">
-<h3 id="identifying-tokens">Identifying tokens<a class="anchor" aria-label="anchor" href="#identifying-tokens"></a></h3>
+<h4 id="identifying-tokens">Identifying tokens<a class="anchor" aria-label="anchor" href="#identifying-tokens"></a></h4>
 
 
-<p>DCT normalization only works on a by-token basis, so there must be a column that
+<p>DCT normalization requires identifying individual tokens, so there must be a column that
 uniquely identifies (or, in combination with a <code>.by</code> grouping, uniquely
 identifies) each individual token. This column should be passed to
 <code>.token_id_col</code>.</p>
+</div>
+
+
 </div>
 
     </div>
@@ -183,14 +206,6 @@ identifies) each individual token. This column should be passed to
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span><span class="va">ggplot2_inst</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">track_subset</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span></span>
@@ -224,17 +239,27 @@ identifies) each individual token. This column should be passed to
 <span class="r-in"><span>    .drop_orig <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    .names <span class="op">=</span> <span class="st">"{.formant}_mad"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Normalization info</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized with `tidynorm::norm_dct_generic()`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized `F1`, `F2`, and `F3`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> normalized values in `F1_mad`, `F2_mad`, and `F3_mad`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> token id column: `id`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> DCT parameter column: `.param`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> grouped by `speaker`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> within formant: TRUE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> (.formant - median(.formant, na.rm = TRUE))/mad(.formant, na.rm = TRUE)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">track_norm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   speaker    id vowel plt_vclass word  .param    .n  F1_mad  F2_mad  F3_mad</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01         0 EY    eyF        OKAY       0    10  0.177   0.811  -<span style="color: #BB0000;">0.088</span><span style="color: #BB0000; text-decoration: underline;">9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01         0 EY    eyF        OKAY       1    10 -<span style="color: #BB0000;">0.083</span><span style="color: #BB0000; text-decoration: underline;">7</span> -<span style="color: #BB0000;">0.304</span>  -<span style="color: #BB0000;">0.147</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01         0 EY    eyF        OKAY       2    10  0.381   0.082<span style="text-decoration: underline;">1</span>  0.081<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01         1 AH    uh         UM         0    10  0.345  -<span style="color: #BB0000;">0.121</span>   0.816 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01         1 AH    uh         UM         1    10  0.136   0.207  -<span style="color: #BB0000;">0.252</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s01         1 AH    uh         UM         2    10  0.030<span style="text-decoration: underline;">6</span> -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.083</span><span style="color: #BB0000; text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01         0 EY    eyF        OKAY       0    10  0.177   0.811  -<span style="color: #BB0000;">0.095</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01         0 EY    eyF        OKAY       1    10 -<span style="color: #BB0000;">0.083</span><span style="color: #BB0000; text-decoration: underline;">7</span> -<span style="color: #BB0000;">0.304</span>  -<span style="color: #BB0000;">0.148</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01         0 EY    eyF        OKAY       2    10  0.381   0.082<span style="text-decoration: underline;">1</span>  0.082<span style="text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01         1 AH    uh         UM         0    10  0.345  -<span style="color: #BB0000;">0.121</span>   0.820 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01         1 AH    uh         UM         1    10  0.136   0.207  -<span style="color: #BB0000;">0.255</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s01         1 AH    uh         UM         2    10  0.030<span style="text-decoration: underline;">6</span> -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.084</span><span style="color: #BB0000; text-decoration: underline;">3</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">full_tracks</span> <span class="op">&lt;-</span> <span class="va">track_norm</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span></span>
@@ -254,12 +279,12 @@ identifies) each individual token. This column should be passed to
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   speaker vowel .time F1_mad F2_mad F3_mad</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01     EY        1 -<span style="color: #BB0000;">0.528</span>   1.13  0.508</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01     EY        2 -<span style="color: #BB0000;">0.532</span>   1.15  0.517</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01     EY        3 -<span style="color: #BB0000;">0.541</span>   1.18  0.532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01     EY        4 -<span style="color: #BB0000;">0.554</span>   1.23  0.554</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01     EY        5 -<span style="color: #BB0000;">0.573</span>   1.30  0.579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s01     EY        6 -<span style="color: #BB0000;">0.596</span>   1.37  0.605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> s01     EY        1 -<span style="color: #BB0000;">0.528</span>   1.13  0.506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> s01     EY        2 -<span style="color: #BB0000;">0.532</span>   1.15  0.515</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> s01     EY        3 -<span style="color: #BB0000;">0.541</span>   1.18  0.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> s01     EY        4 -<span style="color: #BB0000;">0.554</span>   1.23  0.553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> s01     EY        5 -<span style="color: #BB0000;">0.573</span>   1.30  0.578</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> s01     EY        6 -<span style="color: #BB0000;">0.596</span>   1.37  0.604</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="va">ggplot2_inst</span><span class="op">)</span><span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span></span>
