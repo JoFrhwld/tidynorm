@@ -47,3 +47,4 @@ Config/testthat/parallel: true
 VignetteBuilder: quarto
 LinkingTo: 
     Rcpp, RcppArmadillo 
+BugReports: https://github.com/JoFrhwld/tidynorm/issues
