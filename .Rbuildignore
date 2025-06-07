@@ -19,3 +19,4 @@ dev
 .python-version
 inst/extdata/speaker_tracks.csv
 ^vignettes/\.quarto$
+^\.quarto
