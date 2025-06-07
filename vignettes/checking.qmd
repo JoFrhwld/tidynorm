@@ -15,13 +15,13 @@ If you've carried out a few different normalization procedures on a single datas
 For example, in this workflow, we've given the new normalized data columns uninformative names.
 
 ```{r}
-norm_data <- speaker_data |> 
+norm_data <- speaker_data |>
   norm_lobanov(
     F1:F3,
     .by = speaker,
     .names = "{.formant}_norm1",
     .silent = T
-  ) |> 
+  ) |>
   norm_nearey(
     F1:F3,
     .by = speaker,

@@ -55,7 +55,6 @@ theme_set(
     base_size = 16
   )
 )
-
 ```
 
 ## A brief description
@@ -66,7 +65,7 @@ These coefficients can be converted back into the original signal, or simplified
 For example here is an F1 track with 20 measurement points from the `speaker_tracks` data set.
 
 ```{r}
-one_track <- speaker_tracks |> 
+one_track <- speaker_tracks |>
   filter(
     speaker == "s01",
     id == 9
@@ -76,10 +75,10 @@ one_track <- speaker_tracks |>
 ```{r}
 #| label: fig-f1
 #| fig-cap: "F1 Formant Track"
-one_track |> 
+one_track |>
   ggplot(aes(t, F1)) +
-    geom_point() +
-    geom_line()
+  geom_point() +
+  geom_line()
 ```
 
 If we apply `dct()` to the F1 track, we'll get back 20 DCT coefficients.
@@ -93,16 +92,16 @@ And, if we apply `idct()` to these coefficients, we'll get back the original tra
 ```{r}
 #| label: fig-f1-idct
 #| fig-cap: "idct(dct(F1))"
-one_track |> 
+one_track |>
   mutate(
     F1_dct = dct(F1),
     F1_idct = idct(F1_dct)
-  ) |> 
+  ) |>
   ggplot(
     aes(t, F1_idct)
   ) +
-    geom_point() +
-    geom_line()
+  geom_point() +
+  geom_line()
 ```
 
 However, if we apply `idct()` to just the first few DCT coefficients, we'll get back a smoothed version of the formant track.
@@ -110,16 +109,16 @@ However, if we apply `idct()` to just the first few DCT coefficients, we'll get 
 ```{r}
 #| label: fig-f1-dctsmooth
 #| fig-cap: DCT smoothed F1
-one_track |> 
+one_track |>
   mutate(
     F1_dct = dct(F1),
     F1_idct = idct(F1_dct[1:5], n = n())
-  ) |> 
+  ) |>
   ggplot(
     aes(t, F1_idct)
   ) +
-    geom_point()+
-    geom_line()
+  geom_point() +
+  geom_line()
 ```
 
 ## DCT functions in tidynorm
@@ -155,21 +154,21 @@ To get average formant tracks for each vowel, you'll need to
 ```{r}
 #| warning: false
 # focusing on one speaker
-one_speaker <- speaker_tracks |> 
+one_speaker <- speaker_tracks |>
   filter(speaker == "s01")
 
-dct_smooths <- one_speaker |> 
+dct_smooths <- one_speaker |>
   # step 1, reframing as dct coefficients
   reframe_with_dct(
     F1:F3,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   # step 2, averaging over parameter number and vowel
   summarise(
     across(F1:F3, mean),
     .by = c(.param, plt_vclass)
-  ) |> 
+  ) |>
   # step 3, reframing with inverse DCT
   reframe_with_idct(
     F1:F3,
@@ -182,10 +181,10 @@ dct_smooths <- one_speaker |>
 ```{r}
 #| label: fig-dct-smooths
 #| fig-cap: DCT smoothed formant trajectories.
-dct_smooths |> 
+dct_smooths |>
   filter(
     plt_vclass %in% c("iy", "ey", "ay", "ay0", "oy")
-  ) |> 
+  ) |>
   ggplot(
     aes(F2, F1)
   ) +
@@ -207,7 +206,7 @@ You can access the cosine functions it uses with `dct_basis()`.
 
 ```{r}
 basis <- dct_basis(100, 5)
-matplot(basis, type = 'l',lty = 1, lwd = 2)
+matplot(basis, type = "l", lty = 1, lwd = 2)
 ```
 
 One way to think about it is that the DCT is using these cosine functions in a regression, and the values that get returned are the coefficients.
@@ -219,7 +218,7 @@ dct(one_track$F1)[1:5]
 ```{r}
 lm(
   one_track$F1 ~ dct_basis(20, 5) - 1
-) |> 
+) |>
   coef()
 ```
 

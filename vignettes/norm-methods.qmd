@@ -57,17 +57,17 @@ $$
 #### On points
 
 ```{r}
-point_norm <- speaker_data |> 
+point_norm <- speaker_data |>
   norm_lobanov(
     F1:F3,
     .by = speaker
-  ) 
+  )
 ```
 
 #### On tracks
 
 ```{r}
-track_norm <- speaker_tracks |> 
+track_norm <- speaker_tracks |>
   norm_track_lobanov(
     F1:F3,
     .by = speaker,
@@ -79,20 +79,19 @@ track_norm <- speaker_tracks |>
 #### On DCT Coefficients
 
 ```{r}
-dct_norm <- speaker_tracks |> 
+dct_norm <- speaker_tracks |>
   reframe_with_dct(
-    F1:F3, 
-    .by = speaker, 
+    F1:F3,
+    .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   norm_dct_lobanov(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .param_col = .param
   )
-  
 ```
 
 ## Nearey Normalization [@neareyPhoneticFeatureSystems1978]
@@ -121,7 +120,7 @@ The fact that the grand mean is taken across all formants, it's important to rep
 #### On points
 
 ```{r}
-point_norm <- speaker_data |> 
+point_norm <- speaker_data |>
   norm_nearey(
     F1:F3,
     .by = speaker
@@ -131,7 +130,7 @@ point_norm <- speaker_data |>
 #### On tracks
 
 ```{r}
-track_norm <- speaker_tracks |> 
+track_norm <- speaker_tracks |>
   norm_track_nearey(
     F1:F3,
     .by = speaker,
@@ -143,14 +142,14 @@ track_norm <- speaker_tracks |>
 #### On DCT Coefficients
 
 ```{r}
-dct_norm <- speaker_tracks |> 
-  mutate(across(F1:F3, log)) |> 
+dct_norm <- speaker_tracks |>
+  mutate(across(F1:F3, log)) |>
   reframe_with_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   norm_dct_nearey(
     F1:F3,
     .by = speaker,
@@ -187,7 +186,7 @@ The fact that this method takes a weighted average across all formants, it's imp
 #### On points
 
 ```{r}
-point_norm <- speaker_data |> 
+point_norm <- speaker_data |>
   norm_deltaF(
     F1:F3,
     .by = speaker
@@ -197,7 +196,7 @@ point_norm <- speaker_data |>
 #### On tracks
 
 ```{r}
-track_norm <- speaker_tracks |> 
+track_norm <- speaker_tracks |>
   norm_track_deltaF(
     F1:F3,
     .by = speaker,
@@ -209,16 +208,16 @@ track_norm <- speaker_tracks |>
 #### On DCT coefficients
 
 ```{r}
-dct_norm <- speaker_tracks |> 
+dct_norm <- speaker_tracks |>
   reframe_with_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   norm_dct_deltaF(
     F1:F3,
-    .by = speaker, 
+    .by = speaker,
     .token_id_col = id,
     .param_col = .param
   )
@@ -254,7 +253,7 @@ $$
 #### On points
 
 ```{r}
-point_norm <- speaker_data |> 
+point_norm <- speaker_data |>
   norm_wattfab(
     F1:F3,
     .by = speaker
@@ -264,7 +263,7 @@ point_norm <- speaker_data |>
 #### On tracks
 
 ```{r}
-track_norm <- speaker_tracks |> 
+track_norm <- speaker_tracks |>
   norm_track_wattfab(
     F1:F3,
     .by = speaker,
@@ -276,13 +275,13 @@ track_norm <- speaker_tracks |>
 #### On DCT coefficients
 
 ```{r}
-dct_norm <- speaker_tracks |> 
+dct_norm <- speaker_tracks |>
   reframe_with_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   norm_dct_wattfab(
     F1:F3,
     .by = speaker,
@@ -318,7 +317,7 @@ $$
 #### On points
 
 ```{r}
-point_norm <- speaker_data |> 
+point_norm <- speaker_data |>
   norm_barkz(
     F1:F3,
     .by = speaker
@@ -328,7 +327,7 @@ point_norm <- speaker_data |>
 #### On tracks
 
 ```{r}
-track_norm <- speaker_tracks |> 
+track_norm <- speaker_tracks |>
   norm_track_barkz(
     F1:F3,
     .by = speaker,
@@ -340,16 +339,16 @@ track_norm <- speaker_tracks |>
 #### On DCT Coefficients
 
 ```{r}
-dct_norm <- speaker_tracks |> 
+dct_norm <- speaker_tracks |>
   mutate(
     across(F1:F3, hz_to_bark)
-  ) |> 
+  ) |>
   reframe_with_dct(
     F1:F3,
     .by = speaker,
     .token_id_col = id,
     .time_col = t
-  ) |> 
+  ) |>
   norm_dct_barkz(
     F1:F3,
     .by = speaker,

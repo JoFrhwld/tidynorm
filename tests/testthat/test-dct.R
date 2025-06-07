@@ -3,7 +3,6 @@ x <- seq(0, 1, length = 10)
 y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 
 test_that("dct coefs from package are equal to established library", {
-
   # Only run test if scipy is available
   skip_if(!rlang::is_installed("reticulate"))
   reticulate::py_config()
@@ -23,7 +22,6 @@ test_that("dct coefs from package are equal to established library", {
 
   expect_equal(length(r_coefs), length(py_coefs))
   expect_equal(r_coefs, py_coefs)
-
 })
 
 
@@ -35,7 +33,7 @@ test_that("idct recovery", {
 })
 
 test_that("dct matrix method", {
-  mat <- cbind(y, y/3)
+  mat <- cbind(y, y / 3)
   coefs <- dct(mat)
 
   expect_equal(
@@ -47,11 +45,10 @@ test_that("dct matrix method", {
     dimnames(coefs),
     dimnames(mat)
   )
-
 })
 
 test_that("idct matrix method", {
-  mat <- cbind(y, y/3)
+  mat <- cbind(y, y / 3)
   coefs <- dct(mat)
   recovered <- idct(coefs)
 
@@ -59,12 +56,12 @@ test_that("idct matrix method", {
     recovered,
     mat
   )
-
 })
 
 
 test_that("dct-basis works", {
-  rows = 100; cols = 5;
+  rows <- 100
+  cols <- 5
   basis <- dct_basis(rows, cols)
 
   expect_equal(
@@ -78,15 +75,13 @@ test_that("dct-basis works", {
   )
 
   expect_equal(
-    basis[1,1],
+    basis[1, 1],
     sqrt(2)
   )
-
 })
 
 test_that("reframe with dct works", {
-
-  test_order = 5
+  test_order <- 5
 
   n_tokens <- speaker_tracks |>
     dplyr::count(
@@ -126,12 +121,10 @@ test_that("reframe with dct works", {
     colnames(speaker_dct1),
     c("F1", "F2", "F3")
   )
-
 })
 
 test_that("reframe with idct works", {
-
-  out_len = 20
+  out_len <- 20
 
   n_tokens <- speaker_tracks |>
     dplyr::count(
@@ -211,6 +204,4 @@ test_that("reframe with idct works", {
       na.rm = T
     )
   )
-
 })
-
