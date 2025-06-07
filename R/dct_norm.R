@@ -455,6 +455,7 @@ norm_dct_nearey <- function(
 #' Delta F DCT Normalization
 #'
 #' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
 #'
 #'
 #' @details
@@ -525,6 +526,7 @@ norm_dct_deltaF <- function(
 #' Watt and Fabricius DCT normalization
 #'
 #' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
 #'
 #' @details
 #' This is a modified version of the Watt & Fabricius Method. The original
@@ -599,6 +601,7 @@ norm_dct_wattfab <- function(
 
 #' Bark Difference DCT Normalization
 #' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
 #' @details
 #'
 #' **Important**: This function assumes that the DCT
