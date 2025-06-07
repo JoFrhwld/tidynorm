@@ -64,6 +64,17 @@ A data frame of normalized DCT coefficients.
 Generic Formant DCT Normalization Procedure
 }
 \details{
+The following \verb{norm_dct_*} procedures were built on top of
+\code{norm_dct_generic()}.
+\itemize{
+\item \link{norm_dct_lobanov}
+\item \link{norm_dct_nearey}
+\item \link{norm_dct_deltaF}
+\item \link{norm_dct_wattfab}
+\item \link{norm_dct_barkz}
+}
+\subsection{Normalizing DCT Coefficients}{
+
 This will normalize vowel formant data that has already had the
 Discrete Cosine Transform applied (see \link{dct}) with the following
 procedure:
@@ -110,6 +121,8 @@ DCT normalization only works on a by-token basis, so there must be a column that
 uniquely identifies (or, in combination with a \code{.by} grouping, uniquely
 identifies) each individual token. This column should be passed to
 \code{.token_id_col}.
+}
+
 }
 }
 \examples{

@@ -4,6 +4,18 @@
 #' @param .data A data frame of formant DCT coefficients
 #' @param .param_col A column identifying the DCT parameter number.
 #' @details
+#'
+#' The following `norm_dct_*` procedures were built on top of
+#' `norm_dct_generic()`.
+#'
+#' - [norm_dct_lobanov]
+#' - [norm_dct_nearey]
+#' - [norm_dct_deltaF]
+#' - [norm_dct_wattfab]
+#' - [norm_dct_barkz]
+#'
+#' ## Normalizing DCT Coefficients
+#'
 #' This will normalize vowel formant data that has already had the
 #' Discrete Cosine Transform applied (see [dct]) with the following
 #' procedure:

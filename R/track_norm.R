@@ -33,6 +33,15 @@
 #' @param .call Used for internal purposes.
 #'
 #' @details
+#' The following `norm_track_*` procedures were built on top of
+#' `norm_track_generic`.
+#'
+#' - [norm_track_lobanov]
+#' - [norm_track_nearey]
+#' - [norm_track_deltaF]
+#' - [norm_track_wattfab]
+#' - [norm_track_barkz]
+#'
 #' This will normalize vowel formant tracks in the following steps:
 #'
 #' 1. Any `.pre_trans` transformations will be applied to the formant data.

@@ -114,10 +114,11 @@ speaker_normalized
 ```
 
     #> Normalization info
+    #> • normalized with `tidynorm::norm_nearey()`
     #> • normalized `F1`, `F2`, and `F3`
     #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
     #> • grouped by `speaker`
-    #> • formant extrinsic
+    #> • formant intrinsic: FALSE
 
 <details class="code-fold">
 <summary>Plotting Code</summary>
@@ -167,10 +168,11 @@ speaker_rnearey <- speaker_data |>
 ```
 
     #> Normalization info
+    #> • normalized with `tidynorm::norm_generic()`
     #> • normalized `F1`, `F2`, and `F3`
     #> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
     #> • grouped by `speaker`
-    #> • formant extrinsic
+    #> • formant intrinsic: FALSE
 
 <details class="code-fold">
 <summary>Plotting Code</summary>

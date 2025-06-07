@@ -78,6 +78,16 @@ A data frame of normalized formant tracks.
 Normalize formant tracks using Discrete Cosine Transform normalization
 }
 \details{
+The following \verb{norm_track_*} procedures were built on top of
+\code{norm_track_generic}.
+\itemize{
+\item \link{norm_track_lobanov}
+\item \link{norm_track_nearey}
+\item \link{norm_track_deltaF}
+\item \link{norm_track_wattfab}
+\item \link{norm_track_barkz}
+}
+
 This will normalize vowel formant tracks in the following steps:
 \enumerate{
 \item Any \code{.pre_trans} transformations will be applied to the formant data.
