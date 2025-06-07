@@ -112,7 +112,7 @@ norm_dct_generic <- function(
   )
 
   if (!".param_col" %in% names(args)) {
-    .param_col = sym(".param")
+    .param_col <- sym(".param")
   }
 
   cols <- enquos(
@@ -342,8 +342,7 @@ norm_dct_lobanov <- function(
     .param_col = NULL,
     .names = "{.formant}_z",
     .silent = FALSE,
-    .drop_orig = FALSE
-){
+    .drop_orig = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -690,5 +689,4 @@ norm_dct_barkz <- function(
   }
 
   return(normed)
-
 }

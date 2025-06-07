@@ -416,7 +416,6 @@ norm_nearey <- function(
   }
 
   return(.data)
-
 }
 
 #' Delta F Normalize

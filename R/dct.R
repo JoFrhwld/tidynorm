@@ -43,7 +43,7 @@ dct <- function(x) {
 #' @export
 #' @keywords internal
 dct.numeric <- function(x) {
-  coefs <- dct_fun(x, kk = length(x))[,1]
+  coefs <- dct_fun(x, kk = length(x))[, 1]
   return(coefs)
 }
 
@@ -74,10 +74,10 @@ registerS3method("dct", "matrix", method = dct.matrix)
 #'
 #' @examples
 #' basis <- dct_basis(100, 5)
-#' matplot(basis, type = 'l', lty = 1)
+#' matplot(basis, type = "l", lty = 1)
 #'
 #' @export
-dct_basis <- function(n, k){
+dct_basis <- function(n, k) {
   cos_bank(n, k)
 }
 
@@ -117,7 +117,7 @@ idct <- function(y, n) {
 #' @export
 #' @keywords internal
 idct.numeric <- function(y, n = length(y)) {
-  x <- idct_fun(y, n = n)[,1]
+  x <- idct_fun(y, n = n)[, 1]
   return(x)
 }
 

@@ -1,4 +1,4 @@
-norm_messages = list(
+norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
   .targets = "normalized {.var { .targets}}",
@@ -62,8 +62,7 @@ check_tokens <- function(
 check_args <- function(
     args,
     fmls,
-    call = caller_env()
-    ) {
+    call = caller_env()) {
   fmls_undot <- stringr::str_remove(
     fmls,
     "^\\."
@@ -159,8 +158,7 @@ make_dct_grouping <- function(
 
 append_norm_info <- function(
     .data,
-    info
-){
+    info) {
   prev_attr <- attributes(.data)$norminfo
   attr(.data, "norminfo") <- c(
     prev_attr,
@@ -170,13 +168,11 @@ append_norm_info <- function(
   )
 
   .data
-
 }
 
 update_norm_info <- function(
     .data,
-    info
-){
+    info) {
   norminfo <- attr(.data, "norminfo")
   last_norm <- norminfo[[length(norminfo)]]
 
@@ -193,8 +189,7 @@ update_norm_info <- function(
   .data
 }
 
-wrap_up <- function(.data){
-
+wrap_up <- function(.data) {
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
@@ -224,7 +219,6 @@ wrap_up <- function(.data){
     .envir = last_norm
   )
   cli_end()
-
 }
 
 #' Check Normalization Procedures
@@ -249,8 +243,7 @@ wrap_up <- function(.data){
 #' check_norm(speaker_norm)
 #'
 #' @export
-check_norm <- function(.data){
-
+check_norm <- function(.data) {
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
@@ -262,7 +255,7 @@ check_norm <- function(.data){
     return()
   }
 
-  norminfo = attr(.data, "norminfo")
+  norminfo <- attr(.data, "norminfo")
 
   for (step in norminfo) {
     message <- "Normalization Step"
@@ -278,5 +271,4 @@ check_norm <- function(.data){
     cli_inform(message, .envir = step)
     cli_end()
   }
-
 }

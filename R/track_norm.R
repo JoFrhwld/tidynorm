@@ -152,7 +152,7 @@ norm_track_generic <- function(
 
   check_grouping(.data, {{ .by }}, .call)
 
-  by_pos = tidyselect::eval_select(enquo(.by), .data)
+  by_pos <- tidyselect::eval_select(enquo(.by), .data)
 
   grouping_list <- make_dct_grouping(
     .data,
@@ -297,7 +297,7 @@ norm_track_generic <- function(
     )
   }
 
-  if (!quo_is_null(cols$.time_col)){
+  if (!quo_is_null(cols$.time_col)) {
     norm_info <- c(
       norm_info,
       list(.time_col = quo_name(enquo(.time_col)))
@@ -719,5 +719,4 @@ norm_track_barkz <- function(
   }
 
   return(normed)
-
 }
