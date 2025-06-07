@@ -7,6 +7,12 @@ vignette: >
 ---
 
 ```{r}
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+```{r}
 #| label: setup
 library(tidynorm)
 ```

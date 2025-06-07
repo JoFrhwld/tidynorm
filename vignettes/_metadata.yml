@@ -3,6 +3,7 @@ fig-height: 3
 out-width: 80%
 fig-cap-location: margin
 lightbox: true
+highlight-style: github
 knitr:
   opts_chunk:
     crop: !expr 'rlang::is_installed(c("magick"))'
