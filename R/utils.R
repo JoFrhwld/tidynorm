@@ -3,10 +3,13 @@ norm_messages = list(
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
   .targets = "normalized {.var { .targets}}",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
-  .by = "grouped by {.var { .by}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
-  .param_col = "DCT parameter column {.var { .param_col}}",
-  .by_formant = "formant intrinsic: { .by_formant}"
+  .time_col = "time column: {.var { .time_col}}",
+  .param_col = "DCT parameter column: {.var { .param_col}}",
+  .by = "grouped by {.var { .by}}",
+  .by_formant = "within formant: { .by_formant}",
+  .by_token = "within token: { .by_token}",
+  .norm = "{ .norm}"
 )
 
 

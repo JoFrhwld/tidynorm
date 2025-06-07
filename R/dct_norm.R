@@ -43,6 +43,9 @@
 #' by \eqn{\sqrt{2}}, this is done by [norm_dct_generic] itself, to allow greater
 #' parallelism with how [norm_generic] works.
 #'
+#' **Note**: If you want to scale values by a constant in the normalization,
+#' you'll need to divide the constant by `sqrt(2)`.
+#'
 #' The expressions for calculating \eqn{L} and \eqn{S} can be
 #' passed to `.L` and `.S`, respectively. Available values for
 #' these expressions are
@@ -55,7 +58,7 @@
 #' Along with any data columns from your original data.
 #'
 #' ### Identifying tokens
-#' DCT normalization only works on a by-token basis, so there must be a column that
+#' DCT normalization requires identifying individual tokens, so there must be a column that
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
@@ -265,18 +268,28 @@ norm_dct_generic <- function(
 
   attr(normed, "norminfo") <- prev_attr
   attr(normed, "normalized") <- TRUE
+  norm_info <- list(
+    .norm_procedure = "tidynorm::norm_dct_generic",
+    .by_col = .by_formant,
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(group_pos),
+    .token_id_col = quo_name(enquo(.token_id_col)),
+    .param_col = quo_name(enquo(.param_col)),
+    .by_formant = .by_formant,
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/{quo_name(enquo(.S))}")
+  )
+
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
+    )
+  }
+
   normed <- append_norm_info(
     normed,
-    list(
-      .norm_procedure = "tidynorm::norm_dct_generic",
-      .by_col = .by_formant,
-      .targets = names(target_pos),
-      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-      .by = names(group_pos),
-      .token_id_col = quo_name(enquo(.token_id_col)),
-      .param_col = quo_name(enquo(.param_col)),
-      .by_formant = .by_formant
-    )
+    norm_info
   )
 
   if (!.silent) {
@@ -430,7 +443,7 @@ norm_dct_nearey <- function(
     .by_formant = .by_formant,
     .by_token = FALSE,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .param_col = {{ .param_col }},
     .drop_orig = .drop_orig,
     .names = .names,
@@ -658,7 +671,7 @@ norm_dct_barkz <- function(
     .by_formant = FALSE,
     .by_token = TRUE,
     .L = (!!sym(".formant"))[3],
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .param_col = {{ .param_col }},
     .drop_orig = .drop_orig,
     .names = .names,

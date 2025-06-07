@@ -73,6 +73,11 @@
 #' by \eqn{\sqrt{2}}, this is done by [norm_track_generic] itself, to allow greater
 #' parallelism with how [norm_generic] works.
 #'
+#' **Note**: If you want to scale values by a constant in the normalization,
+#' you'll need to divide the constant by `sqrt(2)`. Post-normalization scaling
+#' (e.g. re-scaling to formant-like values) is probably best handled with a
+#' function passed to `.post_trans`.
+#'
 #' The expressions for calculating \eqn{L} and \eqn{S} can be
 #' passed to `.L` and `.S`, respectively. Available values for
 #' these expressions are
@@ -85,7 +90,7 @@
 #' Along with any data columns from your original data.
 #'
 #' ### Identifying tokens
-#' The DCT only works on a by-token basis, so there must be a column that
+#' Track normalization requires identifying individual tokens, so there must be a column that
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
@@ -273,19 +278,38 @@ norm_track_generic <- function(
       .fn = \(x) stringr::str_remove(x, "_.formant")
     )
 
-  normed_track <- append_norm_info(
-    normed_track,
-    list(
-      .norm_procedure = "tidynorm::norm_track_generic",
-      .targets = names(target_pos),
-      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-      .by = names(by_pos),
-      .token_id_col = quo_name(enquo(.token_id_col)),
-      .by_formant = .by_formant
-    )
+  attr(normed_track, "norminfo") <- prev_attr
+
+  norm_info <- list(
+    .norm_procedure = "tidynorm::norm_track_generic",
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(by_pos),
+    .token_id_col = quo_name(enquo(.token_id_col)),
+    .by_formant = .by_formant,
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/{quo_name(enquo(.S))}")
   )
 
-  if(!.silent){
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
+    )
+  }
+
+  if (!quo_is_null(cols$.time_col)){
+    norm_info <- c(
+      norm_info,
+      list(.time_col = quo_name(enquo(.time_col)))
+    )
+  }
+
+  normed_track <- append_norm_info(
+    normed_track,
+    norm_info
+  )
+
+  if (!.silent) {
     wrap_up(normed_track)
   }
 
@@ -432,7 +456,7 @@ norm_track_nearey <- function(
     .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .pre_trans = log,
     .post_trans = \(x)x,
     .time_col = {{ .time_col }},
@@ -672,7 +696,7 @@ norm_track_barkz <- function(
     .by_formant = FALSE,
     .by_token = TRUE,
     .L = (!!sym(".formant"))[3],
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,
     .time_col = {{ .time_col }},

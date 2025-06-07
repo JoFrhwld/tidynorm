@@ -103,7 +103,6 @@ norm_generic <- function(
 
   .names2 <- glue::glue(.names, .formant = ".formant")
 
-
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
@@ -235,18 +234,28 @@ norm_generic <- function(
     )
   }
 
+  norm_info <- list(
+    .by_col = .by_formant,
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(group_pos),
+    .by_formant = .by_formant,
+    .norm_procedure = "tidynorm::norm_generic",
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})")
+  )
+
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
+    )
+  }
+
   attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
   .data <- append_norm_info(
     .data,
-    list(
-      .by_col = .by_formant,
-      .targets = names(target_pos),
-      .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-      .by = names(group_pos),
-      .by_formant = .by_formant,
-      .norm_procedure = "tidynorm::norm_generic"
-    )
+    norm_info
   )
 
   if (!.silent) {
