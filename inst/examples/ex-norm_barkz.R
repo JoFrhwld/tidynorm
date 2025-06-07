@@ -8,15 +8,6 @@ speaker_data_barkz <- speaker_data |>
     .names = "{.formant}_bz"
   )
 
-## this is equivalent to
-# speaker_data |>
-#   norm_generic(
-#     F1:F3,
-#     .by = speaker,
-#     .by_token = T,
-#     .L = .formant[3]
-#   )
-
 if(ggplot2_inst){
   ggplot(
     speaker_data_barkz,

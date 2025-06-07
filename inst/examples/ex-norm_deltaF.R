@@ -8,14 +8,6 @@ speaker_data_deltaF <- speaker_data |>
     .names = "{.formant}_df"
   )
 
-## this is equivalent to
-# speaker_data |>
-#   norm_generic(
-#     F1:F3,
-#     .by = speaker,
-#     .S = mean(.formant/(.formant_num - 0.5), na.rm = T)
-#   )
-
 if(ggplot2_inst){
   ggplot(
     speaker_data_deltaF,
