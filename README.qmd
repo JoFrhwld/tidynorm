@@ -25,6 +25,12 @@ The goal of `{tidynorm}` is to provide convenient and tidy functions to normaliz
 
 ## Installation
 
+You can install tidynorm like so
+
+``` r
+install.packages("tidynorm")
+```
+
 You can install the development version of tidynorm like so:
 
 ``` r
@@ -196,3 +202,4 @@ speaker_rnearey |>
     title = "Robust Nearey Normalized"
   )
 ```
+
