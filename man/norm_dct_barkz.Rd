@@ -28,6 +28,8 @@ that identifies token ids.}
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
 
+\item{.param_col}{A column identifying the DCT parameter number.}
+
 \item{.drop_orig}{Should the originally targeted columns be dropped.}
 
 \item{.names}{A \code{\link[glue:glue]{glue::glue()}} expression for naming the normalized
