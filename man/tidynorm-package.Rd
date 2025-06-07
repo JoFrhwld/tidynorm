@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides tools for doing tidy speaker vowel normalization.
+Provides tools for doing tidy speaker vowel normalization. This includes generic functions for defining new normalization methods for points, formant tracks, and Discrete Cosine Transform coefficients, as well as convenience functions implementing established normalization methods. Johnson, Keith (2020) \doi{10.5334/labphon.196} Lobanov, Boris (1971) \doi{10.1121/1.1912396} Nearey, Terrance M. (1978) \url{https://sites.ualberta.ca/~tnearey/Nearey1978_compressed.pdf} Syrdal, Ann K., and Gopal, H. S. (1986) \doi{10.1121/1.393381} Watt, Dominic, and Fabricius, Anne (2002) \url{https://www.latl.leeds.ac.uk/article/evaluation-of-a-technique-for-improving-the-mapping-of-multiple-speakers-vowel-spaces-in-the-f1-f2-plane/}.
 }
 \seealso{
 Useful links:
@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Josef Fruehwald \email{JoFrhwld@gmail.com}
+\strong{Maintainer}: Josef Fruehwald \email{JoFrhwld@gmail.com} [copyright holder]
 
 }
 \keyword{##}
