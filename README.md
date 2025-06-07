@@ -17,6 +17,12 @@ normalize vowel formant data.
 
 ## Installation
 
+You can install tidynorm like so
+
+``` r
+install.packages("tidynorm")
+```
+
 You can install the development version of tidynorm like so:
 
 ``` r

@@ -20,3 +20,4 @@ dev
 inst/extdata/speaker_tracks.csv
 ^vignettes/\.quarto$
 ^\.quarto
+^cran-comments\.md$
