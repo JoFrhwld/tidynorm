@@ -194,7 +194,7 @@ wrap_up <- function(.data){
 
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
-    cli_info(
+    cli_inform(
       "x" = "Not normalized with a {.pkg tidynorm} procedure."
     )
     return()
@@ -247,7 +247,7 @@ check_norm <- function(.data){
 
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
-    cli_info(
+    cli_inform(
       "x" = "Not normalized with a {.pkg tidynorm} procedure."
     )
     return()
