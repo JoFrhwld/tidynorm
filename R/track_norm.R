@@ -33,6 +33,15 @@
 #' @param .call Used for internal purposes.
 #'
 #' @details
+#' The following `norm_track_*` procedures were built on top of
+#' `norm_track_generic`.
+#'
+#' - [norm_track_lobanov]
+#' - [norm_track_nearey]
+#' - [norm_track_deltaF]
+#' - [norm_track_wattfab]
+#' - [norm_track_barkz]
+#'
 #' This will normalize vowel formant tracks in the following steps:
 #'
 #' 1. Any `.pre_trans` transformations will be applied to the formant data.
@@ -64,6 +73,11 @@
 #' by \eqn{\sqrt{2}}, this is done by [norm_track_generic] itself, to allow greater
 #' parallelism with how [norm_generic] works.
 #'
+#' **Note**: If you want to scale values by a constant in the normalization,
+#' you'll need to divide the constant by `sqrt(2)`. Post-normalization scaling
+#' (e.g. re-scaling to formant-like values) is probably best handled with a
+#' function passed to `.post_trans`.
+#'
 #' The expressions for calculating \eqn{L} and \eqn{S} can be
 #' passed to `.L` and `.S`, respectively. Available values for
 #' these expressions are
@@ -76,7 +90,7 @@
 #' Along with any data columns from your original data.
 #'
 #' ### Identifying tokens
-#' The DCT only works on a by-token basis, so there must be a column that
+#' Track normalization requires identifying individual tokens, so there must be a column that
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
@@ -138,6 +152,8 @@ norm_track_generic <- function(
 
   check_grouping(.data, {{ .by }}, .call)
 
+  by_pos = tidyselect::eval_select(enquo(.by), .data)
+
   grouping_list <- make_dct_grouping(
     .data,
     {{ .by }},
@@ -182,6 +198,17 @@ norm_track_generic <- function(
       .order = .order
     )
 
+  .dct_data <- append_norm_info(
+    .dct_data,
+    list(
+      .step = "DCT applied to tracks",
+      .token_id_col = quo_name(enquo(.token_id_col)),
+      .time_col = quo_name(enquo(.time_col)),
+      .by = names(by_pos),
+      .token_id_col = quo_name(enquo(.token_id_col))
+    )
+  )
+
   normed <- norm_dct_generic(
     .dct_data,
     !!targets,
@@ -192,8 +219,8 @@ norm_track_generic <- function(
     .param_col = !!sym(".param"),
     .L = {{ .L }},
     .S = {{ .S }},
-    .names = .names2,
-    .silent = FALSE,
+    .names = .names,
+    .silent = TRUE,
     .drop_orig = .drop_orig,
     .call = current_env()
   )
@@ -221,6 +248,16 @@ norm_track_generic <- function(
       )
     )
 
+  normed_track <- append_norm_info(
+    normed_track,
+    list(
+      .step = "Inverse DCT applied",
+      .param_col = ".param",
+      .by = names(by_pos),
+      .token_id_col = quo_name(enquo(.token_id_col))
+    )
+  )
+
   if (!quo_is_null(cols$.time_col)) {
     normed_track <- normed_track |>
       dplyr::select(
@@ -240,6 +277,41 @@ norm_track_generic <- function(
     dplyr::rename_with(
       .fn = \(x) stringr::str_remove(x, "_.formant")
     )
+
+  attr(normed_track, "norminfo") <- prev_attr
+
+  norm_info <- list(
+    .norm_procedure = "tidynorm::norm_track_generic",
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(by_pos),
+    .token_id_col = quo_name(enquo(.token_id_col)),
+    .by_formant = .by_formant,
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/{quo_name(enquo(.S))}")
+  )
+
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
+    )
+  }
+
+  if (!quo_is_null(cols$.time_col)){
+    norm_info <- c(
+      norm_info,
+      list(.time_col = quo_name(enquo(.time_col)))
+    )
+  }
+
+  normed_track <- append_norm_info(
+    normed_track,
+    norm_info
+  )
+
+  if (!.silent) {
+    wrap_up(normed_track)
+  }
 
   return(normed_track)
 }
@@ -307,8 +379,20 @@ norm_track_lobanov <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_lobanov"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -372,7 +456,7 @@ norm_track_nearey <- function(
     .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
     .L = mean(!!sym(".formant"), na.rm = T),
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .pre_trans = log,
     .post_trans = \(x)x,
     .time_col = {{ .time_col }},
@@ -380,8 +464,20 @@ norm_track_nearey <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_nearey"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -447,8 +543,19 @@ norm_track_deltaF <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_deltaF"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -517,8 +624,20 @@ norm_track_wattfab <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_wattfab"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
 }
 
@@ -542,7 +661,7 @@ norm_track_wattfab <- function(
 #' parameters.
 #'
 #' @returns
-#' A data frame of Watt & Fabricius normalized formant tracks.
+#' A data frame of Bark difference normalized formant tracks.
 #'
 #' @references
 #' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
@@ -577,7 +696,7 @@ norm_track_barkz <- function(
     .by_formant = FALSE,
     .by_token = TRUE,
     .L = (!!sym(".formant"))[3],
-    .S = 1 / sqrt(2),
+    .S = (1 / sqrt(2)),
     .pre_trans = hz_to_bark,
     .post_trans = \(x)x,
     .time_col = {{ .time_col }},
@@ -585,8 +704,20 @@ norm_track_barkz <- function(
     .return_dct = .return_dct,
     .drop_orig = .drop_orig,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_track_barkz"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
   return(normed)
+
 }

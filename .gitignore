@@ -6,3 +6,4 @@
 *.html
 docs
 inst/doc
+**/.quarto/

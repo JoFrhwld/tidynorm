@@ -1,0 +1,16 @@
+fig-width: 5
+fig-height: 3
+out-width: 80%
+fig-cap-location: margin
+lightbox: true
+highlight-style: github
+knitr:
+  opts_chunk:
+    crop: !expr 'rlang::is_installed(c("magick"))'
+    collapse: true
+    comment: '#>'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
+

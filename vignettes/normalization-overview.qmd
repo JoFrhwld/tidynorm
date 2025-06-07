@@ -1,14 +1,5 @@
 ---
 title: Normalization Overview
-fig-width: 5
-fig-height: 3
-format: 
-  html:
-    toc: true
-    html-math-method: mathjax
-knitr:
-  opts_chunk:
-    crop: !expr 'rlang::check_installed("magick")'
 vignette: >
   %\VignetteIndexEntry{Normalization Overview}
   %\VignetteEngine{quarto::html}
@@ -134,7 +125,7 @@ When conducting an analysis that combines multiple different speakers' data toge
 
 ## An example
 
-When speakers s01 and s03 in the `speakers_data` data set have very different vowel spaces that differ both in the location of their center points, and scaling.
+Speakers s01 and s03 in the `speakers_data` data set have very different vowel spaces that differ both in the location of their center points, and scaling.
 
 ```{r}
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -260,7 +251,8 @@ speaker_data_scaled |>
 
 # Generalizing Normalization Procedures
 
-All speaker normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both. If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
+All speaker normalization techniques involves some form of Location shift ($L$), Scaling ($S$), or both.
+If $F$ is an unnormalized formant value, and $\hat{F}$ is the normalized value, then:
 
 $$
 \hat{F} = \frac{F-L}{S}
@@ -274,7 +266,8 @@ The primary differences between normalization methods are:
 
 -   The scope of calculating $L$ and $S$.
 
-The example above is also known as Lobanov Normalization (see `norm_lobanov()`). The `norm_generic()` function allows for flexible definitions of normalization procedures with this in mind.
+The example above is also known as Lobanov Normalization (see `norm_lobanov()`).
+The `norm_generic()` function allows for flexible definitions of normalization procedures with this in mind.
 
 ## Examples
 

@@ -4,6 +4,18 @@
 #' @param .data A data frame of formant DCT coefficients
 #' @param .param_col A column identifying the DCT parameter number.
 #' @details
+#'
+#' The following `norm_dct_*` procedures were built on top of
+#' `norm_dct_generic()`.
+#'
+#' - [norm_dct_lobanov]
+#' - [norm_dct_nearey]
+#' - [norm_dct_deltaF]
+#' - [norm_dct_wattfab]
+#' - [norm_dct_barkz]
+#'
+#' ## Normalizing DCT Coefficients
+#'
 #' This will normalize vowel formant data that has already had the
 #' Discrete Cosine Transform applied (see [dct]) with the following
 #' procedure:
@@ -31,6 +43,9 @@
 #' by \eqn{\sqrt{2}}, this is done by [norm_dct_generic] itself, to allow greater
 #' parallelism with how [norm_generic] works.
 #'
+#' **Note**: If you want to scale values by a constant in the normalization,
+#' you'll need to divide the constant by `sqrt(2)`.
+#'
 #' The expressions for calculating \eqn{L} and \eqn{S} can be
 #' passed to `.L` and `.S`, respectively. Available values for
 #' these expressions are
@@ -43,7 +58,7 @@
 #' Along with any data columns from your original data.
 #'
 #' ### Identifying tokens
-#' DCT normalization only works on a by-token basis, so there must be a column that
+#' DCT normalization requires identifying individual tokens, so there must be a column that
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
@@ -69,15 +84,37 @@ norm_dct_generic <- function(
     .drop_orig = FALSE,
     .call = caller_env()) {
   if (env_name(.call) == "global") {
-    .call2 <- current_env()
+    .call <- current_env()
   }
   args <- names(call_match())
   fmls <- names(fn_fmls())
-  check_args(args, fmls, .call2)
+  check_args(args, fmls, .call)
 
-  .names <- glue::glue(.names, .formant = ".formant")
+  prev_attr <- attributes(.data)$norminfo
+
+  .names2 <- glue::glue(.names, .formant = ".formant")
 
   targets <- expr(c(...))
+
+  target_pos <- try_fetch(
+    tidyselect::eval_select(targets, data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
+  group_pos <- tidyselect::eval_select(
+    enquo(.by),
+    data = .data
+  )
+
+  token_pos <- tidyselect::eval_select(
+    enquo(.token_id_col),
+    data = .data
+  )
+
+  if (!".param_col" %in% names(args)) {
+    .param_col = sym(".param")
+  }
+
   cols <- enquos(
     .by = .by,
     .token_id_col = .token_id_col,
@@ -191,7 +228,7 @@ norm_dct_generic <- function(
 
   normed <- .dct_with_norm |>
     dplyr::mutate(
-      "{.names}" := case_when(
+      "{.names2}" := case_when(
         {{ .param_col }} == 0 ~ (!!sym(".formant") - !!sym(".L")) / !!sym(".S"),
         .default = !!sym(".formant") / !!sym(".S")
       )
@@ -229,5 +266,429 @@ norm_dct_generic <- function(
       )
   }
 
+  attr(normed, "norminfo") <- prev_attr
+  attr(normed, "normalized") <- TRUE
+  norm_info <- list(
+    .norm_procedure = "tidynorm::norm_dct_generic",
+    .by_col = .by_formant,
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(group_pos),
+    .token_id_col = quo_name(enquo(.token_id_col)),
+    .param_col = quo_name(enquo(.param_col)),
+    .by_formant = .by_formant,
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/{quo_name(enquo(.S))}")
+  )
+
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
+    )
+  }
+
+  normed <- append_norm_info(
+    normed,
+    norm_info
+  )
+
+  if (!.silent) {
+    wrap_up(
+      normed
+    )
+  }
+
   return(normed)
+}
+
+#' Lobanov DCT Normalization
+#'
+#' @inheritParams norm_dct_generic
+#' @inheritParams norm_track_lobanov
+#'
+#' @details
+#'
+#' \deqn{
+#'   \hat{F}_{ij} = \frac{F_{ij} - L_i}{S_i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}F_{ij}
+#' }
+#'
+#' \deqn{
+#'   S_i = \sqrt{\frac{\sum(F_{ij}-L_i)^2}{N-1}}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Lobanov normalized DCT Coefficients.
+#'
+#' @references
+#' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
+#' Journal of the Acoustical Society of America, 49, 606–608.
+#'
+#' @example inst/examples/ex-norm_dct_lobanov.R
+#' @export
+norm_dct_lobanov <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .names = "{.formant}_z",
+    .silent = FALSE,
+    .drop_orig = FALSE
+){
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = TRUE,
+    .by_token = FALSE,
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = sd(!!sym(".formant"), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(.norm_procedure = "tidynorm::norm_dct_lobanov")
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+
+#' Nearey DCT Normalization
+#'
+#'
+#' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
+#'
+#' @details
+#'
+#' **Important**: This function assumes that the DCT
+#' coefficients were estimated over log-transformed
+#' formant values.
+#'
+#' When formant extrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L
+#' }
+#' \deqn{
+#'  L = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \log(F_{ij})
+#' }
+#'
+#' When formant intrinsic:
+#' \deqn{
+#'  \hat{F}_{ij} = \log(F_{ij}) - L_{i}
+#' }
+#'
+#' \deqn{
+#'   L_i = \frac{1}{N}\sum_{j=1}^{N}\log(F_{ij})
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Nearey normalized DCT coefficients
+#'
+#' @example inst/examples/ex-norm_dct_nearey.R
+#'
+#' @references
+#' Nearey, T. M. (1978). Phonetic Feature Systems for Vowels \[Ph.D.\].
+#' University of Alberta.
+#' @export
+norm_dct_nearey <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .by_formant = FALSE,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_lm",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = .by_formant,
+    .by_token = FALSE,
+    .L = mean(!!sym(".formant"), na.rm = T),
+    .S = (1 / sqrt(2)),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_nearey"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+
+#' Delta F DCT Normalization
+#'
+#' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
+#'
+#'
+#' @details
+#' \deqn{
+#'  \hat{F}_{ij} = \frac{F_{ij}}{S}
+#' }
+#' \deqn{
+#'  S = \frac{1}{MN}\sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Delta F normalized DCT coefficients.
+#'
+#' @example inst/examples/ex-norm_dct_deltaF.R
+#'
+#' @references
+#' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+#' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
+#' Article 1. [https://doi.org/10.5334/labphon.196](https://doi.org/10.5334/labphon.196)
+#'
+#' @export
+norm_dct_deltaF <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_df",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = FALSE,
+    .L = 0,
+    .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_deltaF"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+#' Watt and Fabricius DCT normalization
+#'
+#' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
+#'
+#' @details
+#' This is a modified version of the Watt & Fabricius Method. The original
+#' method identified point vowels over which F1 and F2 centroids were calculated.
+#' The procedure here just identifies centroids by taking the mean of
+#' all formant values.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = \frac{F_{ij}}{S_i}
+#' }
+#'
+#' \deqn{
+#'  S_i = \frac{1}{N}\sum_{j=1}^N F_{ij}
+#' }
+#'
+#' Where
+#' - \eqn{\hat{F}} is the normalized formant
+#' - \eqn{i} is the formant number
+#' - \eqn{j} is the token number
+#'
+#' @returns
+#' A data frame of Watt & Fabricius normalized DCT coefficients.
+#'
+#' @example inst/examples/ex-norm_dct_wattfab.R
+#'
+#' @references
+#' Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the
+#' mapping of multiple speakers’ vowel spaces in the F1 ~ F2 plane.
+#' Leeds Working Papers in Linguistics and Phonetics, 9, 159–173.
+#' @export
+norm_dct_wattfab <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_wf",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = TRUE,
+    .L = 0,
+    .S = mean(!!sym(".formant"), na.rm = T),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_wattfab"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+}
+
+#' Bark Difference DCT Normalization
+#' @inheritParams norm_track_generic
+#' @inheritParams norm_dct_generic
+#' @details
+#'
+#' **Important**: This function assumes that the DCT
+#' coefficients were estimated over bark-transformed
+#' formant values.
+#'
+#' This is a within-token normalization technique. First all formants are
+#' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
+#' subtracted from F1 and F2.
+#'
+#' \deqn{
+#' \hat{F}_{ij} = F_{ij} - L_j
+#' }
+#'
+#' \deqn{
+#' L_j = F_{3j}
+#' }
+#'
+#' @returns
+#' A data frame of normalized DCT
+#' parameters.
+#'
+#' @returns
+#' A data frame of Back Difference normalized dct coefficients.
+#'
+#' @references
+#' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
+#' recognition based on the auditory representation of American English vowels.
+#' The Journal of the Acoustical Society of America, 79(4), 1086–1100.
+#' [https://doi.org/10.1121/1.393381](https://doi.org/10.1121/1.393381)
+#'
+#' @example inst/examples/ex-norm_dct_barkz.R
+#'
+#' @export
+norm_dct_barkz <- function(
+    .data,
+    ...,
+    .token_id_col,
+    .by = NULL,
+    .param_col = NULL,
+    .drop_orig = FALSE,
+    .names = "{.formant}_bz",
+    .silent = FALSE) {
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls)
+
+  targets <- expr(...)
+  normed <- norm_dct_generic(
+    .data,
+    !!targets,
+    .by = {{ .by }},
+    .token_id_col = {{ .token_id_col }},
+    .by_formant = FALSE,
+    .by_token = TRUE,
+    .L = (!!sym(".formant"))[3],
+    .S = (1 / sqrt(2)),
+    .param_col = {{ .param_col }},
+    .drop_orig = .drop_orig,
+    .names = .names,
+    .silent = TRUE
+  )
+
+  normed <- update_norm_info(
+    normed,
+    list(
+      .norm_procedure = "tidynorm::norm_dct_barkz"
+    )
+  )
+
+  if (!.silent) {
+    wrap_up(normed)
+  }
+
+  return(normed)
+
 }

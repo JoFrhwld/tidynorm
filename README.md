@@ -6,7 +6,9 @@
 
 <!-- badges: start -->
 
-[![](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/tidynorm.png)](https://CRAN.R-project.org/package=tidynorm)
 
 <!-- badges: end -->
 
@@ -114,10 +116,12 @@ speaker_normalized
 ```
 
     #> Normalization info
+    #> • normalized with `tidynorm::norm_nearey()`
     #> • normalized `F1`, `F2`, and `F3`
     #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
     #> • grouped by `speaker`
-    #> • formant extrinsic
+    #> • within formant: FALSE
+    #> • (.formant - mean(.formant, na.rm = T))/(1)
 
 <details class="code-fold">
 <summary>Plotting Code</summary>
@@ -167,10 +171,12 @@ speaker_rnearey <- speaker_data |>
 ```
 
     #> Normalization info
+    #> • normalized with `tidynorm::norm_generic()`
     #> • normalized `F1`, `F2`, and `F3`
     #> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
     #> • grouped by `speaker`
-    #> • formant extrinsic
+    #> • within formant: FALSE
+    #> • (.formant - median(.formant, na.rm = T))/(1)
 
 <details class="code-fold">
 <summary>Plotting Code</summary>

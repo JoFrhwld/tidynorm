@@ -56,6 +56,9 @@ arma::mat dct_fun(arma::vec y, int kk){
       new_row +=1;
     }
   }
+  if(nfinite < y.n_rows){
+    x.shed_cols(nfinite, y.n_rows-1);
+  }
 
   arma::vec coefs = arma::inv(x.t() * x) * x.t() * y2;
 

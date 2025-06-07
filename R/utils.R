@@ -1,3 +1,18 @@
+norm_messages = list(
+  .step = "{ .step}",
+  .norm_procedure = "normalized with {.fn { .norm_procedure}}",
+  .targets = "normalized {.var { .targets}}",
+  .norm_cols = "normalized values in {.var { .norm_cols}}",
+  .token_id_col = "token id column: {.var { .token_id_col}}",
+  .time_col = "time column: {.var { .time_col}}",
+  .param_col = "DCT parameter column: {.var { .param_col}}",
+  .by = "grouped by {.var { .by}}",
+  .by_formant = "within formant: { .by_formant}",
+  .by_token = "within token: { .by_token}",
+  .norm = "{ .norm}"
+)
+
+
 check_grouping <- function(
     .data,
     .by,
@@ -47,7 +62,8 @@ check_tokens <- function(
 check_args <- function(
     args,
     fmls,
-    call = caller_env()) {
+    call = caller_env()
+    ) {
   fmls_undot <- stringr::str_remove(
     fmls,
     "^\\."
@@ -141,47 +157,123 @@ make_dct_grouping <- function(
   )
 }
 
-
-wrap_up <- function(
+append_norm_info <- function(
     .data,
-    target_pos,
-    .by,
-    .by_formant,
-    .names) {
-  message <- c("Normalization info")
-
-  grouping <- tidyselect::eval_select(.by, data = .data)
-  target_names <- names(target_pos)
-  message <- c(
-    message,
-    "*" = "normalized {.var {target_names}}"
-  )
-
-  norm_names <- glue::glue(.names, .formant = target_names)
-  message <- c(
-    message,
-    "*" = "normalized values in {.var {norm_names}}"
-  )
-
-  if (length(grouping) > 0) {
-    message <- c(
-      message,
-      "*" = "grouped by {.var {names(grouping)}}"
+    info
+){
+  prev_attr <- attributes(.data)$norminfo
+  attr(.data, "norminfo") <- c(
+    prev_attr,
+    list(
+      info
     )
+  )
+
+  .data
+
+}
+
+update_norm_info <- function(
+    .data,
+    info
+){
+  norminfo <- attr(.data, "norminfo")
+  last_norm <- norminfo[[length(norminfo)]]
+
+  last_names <- names(last_norm)
+  new_names <- names(info)
+
+  for (n in new_names) {
+    last_norm[[n]] <- info[[n]]
   }
 
-  message <- c(
-    message,
-    "*" = ifelse(
-      .by_formant,
-      "formant intrinsic",
-      "formant extrinsic"
+  norminfo[[length(norminfo)]] <- last_norm
+  attr(.data, "norminfo") <- norminfo
+
+  .data
+}
+
+wrap_up <- function(.data){
+
+  if (is.null(attr(.data, "norminfo"))) {
+    cli_par()
+    cli_inform(
+      "x" = "Not normalized with a {.pkg tidynorm} procedure."
     )
-  )
+    return()
+    cli_end()
+  }
+
+  norminfo <- attr(.data, "norminfo")
+  last_norm <- norminfo[[length(norminfo)]]
+
+  message <- c("Normalization info")
+
+  for (n in names(norm_messages)) {
+    if (n %in% names(last_norm)) {
+      message <- c(
+        message,
+        "*" = norm_messages[[n]]
+      )
+    }
+  }
 
   cli_par()
   cli_inform(
-    message
+    message,
+    .envir = last_norm
   )
   cli_end()
+
+}
+
+#' Check Normalization Procedures
+#'
+#' `check_norm()` will generate a message with information
+#' about which normalization procedures have been applied to the
+#' data.
+#'
+#' @param .data A data frame produced by a tidynorm function.
+#'
+#' @examples
+#' speaker_norm <- speaker_data |>
+#'   norm_nearey(
+#'     F1:F3,
+#'     .by = speaker,
+#'     .silent = TRUE
+#'   )
+#'
+#' check_norm(speaker_norm)
+#'
+#' @export
+check_norm <- function(.data){
+
+  if (is.null(attr(.data, "norminfo"))) {
+    cli_par()
+    cli_inform(
+      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+    )
+    return()
+    cli_end()
+
+    return()
+  }
+
+  norminfo = attr(.data, "norminfo")
+
+  for (step in norminfo) {
+    message <- "Normalization Step"
+    for (n in names(norm_messages)) {
+      if (n %in% names(step)) {
+        message <- c(
+          message,
+          "*" = norm_messages[[n]]
+        )
+      }
+    }
+    cli_par()
+    cli_inform(message, .envir = step)
+    cli_end()
+  }
+
 }

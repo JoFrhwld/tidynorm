@@ -103,7 +103,6 @@ norm_generic <- function(
 
   .names2 <- glue::glue(.names, .formant = ".formant")
 
-
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
@@ -235,27 +234,32 @@ norm_generic <- function(
     )
   }
 
-  attr(.data, "normalized") <- TRUE
-  attr(.data, "norminfo") <- c(
-    prev_attr,
-    list(
-      list(
-        .by_col = .by_formant,
-        .targets = names(target_pos),
-        .norm_cols = glue::glue(.names, .formant = names(target_pos)),
-        .by = names(group_pos)
-      )
+  norm_info <- list(
+    .by_col = .by_formant,
+    .targets = names(target_pos),
+    .norm_cols = glue::glue(.names, .formant = names(target_pos)),
+    .by = names(group_pos),
+    .by_formant = .by_formant,
+    .norm_procedure = "tidynorm::norm_generic",
+    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})")
+  )
+
+  if (.by_token) {
+    norm_info <- c(
+      norm_info,
+      list(.by_token = .by_token)
     )
+  }
+
+  attr(.data, "norminfo") <- prev_attr
+  attr(.data, "normalized") <- TRUE
+  .data <- append_norm_info(
+    .data,
+    norm_info
   )
 
   if (!.silent) {
-    wrap_up(
-      .data,
-      target_pos,
-      enquo(.by),
-      .by_formant,
-      .names
-    )
+    wrap_up(.data)
   }
 
   return(.data)
@@ -321,12 +325,17 @@ norm_lobanov <- function(
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_lobanov"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(.norm_procedure = "tidynorm::norm_lobanov")
+  )
+
+  if (!.silent) {
+    wrap_up(.data)
+  }
 
   return(.data)
 }
@@ -394,14 +403,20 @@ norm_nearey <- function(
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_nearey"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(.norm_procedure = "tidynorm::norm_nearey")
+  )
+
+  if (!.silent) {
+    wrap_up(.data)
+  }
 
   return(.data)
+
 }
 
 #' Delta F Normalize
@@ -460,12 +475,17 @@ norm_deltaF <- function(
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_deltaF"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(.norm_procedure = "tidynorm::norm_deltaF")
+  )
+
+  if (!.silent) {
+    wrap_up(.data)
+  }
 
   return(.data)
 }
@@ -531,12 +551,17 @@ norm_wattfab <- function(
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_wattfab"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(.norm_procedure = "tidynorm::norm_wattfab")
+  )
+
+  if (!.silent) {
+    wrap_up(.data)
+  }
 
   return(.data)
 }
@@ -594,12 +619,17 @@ norm_barkz <- function(
     .drop_orig = .drop_orig,
     .keep_params = .keep_params,
     .names = .names,
-    .silent = .silent
+    .silent = TRUE
   )
 
-  norminfo <- attr(.data, "norminfo")
-  norminfo[[length(norminfo)]]$norm_procedure <- "norm_barkz"
-  attr(.data, "norminfo") <- norminfo
+  .data <- update_norm_info(
+    .data,
+    list(.norm_procedure = "tidynorm::norm_barkz")
+  )
+
+  if (!.silent) {
+    wrap_up(.data)
+  }
 
   return(.data)
 }

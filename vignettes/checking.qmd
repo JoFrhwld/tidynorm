@@ -1,0 +1,37 @@
+---
+title: "Checking Normalization Procedures"
+vignette: >
+  %\VignetteIndexEntry{Checking Normalization Procedures}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| label: setup
+library(tidynorm)
+```
+
+If you've carried out a few different normalization procedures on a single dataset, you can double check what the sequence of operations was with `check_norm()`.
+For example, in this workflow, we've given the new normalized data columns uninformative names.
+
+```{r}
+norm_data <- speaker_data |> 
+  norm_lobanov(
+    F1:F3,
+    .by = speaker,
+    .names = "{.formant}_norm1",
+    .silent = T
+  ) |> 
+  norm_nearey(
+    F1:F3,
+    .by = speaker,
+    .names = "{.formant}_norm2",
+    .silent = T
+  )
+```
+
+We can review which normalization procedure produced which normalized column like so.
+
+```{r}
+check_norm(norm_data)
+```

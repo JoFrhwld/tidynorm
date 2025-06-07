@@ -1,0 +1,86 @@
+---
+title: "Normalizing Formant Tracks"
+vignette: >
+  %\VignetteIndexEntry{Normalizing Formant Tracks}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+```{r}
+#| label: setup
+library(tidynorm)
+```
+
+```{r}
+#| eval: !expr 'rlang::is_installed(c("ggplot2"))'
+library(ggplot2)
+```
+
+Tidynorm normalizes vowel formant tracks by
+
+1.  Converting them to Discrete Cosine Transform coefficients.
+2.  Directly normalizing the DCT coefficients.
+3.  Applying the inverse DCT.
+
+## Token IDs
+
+In order to do this successfully, each vowel token needs to be uniquely identifiable with a token id, or a token id in combination with other columns.
+For example, in `tidynorm::speaker_tracks` the column `speaker` combined with the column `id` identifies each unique vowel formant track.
+
+```{r}
+speaker_tracks
+```
+
+For most normalization procedures, we'll want to group the data by the speaker column anyway, and in those cases it's sufficient to pass `id` to the `.token_id_col` argument of `norm_track_*` functions.
+
+We can Lobanov normalize these speakers' formant tracks with `norm_track_lobanov()`.
+
+```{r}
+normed_tracks <- speaker_tracks |> 
+  norm_track_lobanov(
+    # identify the formant columns
+    F1:F3,
+    
+    # provide speaker grouping
+    .by = speaker,
+    
+    # provide token id
+    .token_id_col = id,
+    
+    # provide an optional time column
+    .time_col = t
+  )
+```
+
+```{r}
+#| fig-align: center
+#| out-width: 80%
+#| eval: !expr 'rlang::is_installed(c("ggplot2"))'
+normed_tracks |> 
+  ggplot(
+    aes(F2_z, F1_z)
+  ) +
+  geom_path(
+    aes(
+      group = interaction(speaker, id)
+    ),
+    alpha = 0.3
+  ) +
+    scale_y_reverse() +
+    scale_x_reverse() +
+    facet_wrap(~speaker) +
+    coord_cartesian(
+      xlim = c(3.5, -3.5),
+      ylim = c(3.5, -3.5)
+    ) +
+    theme(
+      aspect.ratio = 1
+    )
+
+```

@@ -64,6 +64,17 @@ A data frame of normalized DCT coefficients.
 Generic Formant DCT Normalization Procedure
 }
 \details{
+The following \verb{norm_dct_*} procedures were built on top of
+\code{norm_dct_generic()}.
+\itemize{
+\item \link{norm_dct_lobanov}
+\item \link{norm_dct_nearey}
+\item \link{norm_dct_deltaF}
+\item \link{norm_dct_wattfab}
+\item \link{norm_dct_barkz}
+}
+\subsection{Normalizing DCT Coefficients}{
+
 This will normalize vowel formant data that has already had the
 Discrete Cosine Transform applied (see \link{dct}) with the following
 procedure:
@@ -92,6 +103,9 @@ Rather than requiring users to remember to multiply expressions for \eqn{S}
 by \eqn{\sqrt{2}}, this is done by \link{norm_dct_generic} itself, to allow greater
 parallelism with how \link{norm_generic} works.
 
+\strong{Note}: If you want to scale values by a constant in the normalization,
+you'll need to divide the constant by \code{sqrt(2)}.
+
 The expressions for calculating \eqn{L} and \eqn{S} can be
 passed to \code{.L} and \code{.S}, respectively. Available values for
 these expressions are
@@ -106,10 +120,12 @@ Along with any data columns from your original data.
 
 \subsection{Identifying tokens}{
 
-DCT normalization only works on a by-token basis, so there must be a column that
+DCT normalization requires identifying individual tokens, so there must be a column that
 uniquely identifies (or, in combination with a \code{.by} grouping, uniquely
 identifies) each individual token. This column should be passed to
 \code{.token_id_col}.
+}
+
 }
 }
 \examples{

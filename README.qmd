@@ -2,6 +2,7 @@
 format: gfm
 execute:
   freeze: auto
+highlight-style: github  
 knitr: 
   opts_chunk: 
     crop: !expr 'rlang::check_installed("magick")'
@@ -16,7 +17,7 @@ knitr:
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml) [![CRAN status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
 
 <!-- badges: end -->
 
@@ -195,4 +196,3 @@ speaker_rnearey |>
     title = "Robust Nearey Normalized"
   )
 ```
-
