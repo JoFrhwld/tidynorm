@@ -4,10 +4,6 @@ vignette: >
   %\VignetteIndexEntry{Checking Normalization Procedures}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
-knitr:
-  opts_chunk:
-    collapse: true
-    comment: '#>'
 ---
 
 ```{r}

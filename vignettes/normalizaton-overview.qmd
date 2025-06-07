@@ -1,14 +1,5 @@
 ---
 title: Normalization Overview
-fig-width: 5
-fig-height: 3
-format: 
-  html:
-    toc: true
-    html-math-method: mathjax
-knitr:
-  opts_chunk:
-    crop: !expr 'rlang::check_installed("magick")'
 vignette: >
   %\VignetteIndexEntry{Normalization Overview}
   %\VignetteEngine{quarto::html}

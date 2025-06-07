@@ -1,16 +1,5 @@
 ---
 title: "Normalizing Formant Tracks"
-fig-width: 5
-fig-height: 3
-format: 
-  html:
-    toc: true
-    html-math-method: mathjax
-knitr:
-  opts_chunk:
-    crop: !expr 'rlang::is_installed(c("magick"))'
-    collapse: true
-    comment: '#>'    
 vignette: >
   %\VignetteIndexEntry{Normalizing Formant Tracks}
   %\VignetteEngine{quarto::html}
