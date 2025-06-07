@@ -75,3 +75,17 @@ reference:
     contents:
       - speaker_data
       - speaker_tracks
+
+articles:
+- title: Get Started
+  navbar: Get Started
+  contents:
+    - normalization-overview
+    - norm-methods
+
+- title: Details
+  navbar: Details
+  contents:
+    - normalizing_formant_tracks
+    - checking
+    - dct
