@@ -65,7 +65,7 @@ speaker_data_barkz <- speaker_data |>
     .names = "{.formant}_bz"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     speaker_data_barkz,
     aes(
@@ -73,18 +73,17 @@ if(ggplot2_inst){
       F1_bz,
       color = speaker
     )
-  )+
+  ) +
     stat_density_2d(
       bins = 4
-    )+
+    ) +
     scale_color_brewer(
       palette = "Dark2"
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
     coord_fixed()
 }
-
 }
 \references{
 Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel

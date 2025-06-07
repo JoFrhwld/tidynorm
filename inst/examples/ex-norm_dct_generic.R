@@ -7,7 +7,7 @@ track_subset <- speaker_tracks |>
     .by = c(speaker, id),
     if_all(
       F1:F3,
-      .fns =\(x) mean(is.finite(x)) > 0.9
+      .fns = \(x) mean(is.finite(x)) > 0.9
     ),
     row_number() %% 2 == 1
   )
@@ -52,17 +52,16 @@ full_tracks <- track_norm |>
 
 head(full_tracks)
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     full_tracks,
     aes(F2_mad, F1_mad, color = speaker)
   ) +
     geom_path(
       aes(group = interaction(speaker, vowel))
-    )+
-    scale_y_reverse()+
-    scale_x_reverse()+
-    scale_color_brewer(palette = "Dark2")+
+    ) +
+    scale_y_reverse() +
+    scale_x_reverse() +
+    scale_color_brewer(palette = "Dark2") +
     coord_fixed()
 }
-

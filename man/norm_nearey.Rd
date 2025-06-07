@@ -82,7 +82,7 @@ speaker_data_nearey <- speaker_data |>
     .names = "{.formant}_nearey"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     speaker_data_nearey,
     aes(
@@ -90,16 +90,16 @@ if(ggplot2_inst){
       F1_nearey,
       color = speaker
     )
-  )+
+  ) +
     stat_density_2d(
       bins = 4
-    )+
+    ) +
     scale_color_brewer(
       palette = "Dark2"
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
-    coord_fixed()+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    coord_fixed() +
     labs(
       title = "Formant extrinsic"
     )
@@ -113,7 +113,7 @@ speaker_data_nearey2 <- speaker_data |>
     .names = "{.formant}_nearey"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     speaker_data_nearey2,
     aes(
@@ -121,16 +121,16 @@ if(ggplot2_inst){
       F1_nearey,
       color = speaker
     )
-  )+
+  ) +
     stat_density_2d(
       bins = 4
-    )+
+    ) +
     scale_color_brewer(
       palette = "Dark2"
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
-    coord_fixed()+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    coord_fixed() +
     labs(
       title = "Formant intrinsic"
     )

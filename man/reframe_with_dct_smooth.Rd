@@ -95,40 +95,39 @@ speaker_dct_smooth <- speaker_small |>
     .order = 5
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   speaker_small |>
     ggplot(
       aes(
         t, F1
       )
-    )+
-    geom_point()+
+    ) +
+    geom_point() +
     facet_wrap(
       ~speaker,
       scales = "free_x",
       ncol = 1
-    )+
+    ) +
     labs(
       title = "Original Data"
     )
 }
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   speaker_dct_smooth |>
     ggplot(
       aes(
         t, F1
       )
-    )+
-    geom_point()+
+    ) +
+    geom_point() +
     facet_wrap(
       ~speaker,
       scales = "free_x",
       ncol = 1
-    )+
+    ) +
     labs(
       title = "Smoothed Data"
     )
 }
-
 }

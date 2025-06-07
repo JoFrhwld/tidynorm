@@ -25,7 +25,7 @@ speaker_idct <- speaker_dct |>
     .n = 20
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   speaker_small |>
     mutate(
       .by = c(speaker, id),
@@ -35,21 +35,21 @@ if(ggplot2_inst){
       aes(
         time_index, F1
       )
-    )+
-    geom_point()+
+    ) +
+    geom_point() +
     labs(
       title = "Original Data"
     )
 }
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   speaker_idct |>
     ggplot(
       aes(
         .time, F1
       )
-    )+
-    geom_point()+
+    ) +
+    geom_point() +
     labs(
       title = "DCT Smooth Data"
     )

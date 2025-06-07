@@ -162,7 +162,7 @@ track_subset <- speaker_tracks |>
     .by = c(speaker, id),
     if_all(
       F1:F3,
-      .fns =\(x) mean(is.finite(x)) > 0.9
+      .fns = \(x) mean(is.finite(x)) > 0.9
     ),
     row_number() \%\% 2 == 1
   )
@@ -180,15 +180,15 @@ track_norm <- track_subset |>
     .names = "{.formant}_mad"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   track_norm |>
     ggplot(
       aes(F2_mad, F1_mad, color = speaker)
-    )+
-    stat_density_2d(bins = 4)+
-    scale_x_reverse()+
-    scale_y_reverse()+
-    scale_color_brewer(palette = "Dark2")+
+    ) +
+    stat_density_2d(bins = 4) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    scale_color_brewer(palette = "Dark2") +
     coord_fixed()
 }
 
@@ -223,20 +223,19 @@ track_norm_means <- track_norm_dct |>
   )
 
 
-if(ggplot2_inst){
-  track_norm_means|>
+if (ggplot2_inst) {
+  track_norm_means |>
     ggplot(
       aes(F2_mad, F1_mad, color = speaker)
-    )+
+    ) +
     geom_path(
       aes(
         group = interaction(speaker, vowel)
       )
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
-    scale_color_brewer(palette = "Dark2")+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    scale_color_brewer(palette = "Dark2") +
     coord_fixed()
 }
-
 }

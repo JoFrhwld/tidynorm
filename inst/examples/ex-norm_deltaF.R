@@ -8,7 +8,7 @@ speaker_data_deltaF <- speaker_data |>
     .names = "{.formant}_df"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     speaker_data_deltaF,
     aes(
@@ -16,14 +16,14 @@ if(ggplot2_inst){
       F1_df,
       color = speaker
     )
-  )+
+  ) +
     stat_density_2d(
       bins = 4
-    )+
+    ) +
     scale_color_brewer(
       palette = "Dark2"
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
     coord_fixed()
 }

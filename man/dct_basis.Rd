@@ -22,6 +22,6 @@ This function will generate the DCT basis functions.
 }
 \examples{
 basis <- dct_basis(100, 5)
-matplot(basis, type = 'l', lty = 1)
+matplot(basis, type = "l", lty = 1)
 
 }

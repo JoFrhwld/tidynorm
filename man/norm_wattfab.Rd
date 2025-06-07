@@ -76,7 +76,7 @@ speaker_data_wattfab <- speaker_data |>
     .names = "{.formant}_wf"
   )
 
-if(ggplot2_inst){
+if (ggplot2_inst) {
   ggplot(
     speaker_data_wattfab,
     aes(
@@ -84,18 +84,17 @@ if(ggplot2_inst){
       F1_wf,
       color = speaker
     )
-  )+
+  ) +
     stat_density_2d(
       bins = 4
-    )+
+    ) +
     scale_color_brewer(
       palette = "Dark2"
-    )+
-    scale_x_reverse()+
-    scale_y_reverse()+
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
     coord_fixed()
 }
-
 }
 \references{
 Watt, D., & Fabricius, A. (2002). Evaluation of a technique for improving the

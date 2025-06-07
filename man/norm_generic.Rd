@@ -129,5 +129,4 @@ speaker_data |>
     .drop_orig = TRUE,
     .names = "{.formant}_mad"
   )
-
 }
