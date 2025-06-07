@@ -7,8 +7,8 @@ Authors@R: c(
   )
 Description: Provides tools for doing tidy speaker vowel normalization.
   This includes generic functions for defining new normalization
-  methods for points, formant tracks, and DCT coefficients, as well as
-  convenience functions implementing established normalization methods.
+  methods for points, formant tracks, and Discrete Cosine Transform coefficients, 
+  as well as convenience functions implementing established normalization methods.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
