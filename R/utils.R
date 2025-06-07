@@ -235,6 +235,9 @@ wrap_up <- function(.data){
 #'
 #' @param .data A data frame produced by a tidynorm function.
 #'
+#' @returns
+#' This only prints an info message.
+#'
 #' @examples
 #' speaker_norm <- speaker_data |>
 #'   norm_nearey(

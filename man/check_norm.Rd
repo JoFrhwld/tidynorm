@@ -9,6 +9,9 @@ check_norm(.data)
 \arguments{
 \item{.data}{A data frame produced by a tidynorm function.}
 }
+\value{
+This only prints an info message.
+}
 \description{
 \code{check_norm()} will generate a message with information
 about which normalization procedures have been applied to the
