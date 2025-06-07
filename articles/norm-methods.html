@@ -128,11 +128,11 @@ S_i = \sqrt{\frac{\sum_j(F_{ij}-L_i)^2}{N-1}}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_lobanov.html">norm_lobanov</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span></span>
-<span>  <span class="op">)</span> </span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Normalization info</span></span>
 <span><span class="co">#&gt; • normalized with `tidynorm::norm_lobanov()`</span></span>
 <span><span class="co">#&gt; • normalized `F1`, `F2`, and `F3`</span></span>
@@ -145,7 +145,7 @@ S_i = \sqrt{\frac{\sum_j(F_{ij}-L_i)^2}{N-1}}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_lobanov.html">norm_track_lobanov</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -166,13 +166,13 @@ S_i = \sqrt{\frac{\sum_j(F_{ij}-L_i)^2}{N-1}}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
-<span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>, </span>
-<span>    .by <span class="op">=</span> <span class="va">speaker</span>, </span>
+<span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
+<span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_dct_lobanov.html">norm_dct_lobanov</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -212,7 +212,7 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_nearey.html">norm_nearey</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span></span>
@@ -229,7 +229,7 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_nearey.html">norm_track_nearey</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -250,14 +250,14 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">F1</span><span class="op">:</span><span class="va">F3</span>, <span class="va">log</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">F1</span><span class="op">:</span><span class="va">F3</span>, <span class="va">log</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_dct_nearey.html">norm_dct_nearey</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -297,7 +297,7 @@ S = \frac{1}{MN} \sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_deltaF.html">norm_deltaF</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span></span>
@@ -314,7 +314,7 @@ S = \frac{1}{MN} \sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_deltaF.html">norm_track_deltaF</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -335,16 +335,16 @@ S = \frac{1}{MN} \sum_{i=1}^M\sum_{j=1}^N \frac{F_{ij}}{i-0.5}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_dct_deltaF.html">norm_dct_deltaF</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
-<span>    .by <span class="op">=</span> <span class="va">speaker</span>, </span>
+<span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .param_col <span class="op">=</span> <span class="va">.param</span></span>
 <span>  <span class="op">)</span></span>
@@ -381,7 +381,7 @@ S_i = \frac{1}{N} \sum_{j = 1}^N F_{ij}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_wattfab.html">norm_wattfab</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span></span>
@@ -398,7 +398,7 @@ S_i = \frac{1}{N} \sum_{j = 1}^N F_{ij}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_wattfab.html">norm_track_wattfab</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -419,13 +419,13 @@ S_i = \frac{1}{N} \sum_{j = 1}^N F_{ij}
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_dct_wattfab.html">norm_dct_wattfab</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -464,7 +464,7 @@ L_j = \text{bark}(F_{3j})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">point_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_barkz.html">norm_barkz</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span></span>
@@ -482,7 +482,7 @@ L_j = \text{bark}(F_{3j})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">track_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_barkz.html">norm_track_barkz</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
@@ -504,16 +504,16 @@ L_j = \text{bark}(F_{3j})
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_norm</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">F1</span><span class="op">:</span><span class="va">F3</span>, <span class="va">hz_to_bark</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_dct_barkz.html">norm_dct_barkz</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>

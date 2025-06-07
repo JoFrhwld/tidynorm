@@ -132,7 +132,7 @@
 <p>For example here is an F1 track with 20 measurement points from the <code>speaker_tracks</code> data set.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">speaker</span> <span class="op">==</span> <span class="st">"s01"</span>,</span>
 <span>    <span class="va">id</span> <span class="op">==</span> <span class="fl">9</span></span>
@@ -140,10 +140,10 @@
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">F1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display margin-caption">
 <div id="fig-f1" class="margin-caption quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-f1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -167,16 +167,16 @@ Figure 1: F1 Formant Track
 <p>And, if we apply <code><a href="../reference/idct.html">idct()</a></code> to these coefficients, we’ll get back the original track.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    F1_dct <span class="op">=</span> <span class="fu"><a href="../reference/dct.html">dct</a></span><span class="op">(</span><span class="va">F1</span><span class="op">)</span>,</span>
 <span>    F1_idct <span class="op">=</span> <span class="fu"><a href="../reference/idct.html">idct</a></span><span class="op">(</span><span class="va">F1_dct</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">F1_idct</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display margin-caption">
 <div id="fig-f1-idct" class="margin-caption quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-f1-idct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -191,16 +191,16 @@ Figure 2: idct(dct(F1))
 <p>However, if we apply <code><a href="../reference/idct.html">idct()</a></code> to just the first few DCT coefficients, we’ll get back a smoothed version of the formant track.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">one_track</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    F1_dct <span class="op">=</span> <span class="fu"><a href="../reference/dct.html">dct</a></span><span class="op">(</span><span class="va">F1</span><span class="op">)</span>,</span>
 <span>    F1_idct <span class="op">=</span> <span class="fu"><a href="../reference/idct.html">idct</a></span><span class="op">(</span><span class="va">F1_dct</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">F1_idct</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display margin-caption">
 <div id="fig-f1-dctsmooth" class="margin-caption quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-f1-dctsmooth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -248,21 +248,21 @@ Figure 3: DCT smoothed F1
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># focusing on one speaker</span></span>
-<span><span class="va">one_speaker</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">one_speaker</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speaker</span> <span class="op">==</span> <span class="st">"s01"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dct_smooths</span> <span class="op">&lt;-</span> <span class="va">one_speaker</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">dct_smooths</span> <span class="op">&lt;-</span> <span class="va">one_speaker</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># step 1, reframing as dct coefficients</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_dct.html">reframe_with_dct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># step 2, averaging over parameter number and vowel</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">F1</span><span class="op">:</span><span class="va">F3</span>, <span class="va">mean</span><span class="op">)</span>,</span>
 <span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">.param</span>, <span class="va">plt_vclass</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># step 3, reframing with inverse DCT</span></span>
 <span>  <span class="fu"><a href="../reference/reframe_with_idct.html">reframe_with_idct</a></span><span class="op">(</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
@@ -273,10 +273,10 @@ Figure 3: DCT smoothed F1
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dct_smooths</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">dct_smooths</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">plt_vclass</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iy"</span>, <span class="st">"ey"</span>, <span class="st">"ay"</span>, <span class="st">"ay0"</span>, <span class="st">"oy"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">F2</span>, <span class="va">F1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -306,7 +306,7 @@ Figure 4: DCT smoothed formant trajectories.
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dct_basis.html">dct_basis</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span><span class="va">basis</span>, type <span class="op">=</span> <span class="st">'l'</span>,lty <span class="op">=</span> <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span><span class="va">basis</span>, type <span class="op">=</span> <span class="st">"l"</span>, lty <span class="op">=</span> <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display margin-caption">
 <div>
 <figure><p><a href="dct_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="dct_files/figure-html/unnamed-chunk-5-1.png" width="480"></a></p>
@@ -324,7 +324,7 @@ Figure 4: DCT smoothed formant trajectories.
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span></span>
 <span>  <span class="va">one_track</span><span class="op">$</span><span class="va">F1</span> <span class="op">~</span> <span class="fu"><a href="../reference/dct_basis.html">dct_basis</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; dct_basis(20, 5)1 dct_basis(20, 5)2 dct_basis(20, 5)3 dct_basis(20, 5)4 </span></span>
 <span><span class="co">#&gt;        482.372866         16.547258        -25.030588         -3.447576 </span></span>

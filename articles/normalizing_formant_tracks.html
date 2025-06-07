@@ -128,17 +128,17 @@
 <p>We can Lobanov normalize these speakers’ formant tracks with <code><a href="../reference/norm_track_lobanov.html">norm_track_lobanov()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">normed_tracks</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">normed_tracks</span> <span class="op">&lt;-</span> <span class="va">speaker_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/norm_track_lobanov.html">norm_track_lobanov</a></span><span class="op">(</span></span>
 <span>    <span class="co"># identify the formant columns</span></span>
 <span>    <span class="va">F1</span><span class="op">:</span><span class="va">F3</span>,</span>
-<span>    </span>
+<span></span>
 <span>    <span class="co"># provide speaker grouping</span></span>
 <span>    .by <span class="op">=</span> <span class="va">speaker</span>,</span>
-<span>    </span>
+<span></span>
 <span>    <span class="co"># provide token id</span></span>
 <span>    .token_id_col <span class="op">=</span> <span class="va">id</span>,</span>
-<span>    </span>
+<span></span>
 <span>    <span class="co"># provide an optional time column</span></span>
 <span>    .time_col <span class="op">=</span> <span class="va">t</span></span>
 <span>  <span class="op">)</span></span>
@@ -154,7 +154,7 @@
 </div>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">normed_tracks</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">normed_tracks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">F2_z</span>, <span class="va">F1_z</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -164,16 +164,16 @@
 <span>    <span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.3</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">speaker</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span></span>
-<span>      xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.5</span>, <span class="op">-</span><span class="fl">3.5</span><span class="op">)</span>,</span>
-<span>      ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.5</span>, <span class="op">-</span><span class="fl">3.5</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
-<span>      aspect.ratio <span class="op">=</span> <span class="fl">1</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">speaker</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span></span>
+<span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.5</span>, <span class="op">-</span><span class="fl">3.5</span><span class="op">)</span>,</span>
+<span>    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.5</span>, <span class="op">-</span><span class="fl">3.5</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    aspect.ratio <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display margin-caption">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><a href="normalizing_formant_tracks_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="normalizing_formant_tracks_files/figure-html/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></a></p>

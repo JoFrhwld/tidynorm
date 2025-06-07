@@ -147,15 +147,7 @@ Article 1. <a href="https://doi.org/10.5334/labphon.196" class="external-link">h
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> (.formant - 0)/(mean(.formant/(.formant_num - 0.5), na.rm = T))</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## this is equivalent to</span></span></span>
-<span class="r-in"><span><span class="co"># speaker_data |&gt;</span></span></span>
-<span class="r-in"><span><span class="co">#   norm_generic(</span></span></span>
-<span class="r-in"><span><span class="co">#     F1:F3,</span></span></span>
-<span class="r-in"><span><span class="co">#     .by = speaker,</span></span></span>
-<span class="r-in"><span><span class="co">#     .S = mean(.formant/(.formant_num - 0.5), na.rm = T)</span></span></span>
-<span class="r-in"><span><span class="co">#   )</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="va">ggplot2_inst</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="va">ggplot2_inst</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">speaker_data_deltaF</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span></span>
@@ -163,15 +155,15 @@ Article 1. <a href="https://doi.org/10.5334/labphon.196" class="external-link">h
 <span class="r-in"><span>      <span class="va">F1_df</span>,</span></span>
 <span class="r-in"><span>      color <span class="op">=</span> <span class="va">speaker</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html" class="external-link">stat_density_2d</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      bins <span class="op">=</span> <span class="fl">4</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_color_brewer</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      palette <span class="op">=</span> <span class="st">"Dark2"</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-plt img"><img src="norm_deltaF-1.png" alt="" width="700" height="433"></span>
