@@ -15,6 +15,7 @@ Useful links:
 \itemize{
   \item \url{https://jofrhwld.github.io/tidynorm/}
   \item \url{https://github.com/JoFrhwld/tidynorm}
+  \item Report bugs at \url{https://github.com/JoFrhwld/tidynorm/issues}
 }
 
 }

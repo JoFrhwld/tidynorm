@@ -1,8 +1,17 @@
 ---
 title: "The Discrete Cosine Transform"
+fig-width: 5
+fig-height: 3
+out-width: 80%
 knitr:
-  opts_chunk: 
-    eval: !expr 'rlang::is_installed(c("ggplot2", "tibble"))'
+  opts_chunk:
+    crop: !expr 'rlang::is_installed(c("magick"))'
+    collapse: true
+    comment: '#>'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
   %\VignetteIndexEntry{The Discrete Cosine Transform}
   %\VignetteEngine{quarto::html}
@@ -223,3 +232,4 @@ lm(
 ```
 
 For more details on the mathematical formulation of the DCT, see the `dct()` help page.
+

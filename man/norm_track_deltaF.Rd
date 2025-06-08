@@ -149,7 +149,7 @@ if (ggplot2_inst) {
 }
 }
 \references{
-Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+Johnson, K. (2020). The \eqn{\Delta}F method of vocal tract length normalization for vowels.
 Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
-Article 1. \url{https://doi.org/10.5334/labphon.196}
+Article 1. \doi{10.5334/labphon.196}
 }

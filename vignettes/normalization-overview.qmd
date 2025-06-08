@@ -1,5 +1,17 @@
 ---
 title: Normalization Overview
+fig-width: 5
+fig-height: 3
+out-width: 80%
+knitr:
+  opts_chunk:
+    crop: !expr 'rlang::is_installed(c("magick"))'
+    collapse: true
+    comment: '#>'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
   %\VignetteIndexEntry{Normalization Overview}
   %\VignetteEngine{quarto::html}
@@ -318,3 +330,4 @@ ggplot(
   scale_y_reverse() +
   scale_x_reverse()
 ```
+

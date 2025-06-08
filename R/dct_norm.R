@@ -489,9 +489,9 @@ norm_dct_nearey <- function(
 #' @example inst/examples/ex-norm_dct_deltaF.R
 #'
 #' @references
-#' Johnson, K. (2020). The ΔF method of vocal tract length normalization for vowels.
+#' Johnson, K. (2020). The \eqn{\Delta}F method of vocal tract length normalization for vowels.
 #' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
-#' Article 1. [https://doi.org/10.5334/labphon.196](https://doi.org/10.5334/labphon.196)
+#' Article 1. \doi{10.5334/labphon.196}
 #'
 #' @export
 norm_dct_deltaF <- function(
@@ -643,7 +643,7 @@ norm_dct_wattfab <- function(
 #' Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
 #' recognition based on the auditory representation of American English vowels.
 #' The Journal of the Acoustical Society of America, 79(4), 1086–1100.
-#' [https://doi.org/10.1121/1.393381](https://doi.org/10.1121/1.393381)
+#' \doi{10.1121/1.393381}
 #'
 #' @example inst/examples/ex-norm_dct_barkz.R
 #'

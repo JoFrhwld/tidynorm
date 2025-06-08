@@ -1,5 +1,14 @@
 ---
 title: "Checking Normalization Procedures"
+knitr:
+  opts_chunk:
+    crop: !expr 'rlang::is_installed(c("magick"))'
+    collapse: true
+    comment: '#>'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
   %\VignetteIndexEntry{Checking Normalization Procedures}
   %\VignetteEngine{quarto::html}
@@ -35,3 +44,4 @@ We can review which normalization procedure produced which normalized column lik
 ```{r}
 check_norm(norm_data)
 ```
+

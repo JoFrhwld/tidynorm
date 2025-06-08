@@ -22,8 +22,7 @@
 #' @references
 #' Traunmüller, H. (1990). Analytical expressions for the tonotopic
 #' sensory scale. The Journal of the Acoustical Society of America,
-#' 88(1), 97–100.
-#' [https://doi.org/10.1121/1.399849](https://doi.org/10.1121/1.399849)
+#' 88(1), 97–100. \doi{10.1121/1.399849}
 #'
 #' @examples
 #' hz <- seq(150, 2000, length = 100)
@@ -67,8 +66,7 @@ hz_to_bark <- function(hz) {
 #' #' @references
 #' Traunmüller, H. (1990). Analytical expressions for the tonotopic
 #' sensory scale. The Journal of the Acoustical Society of America,
-#' 88(1), 97–100.
-#' [https://doi.org/10.1121/1.399849](https://doi.org/10.1121/1.399849)
+#' 88(1), 97–100. \doi{10.1121/1.399849}
 #'
 #' @examples
 #' bark <- seq(1.5, 13, length = 100)

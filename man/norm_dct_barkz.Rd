@@ -127,5 +127,5 @@ if (ggplot2_inst) {
 Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel
 recognition based on the auditory representation of American English vowels.
 The Journal of the Acoustical Society of America, 79(4), 1086–1100.
-\url{https://doi.org/10.1121/1.393381}
+\doi{10.1121/1.393381}
 }

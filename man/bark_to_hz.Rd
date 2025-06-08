@@ -15,8 +15,7 @@ A vector of Hz scaled values
 #' @references
 Traunmüller, H. (1990). Analytical expressions for the tonotopic
 sensory scale. The Journal of the Acoustical Society of America,
-88(1), 97–100.
-\url{https://doi.org/10.1121/1.399849}
+88(1), 97–100. \doi{10.1121/1.399849}
 }
 \description{
 Converts bark to Hz
