@@ -111,7 +111,7 @@ norm_dct_generic <- function(
     data = .data
   )
 
-  if (!".param_col" %in% names(args)) {
+  if (!".param_col" %in% args) {
     .param_col <- sym(".param")
   }
 
