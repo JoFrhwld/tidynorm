@@ -173,7 +173,7 @@ hz_to_mel <- function(
 #' @export
 mel_to_hz <- function(
     mel,
-    htk = F) {
+    htk = FALSE) {
   if (htk) {
     hz <- 700.0 * (10.0^(mel / 2595.0) - 1.0)
     return(hz)

@@ -39,7 +39,7 @@ dct <- function(x) {
   UseMethod("dct")
 }
 
-#' DCT numeric
+#' @rdname dct
 #' @export
 #' @keywords internal
 dct.numeric <- function(x) {
@@ -47,7 +47,7 @@ dct.numeric <- function(x) {
   return(coefs)
 }
 
-#' DCT matrix
+#' @rdname dct
 #' @export
 #' @keywords internal
 dct.matrix <- function(x) {
@@ -85,7 +85,7 @@ dct_basis <- function(n, k) {
 #'
 #' The Inverse DCT
 #'
-#' @param y DCT coefficients
+#' @param y A vector or matrix of DCT coefficients
 #' @param n The desired length of the idct
 #'
 #' @details
@@ -96,7 +96,9 @@ dct_basis <- function(n, k) {
 #' }
 #'
 #' @returns
-#' A vector with the inverse DCT values
+#' If passed a vector, a vector with the inverse DCT values.
+#' If passed a matrix, a matrix with the same number of
+#' columns as `x`, and `n` rows.
 #'
 #'
 #' @examples
@@ -113,7 +115,7 @@ idct <- function(y, n) {
   UseMethod("idct")
 }
 
-#' IDCT numeric
+#' @rdname idct
 #' @export
 #' @keywords internal
 idct.numeric <- function(y, n = length(y)) {
@@ -121,7 +123,7 @@ idct.numeric <- function(y, n = length(y)) {
   return(x)
 }
 
-#' IDCT numeric
+#' @rdname idct
 #' @export
 #' @keywords internal
 idct.matrix <- function(y, n = nrow(y)) {
@@ -541,8 +543,8 @@ reframe_with_dct_smooth <- function(
     .by = NULL,
     .time_col = NULL,
     .order = 5,
-    .rate = F,
-    .accel = F) {
+    .rate = FALSE,
+    .accel = FALSE) {
   targets <- expr(...)
   cols <- enquos(
     .token_id_col = .token_id_col,

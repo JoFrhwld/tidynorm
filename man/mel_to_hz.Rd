@@ -4,7 +4,7 @@
 \alias{mel_to_hz}
 \title{Mel to Hz}
 \usage{
-mel_to_hz(mel, htk = F)
+mel_to_hz(mel, htk = FALSE)
 }
 \arguments{
 \item{mel}{Numeric values in Hz}
