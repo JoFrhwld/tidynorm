@@ -50,7 +50,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idct</span><span class="op">(</span><span class="va">y</span>, <span class="va">n</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idct</span><span class="op">(</span><span class="va">y</span>, <span class="va">n</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'numeric'</span></span>
+<span><span class="fu">idct</span><span class="op">(</span><span class="va">y</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'matrix'</span></span>
+<span><span class="fu">idct</span><span class="op">(</span><span class="va">y</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,7 +64,7 @@
 
 
 <dl><dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>DCT coefficients</p></dd>
+<dd><p>A vector or matrix of DCT coefficients</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -67,7 +73,9 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A vector with the inverse DCT values</p>
+    <p>If passed a vector, a vector with the inverse DCT values.
+If passed a matrix, a matrix with the same number of
+columns as <code>x</code>, and <code>n</code> rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
