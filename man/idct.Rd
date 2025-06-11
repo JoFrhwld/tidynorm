@@ -2,17 +2,25 @@
 % Please edit documentation in R/dct.R
 \name{idct}
 \alias{idct}
+\alias{idct.numeric}
+\alias{idct.matrix}
 \title{Inverse Discrete Cosine Transform}
 \usage{
 idct(y, n)
+
+\method{idct}{numeric}(y, n = length(y))
+
+\method{idct}{matrix}(y, n = nrow(y))
 }
 \arguments{
-\item{y}{DCT coefficients}
+\item{y}{A vector or matrix of DCT coefficients}
 
 \item{n}{The desired length of the idct}
 }
 \value{
-A vector with the inverse DCT values
+If passed a vector, a vector with the inverse DCT values.
+If passed a matrix, a matrix with the same number of
+columns as \code{x}, and \code{n} rows.
 }
 \description{
 The Inverse DCT
@@ -34,3 +42,4 @@ recovered_y <- idct(dct_coefs)
 plot(y, recovered_y)
 
 }
+\keyword{internal}

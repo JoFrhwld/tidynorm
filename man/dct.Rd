@@ -2,9 +2,15 @@
 % Please edit documentation in R/dct.R
 \name{dct}
 \alias{dct}
+\alias{dct.numeric}
+\alias{dct.matrix}
 \title{Discrete Cosine Transform}
 \usage{
 dct(x)
+
+\method{dct}{numeric}(x)
+
+\method{dct}{matrix}(x)
 }
 \arguments{
 \item{x}{A vector or matrix to which the discrete cosine transform is applied}
@@ -44,3 +50,4 @@ y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 dct_coefs <- dct(y)
 
 }
+\keyword{internal}

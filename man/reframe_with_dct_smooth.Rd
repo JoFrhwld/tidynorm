@@ -11,8 +11,8 @@ reframe_with_dct_smooth(
   .by = NULL,
   .time_col = NULL,
   .order = 5,
-  .rate = F,
-  .accel = F
+  .rate = FALSE,
+  .accel = FALSE
 )
 }
 \arguments{
