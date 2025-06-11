@@ -358,7 +358,7 @@ dct_norm <- speaker_tracks |>
     F1:F3,
     .by = speaker,
     .token_id_col = id,
-    .param_col = param
+    .param_col = .param
   )
 ```
 
