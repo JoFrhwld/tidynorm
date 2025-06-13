@@ -16,8 +16,13 @@ dct(x)
 \item{x}{A vector or matrix to which the discrete cosine transform is applied}
 }
 \value{
-A vector or matrix the same size as \code{x} containing the
-Discrete Cosine Transform.
+Returned value depends on \code{x}.
+
+When passed a numeric vector, returns a numeric
+vector the same size as \code{x} with the DCT Coefficients.
+
+When passed a matrix, returns a matrix
+the same size as \code{x} with the DCT Coefficients.
 }
 \description{
 Discrete Cosine Transform
