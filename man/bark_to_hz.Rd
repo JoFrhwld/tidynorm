@@ -11,11 +11,6 @@ bark_to_hz(bark)
 }
 \value{
 A vector of Hz scaled values
-
-#' @references
-Traunmüller, H. (1990). Analytical expressions for the tonotopic
-sensory scale. The Journal of the Acoustical Society of America,
-88(1), 97–100. \doi{10.1121/1.399849}
 }
 \description{
 Converts bark to Hz
@@ -37,4 +32,9 @@ hz = 1960\frac{\hat{b} + 0.53}{26.28 - \hat{b}}
 bark <- seq(1.5, 13, length = 100)
 hz <- bark_to_hz(bark)
 plot(bark, hz)
+}
+\references{
+Traunmüller, H. (1990). Analytical expressions for the tonotopic
+sensory scale. The Journal of the Acoustical Society of America,
+88(1), 97–100. \doi{10.1121/1.399849}
 }
