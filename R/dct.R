@@ -25,9 +25,7 @@
 #' For the Inverse Discrete Cosine Transform, see [idct].
 #'
 #' @returns
-#' A vector or matrix the same size as `x` containing the
-#' Discrete Cosine Transform.
-#'
+#' Returned value depends on `x`.
 #' @examples
 #' x <- seq(0, 1, length = 10)
 #' y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
@@ -40,6 +38,11 @@ dct <- function(x) {
 }
 
 #' @rdname dct
+#' @returns
+#' When passed a numeric vector, returns a numeric
+#' vector the same size as `x` with the DCT Coefficients.
+#'
+#' @method dct numeric
 #' @export
 #' @keywords internal
 dct.numeric <- function(x) {
@@ -49,6 +52,9 @@ dct.numeric <- function(x) {
 
 #' @rdname dct
 #' @export
+#' @returns
+#' When passed a matrix, returns a matrix
+#' the same size as `x` with the DCT Coefficients.
 #' @keywords internal
 dct.matrix <- function(x) {
   out <- dct_mat(x, kk = nrow(x))
@@ -96,9 +102,7 @@ dct_basis <- function(n, k) {
 #' }
 #'
 #' @returns
-#' If passed a vector, a vector with the inverse DCT values.
-#' If passed a matrix, a matrix with the same number of
-#' columns as `x`, and `n` rows.
+#' The returned value depends on the values in `y`.
 #'
 #'
 #' @examples
@@ -116,7 +120,9 @@ idct <- function(y, n) {
 }
 
 #' @rdname idct
+#' @returns When passed a numeric vector, returns numeric vector of length `n`.
 #' @export
+#' @method idct numeric
 #' @keywords internal
 idct.numeric <- function(y, n = length(y)) {
   x <- idct_fun(y, n = n)[, 1]
@@ -124,7 +130,10 @@ idct.numeric <- function(y, n = length(y)) {
 }
 
 #' @rdname idct
+#' @returns
+#' When passed a matrix, returns a matrix with `n` rows and the same number of columns as `y`.
 #' @export
+#' @method idct matrix
 #' @keywords internal
 idct.matrix <- function(y, n = nrow(y)) {
   x <- idct_mat(y, n = n)
