@@ -2,7 +2,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" alt="tidynorm website" align="right" height="139"/></a>
+# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="138" alt="tidynorm website" /></a>
 
 <!-- badges: start -->
 
