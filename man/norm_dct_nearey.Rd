@@ -96,7 +96,7 @@ speaker_dct <- speaker_tracks |>
     .time_col = t
   )
 
-#' Normalize DCT coefficients
+# Normalize DCT coefficients
 speaker_dct_norm <- speaker_dct |>
   norm_dct_nearey(
     F1:F3,

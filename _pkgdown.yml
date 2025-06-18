@@ -89,3 +89,8 @@ articles:
     - normalizing_formant_tracks
     - checking
     - dct
+
+news:
+  releases:
+  - text: "v 0.3.0"
+    href: https://jofrhwld.github.io/blog/posts/2025/06/2025-06-16_introducing-tidynorm/

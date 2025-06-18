@@ -2,11 +2,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.svg" alt="tidynorm website" align="right" height="139"/></a>
+# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="138" alt="tidynorm website" /></a>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
 <!-- badges: end -->
 
 The goal of `{tidynorm}` is to provide convenient and tidy functions to

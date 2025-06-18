@@ -18,9 +18,11 @@ idct(y, n)
 \item{n}{The desired length of the idct}
 }
 \value{
-If passed a vector, a vector with the inverse DCT values.
-If passed a matrix, a matrix with the same number of
-columns as \code{x}, and \code{n} rows.
+The returned value depends on the values in \code{y}.
+
+When passed a numeric vector, returns numeric vector of length \code{n}.
+
+When passed a matrix, returns a matrix with \code{n} rows and the same number of columns as \code{y}.
 }
 \description{
 The Inverse DCT
