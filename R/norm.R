@@ -135,11 +135,11 @@ norm_generic <- function(
     .data,
     !!targets,
     names_to = ".formant_name",
-    values_to = ".formant"
+    values_to = ".formant_orig"
   ) |>
     dplyr::mutate(
       .formant_num = name_to_formant_num(!!sym(".formant_name")),
-      .formant = .pre_trans(!!sym(".formant"))
+      .formant = .pre_trans(!!sym(".formant_orig"))
     ) |>
     arrange(
       !!sym(".formant_num")
@@ -178,9 +178,11 @@ norm_generic <- function(
     .by = !!norm_grouping,
     .L = {{ .L }},
     .S = {{ .S }},
-    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S),
-    .formant = .post_trans(!!sym(".formant"))
-  )
+    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
+  ) |>
+    mutate(
+      .formant = !!sym(".formant_orig")
+    )
 
   # set up value columns for pivoting
   # back wide
@@ -192,7 +194,8 @@ norm_generic <- function(
   }
   .data <- dplyr::select(
     .data,
-    -!!sym(".formant_num")
+    -!!sym(".formant_num"),
+    -!!sym(".formant_orig")
   )
 
   # pivot_back wide
