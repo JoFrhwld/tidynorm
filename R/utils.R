@@ -12,6 +12,18 @@ norm_messages <- list(
   .norm = "{ .norm}"
 )
 
+number_names <- c(
+  one = 1,
+  two = 2,
+  three = 3,
+  four = 4,
+  five = 5,
+  first = 1,
+  second = 2,
+  third = 3,
+  fourth = 4,
+  fifth = 5
+)
 
 check_grouping <- function(
     .data,
@@ -271,4 +283,53 @@ check_norm <- function(.data) {
     cli_inform(message, .envir = step)
     cli_end()
   }
+}
+
+#' Convert text-based formant names to
+#' numeric
+#' @noRd
+name_to_formant_num <- function(.formant_name, call = caller_env()) {
+  checkmate::check_character(.formant_name, any.missing = FALSE, min.len = 1)
+
+  has_digit <- stringr::str_detect(
+    .formant_name, r"{[fF][1-5]}"
+    ) |>
+      all()
+
+  if (has_digit) {
+    nums = stringr::str_extract(
+      .formant_name,
+      r"{[fF]([1-5])}",
+      group = 1
+    ) |>
+      as.numeric()
+    return(nums)
+  }
+
+  has_name <- stringr::str_detect(
+    .formant_name,
+    regex(
+      stringr::str_flatten(names(number_names), collapse = "|"),
+      ignore_case = TRUE
+    )
+  ) |>
+    all()
+
+  if (has_name) {
+    digit_name <- stringr::str_extract(
+      .formant_name,
+      regex(
+        stringr::str_flatten(names(number_names), collapse = "|"),
+        ignore_case = TRUE
+      )
+    ) |>
+      tolower()
+    nums = number_names[digit_name] |>
+      unname()
+
+    return(nums)
+  }
+
+  as.numeric(as.factor(.formant_name))
+
 }

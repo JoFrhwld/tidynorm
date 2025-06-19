@@ -138,11 +138,7 @@ norm_generic <- function(
     values_to = ".formant"
   ) |>
     dplyr::mutate(
-      .formant_num = stringr::str_extract(
-        !!sym(".formant_name"),
-        r"{[fF](\d)}",
-        group = 1
-      ) |> as.numeric(),
+      .formant_num = name_to_formant_num(!!sym(".formant_name")),
       .formant = .pre_trans(!!sym(".formant"))
     ) |>
     arrange(
