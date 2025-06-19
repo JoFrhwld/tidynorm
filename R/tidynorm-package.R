@@ -2,6 +2,7 @@
 #' @import cli
 #' @importFrom stats sd
 #' @import dplyr
+#' @import checkmate
 #' @keywords internal
 #' ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
