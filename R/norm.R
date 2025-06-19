@@ -144,6 +144,9 @@ norm_generic <- function(
         group = 1
       ) |> as.numeric(),
       .formant = .pre_trans(!!sym(".formant"))
+    ) |>
+    arrange(
+      !!sym(".formant_name")
     )
 
   # see if the data is grouped
