@@ -142,7 +142,7 @@ norm_generic <- function(
       .formant = .pre_trans(!!sym(".formant"))
     ) |>
     arrange(
-      !!sym(".formant_name")
+      !!sym(".formant_num")
     )
 
   # see if the data is grouped
