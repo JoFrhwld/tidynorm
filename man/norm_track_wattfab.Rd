@@ -14,7 +14,7 @@ norm_track_wattfab(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_wf",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

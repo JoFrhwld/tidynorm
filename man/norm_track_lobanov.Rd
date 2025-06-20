@@ -14,7 +14,7 @@ norm_track_lobanov(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_z",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

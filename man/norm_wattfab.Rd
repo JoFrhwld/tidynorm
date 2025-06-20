@@ -12,7 +12,7 @@ norm_wattfab(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_wf",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

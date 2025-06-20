@@ -15,7 +15,7 @@ norm_dct_generic(
   .by_formant = FALSE,
   .by_token = FALSE,
   .names = "{.formant}_n",
-  .silent = FALSE,
+  .silent = getOption("tidynorm.silent", FALSE),
   .drop_orig = FALSE,
   .call = caller_env()
 )

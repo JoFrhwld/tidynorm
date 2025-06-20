@@ -12,7 +12,7 @@ norm_nearey(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_lm",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

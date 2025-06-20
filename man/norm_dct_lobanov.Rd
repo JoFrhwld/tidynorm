@@ -11,7 +11,7 @@ norm_dct_lobanov(
   .by = NULL,
   .param_col = NULL,
   .names = "{.formant}_z",
-  .silent = FALSE,
+  .silent = getOption("tidynorm.silent", FALSE),
   .drop_orig = FALSE
 )
 }

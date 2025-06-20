@@ -86,7 +86,7 @@ norm_generic <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent = getOption("tidynorm.silent", FALSE),
     .call = caller_env()) {
   if (env_name(.call) == "global") {
     .call <- current_env()
@@ -309,7 +309,7 @@ norm_lobanov <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -387,7 +387,7 @@ norm_nearey <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -458,7 +458,7 @@ norm_deltaF <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -534,7 +534,7 @@ norm_wattfab <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -601,7 +601,7 @@ norm_barkz <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)

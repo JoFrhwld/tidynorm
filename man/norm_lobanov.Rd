@@ -12,7 +12,7 @@ norm_lobanov(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

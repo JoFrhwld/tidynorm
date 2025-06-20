@@ -12,7 +12,7 @@ norm_dct_barkz(
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_bz",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{
