@@ -661,7 +661,20 @@ norm_dct_barkz <- function(
   fmls <- names(fn_fmls())
   check_args(args, fmls)
 
-  targets <- expr(...)
+  targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (length(target_pos) < 3) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_dct_barkz} requires F3."
+      )
+    )
+  }
+
+  f3 <- names(target_pos)[formant_nums == 3]
+
   normed <- norm_dct_generic(
     .data,
     !!targets,
@@ -680,7 +693,8 @@ norm_dct_barkz <- function(
   normed <- update_norm_info(
     normed,
     list(
-      .norm_procedure = "tidynorm::norm_dct_barkz"
+      .norm_procedure = "tidynorm::norm_dct_barkz",
+      .f3 = f3
     )
   )
 

@@ -127,16 +127,22 @@ norm_track_generic <- function(
   if (env_name(.call) == "global") {
     .call2 <- current_env()
   }
+  ## Argument checks
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls, .call2)
 
+  # preserve incoming attributes
   prev_attr <- attributes(.data)$norminfo
 
+  # stand-in names
   .names2 <- glue::glue(.names, .formant = ".formant")
 
+  # position info
   targets <- expr(c(...))
   target_pos <- tidyselect::eval_select(targets, .data)
+  time_pos <- tidyselect::eval_select(expr({{ .time_col }}), .data)
+
   cols <- enquos(
     .by = .by,
     .token_id_col = .token_id_col,
@@ -163,25 +169,25 @@ norm_track_generic <- function(
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
 
-  if (!quo_is_null(cols$.time_col)) {
-    .time_data <- dplyr::arrange(.data, {{ .time_col }}) |>
-      dplyr::select(
-        {{ .by }},
-        {{ .token_id_col }},
-        {{ .time_col }},
-        dplyr::group_cols()
-      ) |>
-      dplyr::mutate(
-        .by = !!by_grouping,
-        .row = dplyr::row_number()
-      )
-
-    .data <- dplyr::mutate(
-      .data,
+  .orig_data <- dplyr::arrange(.data, {{ .time_col }}) |>
+    dplyr::select(
+      {{ .by }},
+      {{ .token_id_col }},
+      {{ .time_col }},
+      any_of(names(target_pos)),
+      dplyr::group_cols()
+    ) |>
+    dplyr::mutate(
       .by = !!by_grouping,
       .row = dplyr::row_number()
     )
-  }
+
+  .data <- dplyr::mutate(
+    .data,
+    .by = !!by_grouping,
+    .row = dplyr::row_number()
+  )
+
 
   .dct_data <- .data |>
     dplyr::mutate(
@@ -258,25 +264,50 @@ norm_track_generic <- function(
     )
   )
 
+  normed_track <- normed_track |>
+    dplyr::relocate(
+      dplyr::contains("_.formant"),
+      .before = min(c(target_pos, time_pos))
+    ) |>
+    dplyr::rename_with(
+      .fn = \(x) stringr::str_remove(x, "_.formant")
+    )
+
+
+  normed_track <- normed_track |>
+    select(-tidyselect::any_of(names(target_pos))) |>
+    dplyr::mutate(
+      .by = !!by_grouping,
+      .row = dplyr::row_number()
+    ) |>
+    dplyr::left_join(
+      .orig_data,
+      by = c(joining, ".row")
+    ) |>
+    dplyr::select(
+      -any_of(c(".row", ".n"))
+    )
+
   if (!quo_is_null(cols$.time_col)) {
     normed_track <- normed_track |>
       dplyr::select(
         -sym(".time")
-      ) |>
-      dplyr::mutate(
-        .by = !!by_grouping,
-        .row = dplyr::row_number()
-      ) |>
-      left_join(
-        .time_data,
-        by = c(joining, ".row")
       )
+    if (time_pos > max(target_pos)) {
+      time_pos <- time_pos + length(target_pos)
+    }
   }
 
   normed_track <- normed_track |>
-    dplyr::rename_with(
-      .fn = \(x) stringr::str_remove(x, "_.formant")
+    dplyr::relocate(
+      any_of(names(target_pos)),
+      .before = any_of(min(c(target_pos, time_pos)))
+    ) |>
+    dplyr::relocate(
+      {{ .time_col }},
+      .before = any_of(time_pos)
     )
+
 
   attr(normed_track, "norminfo") <- prev_attr
 
@@ -687,6 +718,21 @@ norm_track_barkz <- function(
   fmls <- names(fn_fmls())
   check_args(args, fmls)
 
+  targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (length(target_pos) < 3) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_track_barkz} requires F3."
+      )
+    )
+  }
+
+
+  f3 <- names(target_pos)[formant_nums == 3]
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
@@ -710,7 +756,8 @@ norm_track_barkz <- function(
   normed <- update_norm_info(
     normed,
     list(
-      .norm_procedure = "tidynorm::norm_track_barkz"
+      .norm_procedure = "tidynorm::norm_track_barkz",
+      .f3 = f3
     )
   )
 

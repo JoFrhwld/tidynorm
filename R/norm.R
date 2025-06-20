@@ -133,17 +133,16 @@ norm_generic <- function(
   # longwise
   .data <- tidyr::pivot_longer(
     .data,
-    !!targets,
+    any_of(names(target_pos)),
     names_to = ".formant_name",
     values_to = ".formant_orig"
   ) |>
     dplyr::mutate(
-      .formant_num = stringr::str_extract(
-        !!sym(".formant_name"),
-        r"{[fF](\d)}",
-        group = 1
-      ) |> as.numeric(),
+      .formant_num = name_to_formant_num(!!sym(".formant_name")),
       .formant = .pre_trans(!!sym(".formant_orig"))
+    ) |>
+    arrange(
+      !!sym(".formant_num")
     )
 
   # see if the data is grouped
@@ -212,15 +211,16 @@ norm_generic <- function(
 
   # move normalized columns adjacent to
   # original
-  .data <- dplyr::relocate(
-    .data,
-    c(
-      tidyselect::matches("_.formant"),
-      tidyselect::ends_with("_.L"),
-      tidyselect::ends_with("_.S")
-    ),
-    .before = target_pos[1]
-  )
+  .data <- .data |>
+    dplyr::select(-any_of(".id")) |>
+    dplyr::relocate(
+      c(
+        tidyselect::matches("_.formant"),
+        tidyselect::ends_with("_.L"),
+        tidyselect::ends_with("_.S")
+      ),
+      .before = min(target_pos)
+    )
 
   # remove _.col from names
   .data <- dplyr::rename_with(
@@ -607,6 +607,18 @@ norm_barkz <- function(
   check_args(args, fmls)
 
   targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (length(target_pos) < 3 ) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_barkz} requires F3."
+      )
+    )
+  }
+
+  f3 <- names(target_pos)[formant_nums == 3]
 
   .data <- norm_generic(
     .data,
@@ -626,7 +638,10 @@ norm_barkz <- function(
 
   .data <- update_norm_info(
     .data,
-    list(.norm_procedure = "tidynorm::norm_barkz")
+    list(
+      .norm_procedure = "tidynorm::norm_barkz",
+      .f3 = f3
+    )
   )
 
   if (!.silent) {
