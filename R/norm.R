@@ -610,7 +610,7 @@ norm_barkz <- function(
   target_pos <- tidyselect::eval_select(targets, .data)
   formant_nums <- name_to_formant_num(names(target_pos))
 
-  if (!3 %in% formant_nums) {
+  if (length(target_pos) < 3 ) {
     cli_abort(
       message = c(
         "{.fn tidynorm::norm_barkz} requires F3."
