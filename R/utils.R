@@ -2,6 +2,7 @@ norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
   .targets = "normalized {.var { .targets}}",
+  .f3  = "{.var { .f3}} used for third formant.",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
   .time_col = "time column: {.var { .time_col}}",

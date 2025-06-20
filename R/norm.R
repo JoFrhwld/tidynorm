@@ -214,13 +214,13 @@ norm_generic <- function(
   .data <- .data |>
     dplyr::select(-any_of(".id")) |>
     dplyr::relocate(
-    c(
-      tidyselect::matches("_.formant"),
-      tidyselect::ends_with("_.L"),
-      tidyselect::ends_with("_.S")
-    ),
-    .before = min(target_pos)
-  )
+      c(
+        tidyselect::matches("_.formant"),
+        tidyselect::ends_with("_.L"),
+        tidyselect::ends_with("_.S")
+      ),
+      .before = min(target_pos)
+    )
 
   # remove _.col from names
   .data <- dplyr::rename_with(
@@ -607,6 +607,18 @@ norm_barkz <- function(
   check_args(args, fmls)
 
   targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (!3 %in% formant_nums) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_barkz} requires F3."
+      )
+    )
+  }
+
+  f3 <- names(target_pos)[formant_nums == 3]
 
   .data <- norm_generic(
     .data,
@@ -626,7 +638,10 @@ norm_barkz <- function(
 
   .data <- update_norm_info(
     .data,
-    list(.norm_procedure = "tidynorm::norm_barkz")
+    list(
+      .norm_procedure = "tidynorm::norm_barkz",
+      .f3 = f3
+    )
   )
 
   if (!.silent) {

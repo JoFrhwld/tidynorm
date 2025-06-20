@@ -718,6 +718,21 @@ norm_track_barkz <- function(
   fmls <- names(fn_fmls())
   check_args(args, fmls)
 
+  targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (!3 %in% formant_nums) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_track_barkz} requires F3.",
+      )
+    )
+  }
+
+
+  f3 <- names(target_pos)[formant_nums == 3]
+
   targets <- expr(...)
   normed <- norm_track_generic(
     .data,
@@ -741,7 +756,8 @@ norm_track_barkz <- function(
   normed <- update_norm_info(
     normed,
     list(
-      .norm_procedure = "tidynorm::norm_track_barkz"
+      .norm_procedure = "tidynorm::norm_track_barkz",
+      .f3 = f3
     )
   )
 
