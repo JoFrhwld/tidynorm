@@ -211,14 +211,15 @@ norm_generic <- function(
 
   # move normalized columns adjacent to
   # original
-  .data <- dplyr::relocate(
-    .data,
+  .data <- .data |>
+    dplyr::select(-any_of(".id")) |>
+    dplyr::relocate(
     c(
       tidyselect::matches("_.formant"),
       tidyselect::ends_with("_.L"),
       tidyselect::ends_with("_.S")
     ),
-    .after = min(target_pos)
+    .before = min(target_pos)
   )
 
   # remove _.col from names
