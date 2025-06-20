@@ -301,11 +301,11 @@ norm_track_generic <- function(
   normed_track <- normed_track |>
     dplyr::relocate(
       any_of(names(target_pos)),
-      .before = min(c(target_pos, time_pos))
+      .before = any_of(min(c(target_pos, time_pos)))
     ) |>
     dplyr::relocate(
       {{ .time_col }},
-      .before = time_pos
+      .before = any_of(time_pos)
     )
 
 
