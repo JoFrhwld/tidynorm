@@ -271,6 +271,7 @@ reframe_with_dct <- function(
     .time_col = NULL,
     .order = 5) {
   targets <- expr(...)
+  target_pos <- tidyselect::eval_select(targets, .data)
 
   cols <- enquos(
     .token_id_col = .token_id_col,
@@ -354,7 +355,11 @@ reframe_with_dct <- function(
     orig,
     dct_df,
     by = unique(joining)
-  )
+  ) |>
+    dplyr::relocate(
+      !!targets,
+      .before = min(target_pos)
+    )
 
   return(out_df)
 }
@@ -497,7 +502,11 @@ reframe_with_idct <- function(
     orig,
     idct_df,
     by = unique(joining)
-  )
+  ) |>
+    relocate(
+      !!targets,
+      .before = min(target_pos)
+    )
   return(out_df)
 }
 

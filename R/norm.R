@@ -133,7 +133,7 @@ norm_generic <- function(
   # longwise
   .data <- tidyr::pivot_longer(
     .data,
-    !!targets,
+    any_of(names(target_pos)),
     names_to = ".formant_name",
     values_to = ".formant_orig"
   ) |>
@@ -218,7 +218,7 @@ norm_generic <- function(
       tidyselect::ends_with("_.L"),
       tidyselect::ends_with("_.S")
     ),
-    .before = target_pos[1]
+    .after = min(target_pos)
   )
 
   # remove _.col from names
