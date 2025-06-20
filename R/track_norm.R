@@ -725,7 +725,7 @@ norm_track_barkz <- function(
   if (length(target_pos) < 3) {
     cli_abort(
       message = c(
-        "{.fn tidynorm::norm_track_barkz} requires F3.",
+        "{.fn tidynorm::norm_track_barkz} requires F3."
       )
     )
   }
