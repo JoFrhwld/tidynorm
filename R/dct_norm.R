@@ -270,7 +270,6 @@ norm_dct_generic <- function(
   attr(normed, "normalized") <- TRUE
   norm_info <- list(
     .norm_procedure = "tidynorm::norm_dct_generic",
-    .by_col = .by_formant,
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
     .by = names(group_pos),

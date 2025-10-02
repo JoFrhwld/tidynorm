@@ -238,7 +238,6 @@ norm_generic <- function(
   }
 
   norm_info <- list(
-    .by_col = .by_formant,
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
     .by = names(group_pos),

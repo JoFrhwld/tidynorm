@@ -273,6 +273,8 @@ reframe_with_dct <- function(
   targets <- expr(...)
   target_pos <- tidyselect::eval_select(targets, .data)
 
+  prev_attr <- attributes(.data)$norminfo
+
   cols <- enquos(
     .token_id_col = .token_id_col,
     .time = .time_col,
@@ -409,9 +411,10 @@ reframe_with_idct <- function(
     .token_id_col = NULL,
     .by = NULL,
     .param_col = NULL,
-    .n = 20,
+    .n = NULL,
     .rate = FALSE,
     .accel = FALSE) {
+
   targets <- expr(c(...))
   cols <- enquos(
     .token_id_col = .token_id_col,
@@ -430,6 +433,30 @@ reframe_with_idct <- function(
       error = \(cnd) selection_errors(cnd)
     )
   }
+
+  n_number <- rlang::try_fetch(
+    {
+      eval_bare(
+        quo_get_expr(enquo(.n)),
+        quo_get_env(enquo(.n))
+      ) |>
+        is.numeric()
+    },
+    error = \(x) FALSE
+  )
+
+  n_column <- rlang::try_fetch(
+    {
+      tidyselect::eval_select({{.n}}, .data)
+      TRUE
+    },
+    error = \(x)FALSE
+  )
+
+  if (!n_number & !n_column){
+    .n <- 20
+  }
+
 
   # make sure groupings are ok
   check_grouping(.data, {{ .by }})
@@ -478,13 +505,13 @@ reframe_with_idct <- function(
       )
   } else {
     idct_operation <- list(
-      s = \(x) idct(x, n = {{ .n }}[1])
+      s = \(x, .n) idct(x, n = .n[1])
     )
     if (.rate) {
-      idct_operation$rate <- \(x) idct_prime(x, {{ .n }}[1])
+      idct_operation$rate <- \(x, .n) idct_prime(x, sym(".n")[1])
     }
     if (.accel) {
-      idct_operation$accel <- \(x) idct_dprime(x, n = {{ .n }}[1])
+      idct_operation$accel <- \(x, .n) idct_dprime(x, n = sym(".n")[1])
     }
 
     idct_df <- .data |>
@@ -504,7 +531,9 @@ reframe_with_idct <- function(
     by = unique(joining)
   ) |>
     relocate(
-      !!targets,
+      starts_with(
+        stringr::str_c(names(target_pos), collapse = "|")
+      ),
       .before = min(target_pos)
     )
   return(out_df)
