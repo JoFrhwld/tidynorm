@@ -46,6 +46,10 @@ check_grouping <- function(
     )
   }
 
+  if(getOption("tidynorm.silent", FALSE)){
+    return()
+  }
+
   if (length(grouped_by) < 1 & length(grouping) < 1) {
     cli_par()
     cli_warn(
@@ -260,12 +264,11 @@ check_norm <- function(.data) {
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
-      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+      message = "Not normalized with a {.pkg tidynorm} procedure."
     )
-    return()
     cli_end()
 
-    return()
+    return(invisible(NULL))
   }
 
   norminfo <- attr(.data, "norminfo")
@@ -334,3 +337,4 @@ name_to_formant_num <- function(.formant_name, call = caller_env()) {
   as.numeric(as.factor(.formant_name))
 
 }
+
