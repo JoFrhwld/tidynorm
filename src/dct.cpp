@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <math.h>
+#include <cmath>
 using namespace Rcpp;
 
 NumericVector seqC(double startNum, double endNum, int n){
@@ -51,7 +52,7 @@ arma::mat dct_fun(arma::vec y, int kk){
 
   int new_row = 0;
   for(int i = 0; i < y.n_rows; ++i){
-    if(arma::is_finite(y.row(i))){
+    if(std::isfinite(y(i))){
       x.row(new_row) = x_init.row(i);
       new_row +=1;
     }
