@@ -122,7 +122,7 @@ norm_track_generic <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent =getOption("tidynorm.silent", FALSE),
     .call = caller_env()) {
   if (env_name(.call) == "global") {
     .call2 <- current_env()
@@ -389,7 +389,7 @@ norm_track_lobanov <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -474,7 +474,7 @@ norm_track_nearey <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -553,7 +553,7 @@ norm_track_deltaF <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -634,7 +634,7 @@ norm_track_wattfab <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -713,7 +713,7 @@ norm_track_barkz <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent =getOption("tidynorm.silent", FALSE)) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)

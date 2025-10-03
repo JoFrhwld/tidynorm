@@ -17,7 +17,7 @@ norm_generic(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_n",
-  .silent = FALSE,
+  .silent = getOption("tidynorm.silent", FALSE),
   .call = caller_env()
 )
 }

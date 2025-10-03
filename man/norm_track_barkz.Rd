@@ -14,7 +14,7 @@ norm_track_barkz(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_bz",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

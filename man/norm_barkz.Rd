@@ -11,7 +11,7 @@ norm_barkz(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_bz",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

@@ -14,7 +14,7 @@ norm_track_deltaF(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_df",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

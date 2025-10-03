@@ -12,7 +12,7 @@ norm_dct_wattfab(
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_wf",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{
