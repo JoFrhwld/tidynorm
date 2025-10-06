@@ -1,4 +1,4 @@
-# tidynorm (development version)
+# tidynorm 0.3.1
 
 # tidynorm 0.3.1
 
