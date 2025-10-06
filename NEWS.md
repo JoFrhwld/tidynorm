@@ -1,7 +1,5 @@
 # tidynorm 0.3.1
 
-# tidynorm 0.3.1
-
 * Patching issue with RcppArmadillo
 
 
