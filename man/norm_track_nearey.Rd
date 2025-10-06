@@ -15,7 +15,7 @@ norm_track_nearey(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_lm",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

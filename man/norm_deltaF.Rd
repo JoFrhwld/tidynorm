@@ -12,7 +12,7 @@ norm_deltaF(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
-  .silent = FALSE
+  .silent = getOption("tidynorm.silent", FALSE)
 )
 }
 \arguments{

@@ -20,7 +20,7 @@ norm_track_generic(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_n",
-  .silent = FALSE,
+  .silent = getOption("tidynorm.silent", FALSE),
   .call = caller_env()
 )
 }
