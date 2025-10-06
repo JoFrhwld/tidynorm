@@ -1,3 +1,5 @@
+# tidynorm (development version)
+
 # tidynorm 0.3.1
 
 * Patching issue with RcppArmadillo
