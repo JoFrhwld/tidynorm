@@ -102,3 +102,34 @@ test_that(
 
 
 )
+
+test_that(
+  "Relocation with rate & acceleration works",
+  {
+    new_smooth <- speaker_tracks |>
+      dplyr::relocate(
+        F1:F3,
+        .before = 3
+      ) |>
+      reframe_with_dct(
+        F1:F3,
+        .time_col = t,
+        .token_id_col = id,
+        .by = speaker) |>
+      reframe_with_idct(
+        F1:F3,
+        .param_col = .param,
+        .token_id_col = id,
+        .by = speaker,
+        .rate = T,
+        .accel = T
+      )
+
+    new_names <- colnames(new_smooth)
+    expect_equal(
+      which(new_names == "F1_s"),
+      3
+    )
+
+  }
+)
