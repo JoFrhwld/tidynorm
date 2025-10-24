@@ -504,7 +504,7 @@ reframe_with_idct <- function(
     by = unique(joining)
   ) |>
     relocate(
-      !!targets,
+      tidyselect::starts_with(names(target_pos)),
       .before = min(target_pos)
     )
   return(out_df)
