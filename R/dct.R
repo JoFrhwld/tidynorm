@@ -623,6 +623,7 @@ reframe_with_dct_smooth <- function(
     !!targets,
     .token_id_col = {{ .token_id_col }},
     .by = !!by_grouping,
+    .n = !!sym(".n"),
     .param_col = !!sym(".param"),
     .rate = .rate,
     .accel = .accel
