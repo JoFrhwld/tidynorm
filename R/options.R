@@ -20,3 +20,37 @@ options::define_option(
   desc = "Print warnings from tidynorm functions.",
   option_name = "tidynorm.warnings"
 )
+
+
+#' Set tidynorm options
+#'
+#' Set tidynorm verbosity
+#'
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @eval options::as_params(".warnings" = "tidynorm.warnings")
+#' @importFrom options opt
+#'
+#' @export
+#'
+#' @examples
+#' tidynorm_options(.silent = TRUE, .warnings = FALSE)
+#'
+#' speaker_data |>
+#'   norm_generic(
+#'     F1:F3
+#'   )
+#'
+#' tidynorm_options(.silent = FALSE, .warnings = TRUE)
+#'
+#' speaker_data |>
+#'   norm_generic(
+#'     F1:F3
+#'   )
+#'
+tidynorm_options <- function(
+    .silent = opt("tidynorm.silent"),
+    .warnings = opt("tidynorm.warnings")
+){
+  options::opt_set("tidynorm.silent", .silent)
+  options::opt_set("tidynorm.warnings", .warnings)
+}
