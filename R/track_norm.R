@@ -31,6 +31,8 @@
 #' should be returned.
 #' @param .silent Whether or not the informational message should be printed.
 #' @param .call Used for internal purposes.
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' The following `norm_track_*` procedures were built on top of
@@ -122,7 +124,7 @@ norm_track_generic <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent = opt("tidynorm.silent"),
     .call = caller_env()) {
   if (env_name(.call) == "global") {
     .call2 <- current_env()
@@ -348,6 +350,8 @@ norm_track_generic <- function(
 #' Lobanov Track Normalization
 #'
 #' @inheritParams norm_track_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #'
@@ -387,7 +391,7 @@ norm_track_lobanov <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -426,6 +430,8 @@ norm_track_lobanov <- function(
 #' Nearey Track Normalization
 #'
 #' @inheritParams norm_track_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' When formant extrinsic:
@@ -470,7 +476,7 @@ norm_track_nearey <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -511,6 +517,8 @@ norm_track_nearey <- function(
 #' Delta F Track Normalization
 #'
 #' @inheritParams norm_track_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #'
 #' @details
@@ -547,7 +555,7 @@ norm_track_deltaF <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -586,6 +594,8 @@ norm_track_deltaF <- function(
 #' Watt and Fabricius Track normalization
 #'
 #' @inheritParams norm_track_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' This is a modified version of the Watt & Fabricius Method. The original
@@ -626,7 +636,7 @@ norm_track_wattfab <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -664,6 +674,9 @@ norm_track_wattfab <- function(
 
 #' Bark Difference Track Normalization
 #' @inheritParams norm_track_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
+#'
 #' @details
 #' This is a within-token normalization technique. First all formants are
 #' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
@@ -703,7 +716,7 @@ norm_track_barkz <- function(
     .return_dct = FALSE,
     .drop_orig = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
