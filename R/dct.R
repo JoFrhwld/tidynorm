@@ -296,7 +296,7 @@ reframe_with_dct <- function(
   check_grouping(.data, {{ .by }})
 
 
-  if (quo_is_null(enquo(.time_col))) {
+  if (quo_is_null(enquo(.time_col)) & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_inform(
       c(
@@ -434,7 +434,7 @@ reframe_with_idct <- function(
   # make sure groupings are ok
   check_grouping(.data, {{ .by }})
 
-  if (quo_is_null(cols$.param_col)) {
+  if (quo_is_null(cols$.param_col) & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_inform(
       c(

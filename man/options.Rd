@@ -26,6 +26,12 @@ Suppress normalization information messages when running a norm_*() function.\it
 \item{envvar: }{R_TIDYNORM_TIDYNORM_SILENT (evaluated if possible, raw string otherwise)}
 }}
 
+\item{tidynorm.warnings}{\describe{
+Print warnings from tidynorm functions.\item{default: }{\preformatted{TRUE}}
+\item{option: }{tidynorm.warnings}
+\item{envvar: }{R_TIDYNORM_TIDYNORM_WARNINGS (evaluated if possible, raw string otherwise)}
+}}
+
 }
 }
 

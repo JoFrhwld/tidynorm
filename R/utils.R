@@ -46,7 +46,7 @@ check_grouping <- function(
     )
   }
 
-  if (length(grouped_by) < 1 & length(grouping) < 1) {
+  if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(
       c(

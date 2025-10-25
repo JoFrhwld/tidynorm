@@ -13,3 +13,10 @@ options::define_option(
   desc = "Suppress normalization information messages when running a norm_*() function.",
   option_name = "tidynorm.silent"
 )
+
+options::define_option(
+  option = "tidynorm.warnings",
+  default = TRUE,
+  desc = "Print warnings from tidynorm functions.",
+  option_name = "tidynorm.warnings"
+)
