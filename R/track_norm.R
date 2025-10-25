@@ -340,7 +340,7 @@ norm_track_generic <- function(
     norm_info
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed_track, .silent)
 
   return(normed_track)
 }
@@ -418,7 +418,7 @@ norm_track_lobanov <- function(
     )
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed, .silent)
 
   return(normed)
 }
@@ -501,7 +501,7 @@ norm_track_nearey <- function(
     )
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed, .silent)
 
   return(normed)
 }
@@ -577,7 +577,7 @@ norm_track_deltaF <- function(
     )
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed, .silent)
 
   return(normed)
 }
@@ -657,7 +657,7 @@ norm_track_wattfab <- function(
     )
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed, .silent)
 
   return(normed)
 }
@@ -751,7 +751,7 @@ norm_track_barkz <- function(
     )
   )
 
-  wrap_up(.data, .silent)
+  wrap_up(normed, .silent)
 
   return(normed)
 }
