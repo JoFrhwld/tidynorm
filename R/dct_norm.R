@@ -3,6 +3,8 @@
 #' @inheritParams norm_track_generic
 #' @param .data A data frame of formant DCT coefficients
 #' @param .param_col A column identifying the DCT parameter number.
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #' @details
 #'
 #' The following `norm_dct_*` procedures were built on top of
@@ -80,7 +82,7 @@ norm_dct_generic <- function(
     .by_formant = FALSE,
     .by_token = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent = opt("tidynorm.silent"),
     .drop_orig = FALSE,
     .call = caller_env()) {
   if (env_name(.call) == "global") {
@@ -301,6 +303,8 @@ norm_dct_generic <- function(
 #'
 #' @inheritParams norm_dct_generic
 #' @inheritParams norm_track_lobanov
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #'
@@ -337,7 +341,7 @@ norm_dct_lobanov <- function(
     .by = NULL,
     .param_col = NULL,
     .names = "{.formant}_z",
-    .silent = FALSE,
+    .silent = opt("tidynorm.silent"),
     .drop_orig = FALSE) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
@@ -375,6 +379,8 @@ norm_dct_lobanov <- function(
 #'
 #' @inheritParams norm_track_generic
 #' @inheritParams norm_dct_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #'
@@ -422,7 +428,7 @@ norm_dct_nearey <- function(
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -460,6 +466,8 @@ norm_dct_nearey <- function(
 #'
 #' @inheritParams norm_track_generic
 #' @inheritParams norm_dct_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #'
 #' @details
@@ -494,7 +502,7 @@ norm_dct_deltaF <- function(
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -529,6 +537,8 @@ norm_dct_deltaF <- function(
 #'
 #' @inheritParams norm_track_generic
 #' @inheritParams norm_dct_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' This is a modified version of the Watt & Fabricius Method. The original
@@ -567,7 +577,7 @@ norm_dct_wattfab <- function(
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -602,6 +612,8 @@ norm_dct_wattfab <- function(
 #' Bark Difference DCT Normalization
 #' @inheritParams norm_track_generic
 #' @inheritParams norm_dct_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #' @details
 #'
 #' **Important**: This function assumes that the DCT
@@ -644,7 +656,7 @@ norm_dct_barkz <- function(
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
