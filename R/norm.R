@@ -261,9 +261,7 @@ norm_generic <- function(
     norm_info
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -336,9 +334,7 @@ norm_lobanov <- function(
     list(.norm_procedure = "tidynorm::norm_lobanov")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -414,9 +410,7 @@ norm_nearey <- function(
     list(.norm_procedure = "tidynorm::norm_nearey")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -485,9 +479,7 @@ norm_deltaF <- function(
     list(.norm_procedure = "tidynorm::norm_deltaF")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -561,9 +553,7 @@ norm_wattfab <- function(
     list(.norm_procedure = "tidynorm::norm_wattfab")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -644,9 +634,7 @@ norm_barkz <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }

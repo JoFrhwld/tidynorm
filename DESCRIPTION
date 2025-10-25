@@ -25,6 +25,7 @@ Imports:
     cli,
     dplyr,
     glue,
+    options,
     purrr,
     Rcpp,
     rlang,

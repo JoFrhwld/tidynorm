@@ -202,7 +202,9 @@ update_norm_info <- function(
   .data
 }
 
-wrap_up <- function(.data) {
+wrap_up <- function(.data, .silent = FALSE) {
+  if(.silent) return
+
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(

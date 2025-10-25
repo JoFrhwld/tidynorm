@@ -292,11 +292,7 @@ norm_dct_generic <- function(
     norm_info
   )
 
-  if (!.silent) {
-    wrap_up(
-      normed
-    )
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
@@ -368,9 +364,7 @@ norm_dct_lobanov <- function(
     list(.norm_procedure = "tidynorm::norm_dct_lobanov")
   )
 
-  if (!.silent) {
-    wrap_up(normed)
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
@@ -456,9 +450,7 @@ norm_dct_nearey <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(normed)
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
@@ -528,9 +520,7 @@ norm_dct_deltaF <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(normed)
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
@@ -604,9 +594,7 @@ norm_dct_wattfab <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(normed)
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
@@ -698,9 +686,7 @@ norm_dct_barkz <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(normed)
-  }
+  wrap_up(.data, .silent)
 
   return(normed)
 }
