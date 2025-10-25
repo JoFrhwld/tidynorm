@@ -204,6 +204,9 @@ update_norm_info <- function(
 
 wrap_up <- function(.data, .silent = FALSE) {
 
+  if(.silent) return()
+
+
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
@@ -226,8 +229,6 @@ wrap_up <- function(.data, .silent = FALSE) {
       )
     }
   }
-
-  if(.silent) return
 
   cli_par()
   cli_inform(
