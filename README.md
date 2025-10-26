@@ -2,13 +2,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="138" alt="tidynorm website" /></a>
+# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" alt="tidynorm website" align="right" height="138"/></a>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
+status](https://www.r-pkg.org/badges/version/tidynorm.png)](https://CRAN.R-project.org/package=tidynorm)
+
 <!-- badges: end -->
 
 The goal of `{tidynorm}` is to provide convenient and tidy functions to
@@ -103,7 +104,8 @@ ggplot(
 </details>
 
 <img src="man/figures/README-unnorm-1.png" style="width:80.0%"
-data-fig-align="center" />
+data-fig-align="center"
+data-fig-alt="A two dimensional density plot of speakers s01 and s02&#39;s vowel formant data. They are both roughly triangular, but s02&#39;s vowel space is smaller, and shifted up and back relative to  s01&#39;s. " />
 
 The goal of `{tidynorm}` is to provide tidyverse-friendly and familiar
 functions that will allow you to quickly normalize vowel formant data.
@@ -156,7 +158,8 @@ speaker_normalized |>
 </details>
 
 <img src="man/figures/README-norm-1.png" style="width:60.0%"
-data-fig-align="center" />
+data-fig-align="center"
+data-fig-alt="A two dimensional density plot of speakers s01 and s02&#39;s vowel formant data. They are both roughly triangular, and highly overlapping. " />
 
 There is also a `tidynorm::norm_generic()` function to allow you to
 define your own bespoke normalization methods. For example, a “robust
@@ -211,4 +214,5 @@ speaker_rnearey |>
 </details>
 
 <img src="man/figures/README-rnorm-1.png" style="width:60.0%"
-data-fig-align="center" />
+data-fig-align="center"
+data-fig-alt="A two dimensional density plot of speakers s01 and s02&#39;s vowel formant data. They are both roughly triangular, and highly overlapping. " />

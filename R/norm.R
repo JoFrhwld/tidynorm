@@ -24,8 +24,10 @@
 #' @param .names A [glue::glue()] expression for naming the normalized
 #' data columns. The `"{.formant}"` portion corresponds to the name of the original
 #' formant columns.
-#' @param .silent Whether or not the informational message should be printed.
 #' @param .call Used for internal purposes.
+#'
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#'
 #'
 #' @details
 #' The following `norm_*` procedures are built on top of `norm_generic()`.
@@ -72,6 +74,8 @@
 #' A data frame of normalized formant values
 #'
 #' @example inst/examples/ex-norm_generic.R
+#' @importFrom options opt
+#'
 #' @export
 norm_generic <- function(
     .data,
@@ -86,7 +90,7 @@ norm_generic <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent = opt("tidynorm.silent"),
     .call = caller_env()) {
   if (env_name(.call) == "global") {
     .call <- current_env()
@@ -261,9 +265,7 @@ norm_generic <- function(
     norm_info
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -272,6 +274,7 @@ norm_generic <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
 #'
 #' @details
 #'
@@ -300,6 +303,7 @@ norm_generic <- function(
 #' Journal of the Acoustical Society of America, 49, 606–608.
 #'
 #' @example inst/examples/ex-norm_lobanov.R
+#' @importFrom options opt
 #' @export
 norm_lobanov <- function(
     .data,
@@ -309,7 +313,7 @@ norm_lobanov <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -336,15 +340,15 @@ norm_lobanov <- function(
     list(.norm_procedure = "tidynorm::norm_lobanov")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
 
 #' Nearey Normalize
 #' @inheritParams norm_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #' @importFrom rlang `!!`
 #'
 #' @details
@@ -387,7 +391,7 @@ norm_nearey <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -414,9 +418,7 @@ norm_nearey <- function(
     list(.norm_procedure = "tidynorm::norm_nearey")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -425,6 +427,8 @@ norm_nearey <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' \deqn{
@@ -458,7 +462,7 @@ norm_deltaF <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -485,9 +489,7 @@ norm_deltaF <- function(
     list(.norm_procedure = "tidynorm::norm_deltaF")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -495,6 +497,8 @@ norm_deltaF <- function(
 #' Watt & Fabricius Normalize
 #' @inheritParams norm_generic
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' This is a modified version of the Watt & Fabricius Method. The original
@@ -534,7 +538,7 @@ norm_wattfab <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -561,9 +565,7 @@ norm_wattfab <- function(
     list(.norm_procedure = "tidynorm::norm_wattfab")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -571,6 +573,9 @@ norm_wattfab <- function(
 #' Bark Difference Normalize
 #'
 #' @inheritParams norm_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
+#'
 #' @details
 #' This is a within-token normalization technique. First all formants are
 #' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
@@ -601,7 +606,7 @@ norm_barkz <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -644,9 +649,7 @@ norm_barkz <- function(
     )
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }

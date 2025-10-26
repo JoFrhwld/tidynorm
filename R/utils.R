@@ -46,7 +46,7 @@ check_grouping <- function(
     )
   }
 
-  if (length(grouped_by) < 1 & length(grouping) < 1) {
+  if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(
       c(
@@ -202,11 +202,15 @@ update_norm_info <- function(
   .data
 }
 
-wrap_up <- function(.data) {
+wrap_up <- function(.data, .silent = FALSE) {
+
+  if(.silent) return()
+
+
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
-      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+      "Not normalized with a {.pkg tidynorm} procedure."
     )
     return()
     cli_end()

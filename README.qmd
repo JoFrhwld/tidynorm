@@ -13,12 +13,12 @@ knitr:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" align="right" height="138" alt="tidynorm website" /></a>
+# tidynorm <a href="https://jofrhwld.github.io/tidynorm/"><img src="man/figures/logo.png" alt="tidynorm website" align="right" height="138"/></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
-[![CRAN status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
+[![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml) [![CRAN status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
+
 <!-- badges: end -->
 
 The goal of `{tidynorm}` is to provide convenient and tidy functions to normalize vowel formant data.
@@ -92,6 +92,11 @@ theme_set(
 #| code-fold: true
 #| code-summary: Plotting Code
 #| label: unnorm
+#| fig-alt: |
+#|   A two dimensional density plot of speakers s01 and s02's vowel
+#|   formant data. They are both roughly triangular, but s02's
+#|   vowel space is smaller, and shifted up and back relative to 
+#|   s01's.
 #| fig-align: center
 #| out-width: 80%
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -134,6 +139,10 @@ speaker_normalized
 #| code-fold: true
 #| code-summary: Plotting Code
 #| label: norm
+#| fig-alt: |
+#|   A two dimensional density plot of speakers s01 and s02's vowel
+#|   formant data. They are both roughly triangular, and highly
+#|   overlapping.
 #| fig-align: center
 #| out-width: 60%
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -178,6 +187,10 @@ speaker_rnearey <- speaker_data |>
 #| code-fold: true
 #| code-summary: Plotting Code
 #| label: rnorm
+#| fig-alt: |
+#|   A two dimensional density plot of speakers s01 and s02's vowel
+#|   formant data. They are both roughly triangular, and highly
+#|   overlapping.
 #| fig-align: center
 #| out-width: 60%
 #| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
@@ -202,3 +215,4 @@ speaker_rnearey |>
     title = "Robust Nearey Normalized"
   )
 ```
+
