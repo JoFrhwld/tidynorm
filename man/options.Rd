@@ -4,7 +4,7 @@
 \alias{options}
 \title{tidynorm Options}
 \description{
-Internally used, package-specific options. All options will prioritize R options() values, and fall back to environment variables if undefined. If neither the option nor the environment variable is set, a default value is used.
+Options to control the verbosity of tidynorm functions. The convenience function \code{\link[=tidynorm_options]{tidynorm_options()}} will set these options within your current session. For a common behavior across R sessions, set the environment variables as described below. If you've silenced informational messages and want to double check what normalization steps have been taken, use \code{\link[=check_norm]{check_norm()}}.
 }
 \section{Checking Option Values}{
 
@@ -21,7 +21,7 @@ options::opt(x, default, env = "tidynorm")
 
 \describe{
 \item{tidynorm.silent}{\describe{
-Suppress normalization information messages when running a norm_*() function.\item{default: }{\preformatted{FALSE}}
+Suppress normalization information messages when running a \verb{norm_*()} function.\item{default: }{\preformatted{FALSE}}
 \item{option: }{tidynorm.silent}
 \item{envvar: }{R_TIDYNORM_TIDYNORM_SILENT (evaluated if possible, raw string otherwise)}
 }}

@@ -67,7 +67,7 @@ should be returned.}
 data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
-\item{.silent}{Suppress normalization information messages when running a norm_*() function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
+\item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 
 \item{.call}{Used for internal purposes.}
 }

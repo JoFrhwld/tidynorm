@@ -10,7 +10,7 @@ tidynorm_options(
 )
 }
 \arguments{
-\item{.silent}{Suppress normalization information messages when running a norm_*() function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
+\item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 
 \item{.warnings}{Print warnings from tidynorm functions. (Defaults to \code{TRUE}, overwritable using option 'tidynorm.warnings' or environment variable 'R_TIDYNORM_TIDYNORM_WARNINGS')}
 }
@@ -21,15 +21,16 @@ Set tidynorm verbosity
 tidynorm_options(.silent = TRUE, .warnings = FALSE)
 
 speaker_data |>
-  norm_generic(
-    F1:F3
-  )
+  norm_generic(F1:F3) ->
+  norm1
 
 tidynorm_options(.silent = FALSE, .warnings = TRUE)
 
 speaker_data |>
-  norm_generic(
-    F1:F3
-  )
+  norm_generic(F1:F3) ->
+  norm2
 
+}
+\seealso{
+\link{options}
 }
