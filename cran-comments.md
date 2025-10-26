@@ -1,5 +1,5 @@
-## v0.3.1
+## v0.4.0
 
-Addresses warnings caused by RcppArmadillo update
+This update contains some bug fixes, as well as new options setting.
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
