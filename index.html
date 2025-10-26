@@ -88,6 +88,7 @@
 </div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p>The goal of <a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a> is to provide convenient and tidy functions to normalize vowel formant data.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -111,7 +112,7 @@
 <details class="code-fold"><summary>
 Plotting Options
 </summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/options.html">options</a></span><span class="op">(</span></span>
 <span>  ggplot2.discrete.colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span>      <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,</span>
@@ -159,7 +160,7 @@ Plotting Code
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"unnormalized"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><p><img src="reference/figures/README-unnorm-1.png" style="width:80.0%" data-fig-align="center"></p>
+</details><p><img src="reference/figures/README-unnorm-1.png" style="width:80.0%" data-fig-align="center" data-fig-alt="A two dimensional density plot of speakers s01 and s02's vowel formant data. They are both roughly triangular, but s02's vowel space is smaller, and shifted up and back relative to  s01's. "></p>
 <p>The goal of <a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a> is to provide tidyverse-friendly and familiar functions that will allow you to quickly normalize vowel formant data. There are a number of built in functions based on conventional normalization methods.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
@@ -198,7 +199,7 @@ Plotting Code
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Nearey Normalized"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><p><img src="reference/figures/README-norm-1.png" style="width:60.0%" data-fig-align="center"></p>
+</details><p><img src="reference/figures/README-norm-1.png" style="width:60.0%" data-fig-align="center" data-fig-alt="A two dimensional density plot of speakers s01 and s02's vowel formant data. They are both roughly triangular, and highly overlapping. "></p>
 <p>There is also a <code><a href="reference/norm_generic.html">tidynorm::norm_generic()</a></code> function to allow you to define your own bespoke normalization methods. For example, a “robust Nearey” normalization method using the median, instead of the mean, could be done like so.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">speaker_rnearey</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span>
@@ -239,7 +240,7 @@ Plotting Code
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Robust Nearey Normalized"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><p><img src="reference/figures/README-rnorm-1.png" style="width:60.0%" data-fig-align="center"></p>
+</details><p><img src="reference/figures/README-rnorm-1.png" style="width:60.0%" data-fig-align="center" data-fig-alt="A two dimensional density plot of speakers s01 and s02's vowel formant data. They are both roughly triangular, and highly overlapping. "></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -278,7 +279,7 @@ Plotting Code
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://CRAN.R-project.org/package=tidynorm" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidynorm" alt="CRAN status"></a></li>
+<li><a href="https://CRAN.R-project.org/package=tidynorm" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidynorm.png" alt="CRAN status"></a></li>
 </ul>
 </div>
 

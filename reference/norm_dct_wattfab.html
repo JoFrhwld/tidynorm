@@ -64,7 +64,7 @@
 <span>  .param_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .drop_orig <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .names <span class="op">=</span> <span class="st">"{.formant}_wf"</span>,</span>
-<span>  .silent <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  .silent <span class="op">=</span> <span class="fu">opt</span><span class="op">(</span><span class="st">"tidynorm.silent"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,7 +107,7 @@ formant columns.</p></dd>
 
 
 <dt id="arg--silent">.silent<a class="anchor" aria-label="anchor" href="#arg--silent"></a></dt>
-<dd><p>Whether or not the informational message should be printed.</p></dd>
+<dd><p>Suppress normalization information messages when running a <code>norm_*()</code> function. (Defaults to <code>FALSE</code>, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')</p></dd>
 
 </dl></div>
     <div class="section level2">
