@@ -1,7 +1,7 @@
 Type: Package
 Package: tidynorm
 Title: Tools for Tidy Vowel Normalization
-Version: 0.4.0
+Version: 0.4.0.9000
 Authors@R: c(
     person("Josef", "Fruehwald", , "JoFrhwld@gmail.com", role = c("cre", "aut", "cph"))
   )
