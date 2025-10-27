@@ -13,7 +13,7 @@ test_that(
         .by = speaker,
         .L = mean(.formant, na.rm = T),
         .pre_trans = log,
-        .post_trans = identity,
+        .post_trans = \(x) exp(x + 6),
         .silent = T
       ) ->
     data
