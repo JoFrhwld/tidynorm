@@ -1,5 +1,6 @@
 #' Identify Outliers
 #' @inheritParams norm_generic
+#' @param level Probability level above which tokens are labelled as outliers.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
 #' @export
 identify_outliers <- function(
@@ -102,7 +103,7 @@ identify_outliers <- function(
   }
 
   .data |>
-    pivot_longer(
+    tidyr::pivot_longer(
       any_of(names(target_pos))
     ) |>
     mutate(
@@ -117,13 +118,13 @@ identify_outliers <- function(
       by = c(names(group_pos), grouped_by)
     ) |>
     dplyr::mutate(
-      mahal = pmap(
+      mahal = purrr::pmap(
         list(
           !!sym("data"),
           !!sym("mus"),
           !!sym("Sigma")
         ),
-        \(x, m, s) mahalanobis(x, m, s)
+        \(x, m, s) stats::mahalanobis(x, m, s)
       )
     ) |>
     select(
@@ -132,9 +133,9 @@ identify_outliers <- function(
       !!sym(".id"),
       !!sym("mahal")
     ) |>
-    unnest(!!sym("mahal")) |>
+    tidyr::unnest(!!sym("mahal")) |>
     mutate(
-      prob = pchisq(
+      prob = stats::pchisq(
         !!sym("mahal"),
         df = length(target_pos)
       )
