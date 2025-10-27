@@ -32,11 +32,10 @@ test_that(
       valid_infos
     )
 
-    # expect_in(
-    #   expected_infos,
-    #   names(last_norm)
-    # )
-
+    expect_in(
+      expected_infos,
+      names(last_norm)
+    )
 
   }
 )
