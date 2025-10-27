@@ -231,6 +231,7 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 <span><span class="co">#&gt; • normalized values in `F1_lm`, `F2_lm`, and `F3_lm`</span></span>
 <span><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span><span class="co">#&gt; • within formant: FALSE</span></span>
+<span><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
 <span><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 </div>
 </section><section class="level4"><h4 id="on-tracks-1">On tracks<a class="anchor" aria-label="anchor" href="#on-tracks-1"></a>
@@ -252,6 +253,7 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 <span><span class="co">#&gt; • time column: `t`</span></span>
 <span><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span><span class="co">#&gt; • within formant: FALSE</span></span>
+<span><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
 <span><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1/sqrt(2))</span></span></code></pre></div>
 </div>
 </section><section class="level4"><h4 id="on-dct-coefficients-1">On DCT Coefficients<a class="anchor" aria-label="anchor" href="#on-dct-coefficients-1"></a>
@@ -485,6 +487,7 @@ L_j = \text{bark}(F_{3j})
 <span><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span><span class="co">#&gt; • within formant: FALSE</span></span>
 <span><span class="co">#&gt; • within token: TRUE</span></span>
+<span><span class="co">#&gt; • Transformation prior to normalization: hz_to_bark</span></span>
 <span><span class="co">#&gt; • (.formant - .formant[3])/(1)</span></span></code></pre></div>
 </div>
 </section><section class="level4"><h4 id="on-tracks-4">On tracks<a class="anchor" aria-label="anchor" href="#on-tracks-4"></a>
@@ -508,6 +511,7 @@ L_j = \text{bark}(F_{3j})
 <span><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span><span class="co">#&gt; • within formant: FALSE</span></span>
 <span><span class="co">#&gt; • within token: TRUE</span></span>
+<span><span class="co">#&gt; • Transformation prior to normalization: hz_to_bark</span></span>
 <span><span class="co">#&gt; • (.formant - .formant[3])/(1/sqrt(2))</span></span></code></pre></div>
 </div>
 </section><section class="level4"><h4 id="on-dct-coefficients-4">On DCT Coefficients<a class="anchor" aria-label="anchor" href="#on-dct-coefficients-4"></a>
