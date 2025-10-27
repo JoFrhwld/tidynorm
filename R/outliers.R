@@ -1,3 +1,6 @@
+safe_mahal <- purrr::safely(stats::mahalanobis, otherwise = NA)
+
+
 #' Identify Outliers
 #' @inheritParams norm_generic
 #' @param level Probability level above which tokens are labelled as outliers.
@@ -7,7 +10,7 @@ identify_outliers <- function(
     .data,
     ...,
     .by = NULL,
-    .pre_trans = \(x)x,
+    .pre_trans = identity,
     .level = 0.99,
     .call = caller_env(),
     .silent = opt("tidynorm.silent")
@@ -124,7 +127,7 @@ identify_outliers <- function(
           !!sym("mus"),
           !!sym("Sigma")
         ),
-        \(x, m, s) stats::mahalanobis(x, m, s)
+        \(x, m, s) safe_mahal(x, m, s)$result
       )
     ) |>
     select(
