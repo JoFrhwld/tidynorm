@@ -2,7 +2,7 @@
 READMECHANGE=$(git diff --name-only README.qmd | wc -l )
 if [ $READMECHANGE -gt 0 ]; then
   quarto render README.qmd
-  sed -i -e 's/tidynorm.png\)/tidynorm\)/g'
+  sed -i '' -e 's/tidynorm\.png)/tidynorm)/g' REDAME.md
   git add README.md
   git add man/figures/README-*
 fi
