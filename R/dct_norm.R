@@ -272,6 +272,7 @@ norm_dct_generic <- function(
   attr(normed, "norminfo") <- prev_attr
   attr(normed, "normalized") <- TRUE
   norm_info <- list(
+    .op = "Normalized",
     .norm_procedure = "tidynorm::norm_dct_generic",
     .by_col = .by_formant,
     .targets = names(target_pos),

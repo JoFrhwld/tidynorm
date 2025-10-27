@@ -315,6 +315,7 @@ norm_track_generic <- function(
   attr(normed_track, "norminfo") <- prev_attr
 
   norm_info <- list(
+    .op = "Normalized",
     .norm_procedure = "tidynorm::norm_track_generic",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
