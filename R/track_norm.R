@@ -158,7 +158,8 @@ norm_track_generic <- function(
     )
   }
 
-  check_grouping(.data, {{ .by }}, .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   by_pos <- tidyselect::eval_select(enquo(.by), .data)
 

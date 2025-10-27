@@ -109,7 +109,8 @@ norm_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-  check_grouping(.data, {{ .by }}, call = .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(

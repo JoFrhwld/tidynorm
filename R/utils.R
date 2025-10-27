@@ -26,7 +26,13 @@ number_names <- c(
   fifth = 5
 )
 
-check_grouping <- function(
+#' check grouping
+#' @description
+#'  Check for any incompatible .by definition with a grouped
+#' data frame.
+#' @keywords internal
+#' @noRd
+check_by_grouping <- function(
     .data,
     .by,
     call = caller_env()) {
@@ -45,7 +51,22 @@ check_grouping <- function(
       call = call
     )
   }
+}
 
+#' check any grouping
+#' @description
+#'  Check that there's any grouping
+#' @keywords internal
+#' @noRd
+check_any_grouping <- function(
+    .data,
+    .by,
+    call = caller_env()) {
+  grouped_by <- dplyr::group_vars(.data)
+  grouping <- try_fetch(
+    tidyselect::eval_select(enquo(.by), .data),
+    error = \(cnd) selection_errors(cnd, arg = ".by", call = call)
+  )
   if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(

@@ -16,20 +16,21 @@ identify_outliers <- function(
     .call <- current_env()
   }
 
+  # preserve any previous normalization info
   prev_attr <- attributes(.data)$norminfo
 
+  # check if any arguments should have been dotted
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls, .call)
 
+  # capture target columns
   targets <- expr(c(...))
 
-  cols <- enquos(
-    .by = .by
-  )
-
-
-  check_grouping(.data, {{ .by }}, call = .call)
+  # check if there was inappropriate grouping,
+  # or a missing grouping
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(

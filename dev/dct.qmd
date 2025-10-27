@@ -34,11 +34,11 @@ r_coefs <- dct(y)
 
 ```{r}
 basis <- dct_basis(100, 5)
-matplot(basis, type = 'l', lty = 1)
+matplot(basis, type = "l", lty = 1)
 ```
 
 ```{r}
-x <- dct(cbind(y,y))
+x <- dct(cbind(y, y))
 
 colnames(x) <- colnames(x)
 
@@ -46,16 +46,53 @@ dimnames(x)
 ```
 
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   reframe_with_dct_smooth(
     F1:F3,
     .by = speaker,
-    .token_id_col = id, 
+    .token_id_col = id,
     .time_col = t,
     .rate = TRUE
-  ) |> 
+  ) |>
   filter(
     speaker == "s01",
     id == 0
-  ) 
+  )
+```
+
+```{r}
+speaker_tracks |>
+  norm_track_generic(
+    F1:F3,
+    .token_id_col = id,
+    .L = 0,
+    .S = 1 / sqrt(2),
+    .by = speaker,
+    .by_formant = T
+  ) |>
+  ggplot(
+    aes(-F2, -F1)
+  ) +
+  geom_point()
+```
+
+```{r}
+speaker_tracks |>
+  summarise(
+    across(
+      F1:F3, mean
+    ),
+    .by = c(speaker, id)
+  ) |>
+  summarise(
+    across(
+      F1:F3,
+      list(mean = mean, sd = sd)
+    ),
+    .by = speaker
+  )
+```
+
+```{r}
+(775.3252 - 664.4059) / 142.4775
 ```

@@ -130,7 +130,8 @@ norm_dct_generic <- function(
     )
   }
 
-  check_grouping(.data, {{ .by }}, .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   grouping_list <- make_dct_grouping(
     .data,
