@@ -15,7 +15,7 @@ norm_dct_generic(
   .by_formant = FALSE,
   .by_token = FALSE,
   .names = "{.formant}_n",
-  .silent = FALSE,
+  .silent = opt("tidynorm.silent"),
   .drop_orig = FALSE,
   .call = caller_env()
 )
@@ -51,7 +51,7 @@ intrinsic}
 data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
-\item{.silent}{Whether or not the informational message should be printed.}
+\item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 
 \item{.drop_orig}{Should the originally targeted columns be dropped.}
 

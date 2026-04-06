@@ -2,6 +2,7 @@ norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
   .targets = "normalized {.var { .targets}}",
+  .f3  = "{.var { .f3}} used for third formant.",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
   .time_col = "time column: {.var { .time_col}}",
@@ -9,9 +10,23 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
-  .norm = "{ .norm}"
+  .pre_trans = "Transformation prior to normalization: { .pre_trans}",
+  .norm = "{ .norm}",
+  .post_trans = "Transformation after normalization: { .post_trans}"
 )
 
+number_names <- c(
+  one = 1,
+  two = 2,
+  three = 3,
+  four = 4,
+  five = 5,
+  first = 1,
+  second = 2,
+  third = 3,
+  fourth = 4,
+  fifth = 5
+)
 
 check_grouping <- function(
     .data,
@@ -33,7 +48,7 @@ check_grouping <- function(
     )
   }
 
-  if (length(grouped_by) < 1 & length(grouping) < 1) {
+  if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(
       c(
@@ -160,6 +175,23 @@ append_norm_info <- function(
     .data,
     info) {
   prev_attr <- attributes(.data)$norminfo
+
+  if (length(info$.post_trans) > 1) {
+    info$.post_trans <- info$.post_trans[3]
+  }
+
+  if (length(info$.pre_trans) > 1){
+    info$.pre_trans <- info$.pre_trans[3]
+  }
+
+  if ("identity" %in% info$.post_trans) {
+    info$.post_trans <- NULL
+  }
+
+  if ("identity" %in% info$.pre_trans) {
+    info$.pre_trans <- NULL
+  }
+
   attr(.data, "norminfo") <- c(
     prev_attr,
     list(
@@ -189,11 +221,15 @@ update_norm_info <- function(
   .data
 }
 
-wrap_up <- function(.data) {
+wrap_up <- function(.data, .silent = FALSE) {
+
+  if(.silent) return()
+
+
   if (is.null(attr(.data, "norminfo"))) {
     cli_par()
     cli_inform(
-      "x" = "Not normalized with a {.pkg tidynorm} procedure."
+      "Not normalized with a {.pkg tidynorm} procedure."
     )
     return()
     cli_end()
@@ -271,4 +307,53 @@ check_norm <- function(.data) {
     cli_inform(message, .envir = step)
     cli_end()
   }
+}
+
+#' Convert text-based formant names to
+#' numeric
+#' @noRd
+name_to_formant_num <- function(.formant_name, call = caller_env()) {
+  checkmate::check_character(.formant_name, any.missing = FALSE, min.len = 1)
+
+  has_digit <- stringr::str_detect(
+     .formant_name, r"{[fF][1-5]}"
+     ) |>
+       all()
+
+  if (has_digit) {
+    nums = stringr::str_extract(
+      .formant_name,
+      r"{[fF]([1-5])}",
+      group = 1
+    ) |>
+      as.numeric()
+    return(nums)
+  }
+
+  has_name <- stringr::str_detect(
+    .formant_name,
+    stringr::regex(
+      stringr::str_flatten(names(number_names), collapse = "|"),
+      ignore_case = TRUE
+    )
+  ) |>
+    all()
+
+  if (has_name) {
+    digit_name <- stringr::str_extract(
+      .formant_name,
+      stringr::regex(
+        stringr::str_flatten(names(number_names), collapse = "|"),
+        ignore_case = TRUE
+      )
+    ) |>
+      tolower()
+    nums = number_names[digit_name] |>
+      unname()
+
+    return(nums)
+  }
+
+  as.numeric(as.factor(.formant_name))
+
 }
