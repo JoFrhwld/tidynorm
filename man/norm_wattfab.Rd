@@ -12,7 +12,7 @@ norm_wattfab(
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_wf",
-  .silent = FALSE
+  .silent = opt("tidynorm.silent")
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ columns to group by. Typically a column of speaker IDs.}
 data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
-\item{.silent}{Whether or not the informational message should be printed.}
+\item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 }
 \value{
 A data fame of Watt & Fabricius normalized formant values.

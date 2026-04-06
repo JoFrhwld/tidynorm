@@ -24,8 +24,10 @@
 #' @param .names A [glue::glue()] expression for naming the normalized
 #' data columns. The `"{.formant}"` portion corresponds to the name of the original
 #' formant columns.
-#' @param .silent Whether or not the informational message should be printed.
 #' @param .call Used for internal purposes.
+#'
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#'
 #'
 #' @details
 #' The following `norm_*` procedures are built on top of `norm_generic()`.
@@ -72,6 +74,8 @@
 #' A data frame of normalized formant values
 #'
 #' @example inst/examples/ex-norm_generic.R
+#' @importFrom options opt
+#'
 #' @export
 norm_generic <- function(
     .data,
@@ -81,12 +85,12 @@ norm_generic <- function(
     .by_token = FALSE,
     .L = 0,
     .S = 1,
-    .pre_trans = \(x)x,
-    .post_trans = \(x)x,
+    .pre_trans = identity,
+    .post_trans = identity,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_n",
-    .silent = FALSE,
+    .silent = opt("tidynorm.silent"),
     .call = caller_env()) {
   if (env_name(.call) == "global") {
     .call <- current_env()
@@ -133,17 +137,16 @@ norm_generic <- function(
   # longwise
   .data <- tidyr::pivot_longer(
     .data,
-    !!targets,
+    any_of(names(target_pos)),
     names_to = ".formant_name",
-    values_to = ".formant"
+    values_to = ".formant_orig"
   ) |>
     dplyr::mutate(
-      .formant_num = stringr::str_extract(
-        !!sym(".formant_name"),
-        r"{[fF](\d)}",
-        group = 1
-      ) |> as.numeric(),
-      .formant = .pre_trans(!!sym(".formant"))
+      .formant_num = name_to_formant_num(!!sym(".formant_name")),
+      .formant = .pre_trans(!!sym(".formant_orig"))
+    ) |>
+    arrange(
+      !!sym(".formant_num")
     )
 
   # see if the data is grouped
@@ -179,9 +182,11 @@ norm_generic <- function(
     .by = !!norm_grouping,
     .L = {{ .L }},
     .S = {{ .S }},
-    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S),
-    .formant = .post_trans(!!sym(".formant"))
-  )
+    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
+  ) |>
+    mutate(
+      .formant = !!sym(".formant_orig")
+    )
 
   # set up value columns for pivoting
   # back wide
@@ -193,7 +198,8 @@ norm_generic <- function(
   }
   .data <- dplyr::select(
     .data,
-    -!!sym(".formant_num")
+    -!!sym(".formant_num"),
+    -!!sym(".formant_orig")
   )
 
   # pivot_back wide
@@ -209,15 +215,16 @@ norm_generic <- function(
 
   # move normalized columns adjacent to
   # original
-  .data <- dplyr::relocate(
-    .data,
-    c(
-      tidyselect::matches("_.formant"),
-      tidyselect::ends_with("_.L"),
-      tidyselect::ends_with("_.S")
-    ),
-    .before = target_pos[1]
-  )
+  .data <- .data |>
+    dplyr::select(-any_of(".id")) |>
+    dplyr::relocate(
+      c(
+        tidyselect::matches("_.formant"),
+        tidyselect::ends_with("_.L"),
+        tidyselect::ends_with("_.S")
+      ),
+      .before = min(target_pos)
+    )
 
   # remove _.col from names
   .data <- dplyr::rename_with(
@@ -235,12 +242,13 @@ norm_generic <- function(
   }
 
   norm_info <- list(
-    .by_col = .by_formant,
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
     .by = names(group_pos),
     .by_formant = .by_formant,
     .norm_procedure = "tidynorm::norm_generic",
+    .pre_trans = as.character(substitute(.pre_trans)),
+    .post_trans = as.character(substitute(.post_trans)),
     .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})")
   )
 
@@ -258,9 +266,7 @@ norm_generic <- function(
     norm_info
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -269,6 +275,7 @@ norm_generic <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
 #'
 #' @details
 #'
@@ -297,6 +304,7 @@ norm_generic <- function(
 #' Journal of the Acoustical Society of America, 49, 606–608.
 #'
 #' @example inst/examples/ex-norm_lobanov.R
+#' @importFrom options opt
 #' @export
 norm_lobanov <- function(
     .data,
@@ -306,7 +314,7 @@ norm_lobanov <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -317,8 +325,8 @@ norm_lobanov <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .pre_trans = \(x)x,
-    .post_trans = \(x)x,
+    .pre_trans = identity,
+    .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .by_formant = TRUE,
@@ -333,15 +341,15 @@ norm_lobanov <- function(
     list(.norm_procedure = "tidynorm::norm_lobanov")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
 
 #' Nearey Normalize
 #' @inheritParams norm_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #' @importFrom rlang `!!`
 #'
 #' @details
@@ -384,7 +392,7 @@ norm_nearey <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -396,7 +404,7 @@ norm_nearey <- function(
     !!targets,
     .by = {{ .by }},
     .pre_trans = log,
-    .post_trans = \(x)x,
+    .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = 1,
     .by_formant = .by_formant,
@@ -411,9 +419,7 @@ norm_nearey <- function(
     list(.norm_procedure = "tidynorm::norm_nearey")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -422,6 +428,8 @@ norm_nearey <- function(
 #' @inheritParams norm_generic
 #'
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' \deqn{
@@ -455,7 +463,7 @@ norm_deltaF <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -466,8 +474,8 @@ norm_deltaF <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .pre_trans = \(x)x,
-    .post_trans = \(x)x,
+    .pre_trans = identity,
+    .post_trans = identity,
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .by_formant = FALSE,
@@ -482,9 +490,7 @@ norm_deltaF <- function(
     list(.norm_procedure = "tidynorm::norm_deltaF")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -492,6 +498,8 @@ norm_deltaF <- function(
 #' Watt & Fabricius Normalize
 #' @inheritParams norm_generic
 #' @param .by_formant Ignored by this procedure
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
 #'
 #' @details
 #' This is a modified version of the Watt & Fabricius Method. The original
@@ -531,7 +539,7 @@ norm_wattfab <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -542,8 +550,8 @@ norm_wattfab <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .pre_trans = \(x)x,
-    .post_trans = \(x)x,
+    .pre_trans = identity,
+    .post_trans = identity,
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .by_formant = TRUE,
@@ -558,9 +566,7 @@ norm_wattfab <- function(
     list(.norm_procedure = "tidynorm::norm_wattfab")
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }
@@ -568,6 +574,9 @@ norm_wattfab <- function(
 #' Bark Difference Normalize
 #'
 #' @inheritParams norm_generic
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @importFrom options opt
+#'
 #' @details
 #' This is a within-token normalization technique. First all formants are
 #' converted to Bark (see [hz_to_bark]), then, within each token, F3 is
@@ -598,19 +607,31 @@ norm_barkz <- function(
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
-    .silent = FALSE) {
+    .silent = opt("tidynorm.silent")) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
 
   targets <- rlang::expr(c(...))
+  target_pos <- tidyselect::eval_select(targets, .data)
+  formant_nums <- name_to_formant_num(names(target_pos))
+
+  if (length(target_pos) < 3 ) {
+    cli_abort(
+      message = c(
+        "{.fn tidynorm::norm_barkz} requires F3."
+      )
+    )
+  }
+
+  f3 <- names(target_pos)[formant_nums == 3]
 
   .data <- norm_generic(
     .data,
     !!targets,
     .by = {{ .by }},
     .pre_trans = hz_to_bark,
-    .post_trans = \(x)x,
+    .post_trans = identity,
     .L = (!!sym(".formant"))[3],
     .S = 1,
     .by_formant = FALSE,
@@ -623,12 +644,13 @@ norm_barkz <- function(
 
   .data <- update_norm_info(
     .data,
-    list(.norm_procedure = "tidynorm::norm_barkz")
+    list(
+      .norm_procedure = "tidynorm::norm_barkz",
+      .f3 = f3
+    )
   )
 
-  if (!.silent) {
-    wrap_up(.data)
-  }
+  wrap_up(.data, .silent)
 
   return(.data)
 }

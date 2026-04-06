@@ -17,6 +17,7 @@ reference:
   - title: "Package Overview"
     contents:
       - tidynorm-package
+      - options
 
   - title: "Normalization Procedures"
     desc: >
@@ -39,16 +40,6 @@ reference:
       - norm_dct_generic
       - starts_with("norm_dct_")
 
-  # - title: "Normalization Functions"
-  #   desc: >
-  #     Functions used within normalization
-  #     procedures
-  #   contents:
-  #     - ends_with("_norm_fun")
-#
-  - title: "Info Functions"
-    contents:
-      - check_norm
 
   - title: DCT
   - subtitle: Basic DCT Functions
@@ -70,6 +61,12 @@ reference:
       - hz_to_mel
       - bark_to_hz
       - mel_to_hz
+
+  - title: "Utility Functions"
+    contents:
+      - check_norm
+      - tidynorm_options
+
 
   - title: "Data"
     contents:

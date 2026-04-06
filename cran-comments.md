@@ -1,18 +1,5 @@
-## Resubmission
+## v0.4.0
 
-This is a resubmission.
+This update contains some bug fixes, as well as new options setting.
 
-## R CMD check results
-
-0 errors | 0 warnings | 1 note
-
-* This is a new release.
-
-## Return tags
-
-The following exported S3 methods now have `@return` tags.
-
-- dct.numeric
-- dct.matrix
-- idct.numeric
-- idct.matrix
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔

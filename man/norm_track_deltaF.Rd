@@ -14,7 +14,7 @@ norm_track_deltaF(
   .return_dct = FALSE,
   .drop_orig = FALSE,
   .names = "{.formant}_df",
-  .silent = FALSE
+  .silent = opt("tidynorm.silent")
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ should be returned.}
 data columns. The \code{"{.formant}"} portion corresponds to the name of the original
 formant columns.}
 
-\item{.silent}{Whether or not the informational message should be printed.}
+\item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 }
 \value{
 A data frame of Delta F normalized formant tracks.
