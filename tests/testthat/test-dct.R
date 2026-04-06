@@ -4,6 +4,7 @@ y <- 5 + x + (2 * (x^2)) + (-2 * (x^4))
 
 test_that("dct coefs from package are equal to established library", {
   # Only run test if scipy is available
+  skip_on_cran()
   skip_if(!rlang::is_installed("reticulate"))
   reticulate::py_config()
   skip_if(!reticulate::py_available())

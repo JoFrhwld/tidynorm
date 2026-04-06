@@ -311,6 +311,7 @@ check_norm <- function(.data) {
 
 #' Convert text-based formant names to
 #' numeric
+#' @importFrom checkmate check_character
 #' @noRd
 name_to_formant_num <- function(.formant_name, call = caller_env()) {
   checkmate::check_character(.formant_name, any.missing = FALSE, min.len = 1)
