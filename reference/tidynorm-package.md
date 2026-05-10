@@ -1,0 +1,30 @@
+# tidynorm: Tools for Tidy Vowel Normalization
+
+An implementation of tidy speaker vowel normalization. This includes
+generic functions for defining new normalization methods for points,
+formant tracks, and Discrete Cosine Transform coefficients, as well as
+convenience functions implementing established normalization methods.
+References for the implemented methods are: Johnson, Keith (2020)
+[doi:10.5334/labphon.196](https://doi.org/10.5334/labphon.196) Lobanov,
+Boris (1971) [doi:10.1121/1.1912396](https://doi.org/10.1121/1.1912396)
+Nearey, Terrance M. (1978)
+<https://sites.ualberta.ca/~tnearey/Nearey1978_compressed.pdf> Syrdal,
+Ann K., and Gopal, H. S. (1986)
+[doi:10.1121/1.393381](https://doi.org/10.1121/1.393381) Watt, Dominic,
+and Fabricius, Anne (2002)
+<https://www.latl.leeds.ac.uk/article/evaluation-of-a-technique-for-improving-the-mapping-of-multiple-speakers-vowel-spaces-in-the-f1-f2-plane/>.
+
+## See also
+
+Useful links:
+
+- <https://jofrhwld.github.io/tidynorm/>
+
+- <https://github.com/JoFrhwld/tidynorm>
+
+- Report bugs at <https://github.com/JoFrhwld/tidynorm/issues>
+
+## Author
+
+**Maintainer**: Josef Fruehwald <JoFrhwld@gmail.com> \[copyright
+holder\]
