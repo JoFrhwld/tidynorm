@@ -1,6 +1,15 @@
 # Changelog
 
-## tidynorm (development version)
+## tidynorm 0.4.1
+
+CRAN release: 2026-05-10
+
+### Minor bug fixes
+
+- Updates how
+  [`checkmate::check_character()`](https://mllg.github.io/checkmate/reference/checkCharacter.html)
+  is imported ([\#32](https://github.com/JoFrhwld/tidynorm/issues/32),
+  [\#34](https://github.com/JoFrhwld/tidynorm/issues/34))
 
 ## tidynorm 0.4.0
 
