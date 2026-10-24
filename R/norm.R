@@ -83,6 +83,7 @@ norm_generic <- function(
     .by = NULL,
     .by_formant = FALSE,
     .by_token = FALSE,
+    .agg_by = NULL,
     .L = 0,
     .S = 1,
     .pre_trans = identity,
@@ -110,6 +111,7 @@ norm_generic <- function(
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
+  check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
@@ -121,6 +123,10 @@ norm_generic <- function(
     tidyselect::eval_select(targets, data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
+
+  mean_in_mean <- expr({{.agg_by}})
+
+
 
   # adding an id col for safety in
   # pivoting
@@ -157,6 +163,8 @@ norm_generic <- function(
   # augment grouping as necessary to
   # match .by_formant
   norm_grouping <- expr({{ .by }})
+  agg_grouping <- expr({{.agg_by}})
+
   if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
       .data,
@@ -177,13 +185,41 @@ norm_generic <- function(
     norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
   }
 
-  .data <- dplyr::mutate(
+  if (!rlang::quo_is_null(agg_grouping)) {
+    norm_params <- dplyr::summarise(
+      .data,
+      .by = c(!!norm_grouping, !!agg_grouping),
+      .formant = {{ .L }},
+    ) |>
+      dplyr::summarise(
+        .by = !!norm_grouping,
+        .L = {{ .L }},
+        .S = {{ .S }},
+      )
+  } else {
+    norm_params <- dplyr::summarise(
+        .data,
+        .by = !!norm_grouping,
+        .L = {{ .L }},
+        .S = {{ .S }},
+      )
+  }
+
+  param_joining <- c(
+    dplyr::group_vars(norm_params),
+    names(
+      tidyselect::eval_select(norm_grouping, norm_params)
+    )
+  )
+
+  .data <- left_join(
     .data,
-    .by = !!norm_grouping,
-    .L = {{ .L }},
-    .S = {{ .S }},
-    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
+    norm_params,
+    by = param_joining
   ) |>
+    mutate(
+      "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
+    ) |>
     mutate(
       .formant = !!sym(".formant_orig")
     )
