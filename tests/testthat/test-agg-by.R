@@ -126,3 +126,81 @@ test_that(
   }
 )
 
+test_that(
+  "preaggregation for dcts works as expected", {
+    speaker_tracks |>
+      reframe_with_dct(
+        F1:F3,
+        .by = speaker,
+        .token_id_col = id,
+        .time_col = t
+      ) ->
+        speaker_dcts
+    
+    speaker_dcts |>
+      filter(
+        .by = c(speaker, id),
+        .param == 0
+      ) ->
+        zeroth
+    
+    zeroth |>
+      tidyr::pivot_longer(
+        F1:F3
+      ) |>
+        summarise(
+          .by = c(speaker, plt_vclass, name),
+          value = mean(value, na.rm = T)
+        ) |>
+        summarise(
+          .by = c(speaker, name),
+          .S = sd(value, na.rm = T) * sqrt(2)
+        ) ->
+          norm_params   
+    
+    speaker_dcts |>
+       tidyr::pivot_longer(
+        F1:F3
+      ) |>
+      left_join(
+        norm_params 
+      ) |>
+      mutate(
+        value = (value/.S)
+      ) |>
+      select(-.S) |>
+       tidyr::pivot_wider(
+        names_from = name,
+        values_from = value
+      ) ->
+        manual_norm
+    
+    speaker_dcts |>
+      norm_dct_generic(
+        F1:F3,
+        .by = speaker,
+        .agg_by = plt_vclass,
+        .param_col = .param,
+        .token_id_col = id,
+        .by_formant = T,
+        .S = sd(.formant, na.rm = T)
+      ) ->
+        tidy_norm
+    
+    expect_equal(
+      manual_norm$F1,
+      tidy_norm$F1_n
+    )
+
+    expect_equal(
+      manual_norm$F2,
+      tidy_norm$F2_n
+    )
+
+    expect_equal(
+      manual_norm$F3,
+      tidy_norm$F3_n
+    )
+    
+  }
+)
