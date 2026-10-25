@@ -8,6 +8,8 @@ norm_barkz(
   .data,
   ...,
   .by = NULL,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_bz",
@@ -23,6 +25,11 @@ data columns.}
 
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
+
+\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
+columns to to pre-aggregate by. Typically a column of vowel category labels.}
+
+\item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
