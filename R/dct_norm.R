@@ -64,6 +64,14 @@
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
 #'
 #' @returns
 #' A data frame of normalized DCT coefficients.
@@ -331,6 +339,16 @@ norm_dct_generic <- function(
     )
   }
 
+  if (!quo_is_null(agg_grouping)) {
+    norm_info <- c(
+      norm_info,
+      list(
+        .agg_by = names(agg_pos)
+      )
+    )
+  }
+
+
   normed <- append_norm_info(
     normed,
     norm_info
@@ -367,6 +385,14 @@ norm_dct_generic <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Lobanov normalized DCT Coefficients.
 #'
@@ -455,7 +481,15 @@ norm_dct_lobanov <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Nearey normalized DCT coefficients
 #'
@@ -532,7 +566,14 @@ norm_dct_nearey <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
 #' @returns
 #' A data frame of Delta F normalized DCT coefficients.
 #'
@@ -612,7 +653,15 @@ norm_dct_deltaF <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Watt & Fabricius normalized DCT coefficients.
 #'
