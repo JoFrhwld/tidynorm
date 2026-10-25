@@ -202,7 +202,7 @@ norm_generic <- function(
   if (!rlang::quo_is_null(agg_grouping)) {
     if (length(grouped_by > 0)) {
        norm_params <- .data |>
-         unite(
+         tidyr::unite(
            ".agg",
            {{ .agg_by }}
          ) |>
