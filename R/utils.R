@@ -32,7 +32,6 @@ number_names <- c(
 check_grouping <- function(
     .data,
     .by,
-    .warn = TRUE,
     call = caller_env()) {
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
@@ -49,8 +48,7 @@ check_grouping <- function(
       call = call
     )
   }
-
-  if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings") & .warn) {
+  if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(
       c(
