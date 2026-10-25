@@ -22,6 +22,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Josef Fruehwald \email{JoFrhwld@gmail.com} [copyright holder]
 
+Authors:
+\itemize{
+  \item Josef Fruehwald \email{JoFrhwld@gmail.com} [copyright holder]
+}
+
 }
 \keyword{##}
 \keyword{internal}
