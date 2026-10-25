@@ -121,6 +121,16 @@ If \code{.by_formant} is \code{FALSE}, normalization will be formant extrinsic.
 If \code{.by_token} is \code{TRUE}, normalization will be token intrinsic.
 If \code{.by_token} is \code{FALSE}, normalization will be token extrinsic.
 }
+
+\subsection{Pre-aggregation}{
+
+To address imbalanced data across vowel classes, you can pre-aggregate
+formant values by passing vowel class column(s) to \code{.agg_by}, and
+and an aggregating function to \code{.agg_fun}. The aggregation will be done
+after any \code{.pre_trans} transformation is applied, and will be done
+either formant intrinsically or formant extrinsically based on the
+setting passed to \code{.by_formant}.
+}
 }
 \examples{
 library(tidynorm)

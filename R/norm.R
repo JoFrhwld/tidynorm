@@ -74,11 +74,11 @@
 #' If `.by_token` is `FALSE`, normalization will be token extrinsic.
 #'
 #' ### Pre-aggregation
-#' To imbalanced data across vowel classes, you can pre-aggregate
+#' To address imbalanced data across vowel classes, you can pre-aggregate
 #' formant values by passing vowel class column(s) to `.agg_by`, and
-#' and aggretating function to `.agg_fun`. The aggregation will be done
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
 #' after any `.pre_trans` transformation is applied, and will be done
-#' either formant intrinsicaly or formant extrinsically based on the
+#' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
 #'
 #' @returns
@@ -391,12 +391,26 @@ norm_generic <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes
+#' (Lobanov 2.0 (Brand et al., 2021)), you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of Lobanov normalized formant values.
 #'
 #' @references
 #' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 #' Journal of the Acoustical Society of America, 49, 606–608.
+#'
+#' Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
+#' Systematic co-variation of monophthongs across speakers of New Zealand
+#' English. Journal of Phonetics, 88, 101096.
+#' \url{https://doi.org/10.1016/j.wocn.2021.101096}
 #'
 #' @example inst/examples/ex-norm_lobanov.R
 #' @importFrom options opt
@@ -474,6 +488,14 @@ norm_lobanov <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of Nearey normalized formant values.
 #'
@@ -546,6 +568,14 @@ norm_nearey <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
+#'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
 #'
 #' @references
 #' Johnson, K. (2020). The \eqn{\Delta}F method of vocal tract length normalization for vowels.
@@ -627,6 +657,14 @@ norm_deltaF <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data fame of Watt & Fabricius normalized formant values.
 #'
@@ -701,6 +739,10 @@ norm_wattfab <- function(
 #' L_j = F_{3j}
 #' }
 #'
+#' ### Pre-aggregation
+#' As a vowel-intrinsic normalization technique, the Bark differenc methid
+#' is incompatible with pre-aggregation.
+#'
 #' @returns
 #' A data frame of Bark Difference normalized formant values
 #'
@@ -715,8 +757,6 @@ norm_barkz <- function(
     .data,
     ...,
     .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
@@ -743,8 +783,6 @@ norm_barkz <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .agg_by = {{.agg_by}},
-    .agg_fun = .agg_fun,
     .pre_trans = hz_to_bark,
     .post_trans = identity,
     .L = (!!sym(".formant"))[3],

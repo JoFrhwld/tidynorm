@@ -70,6 +70,16 @@ Where
 \item \eqn{i} is the formant number
 \item \eqn{j} is the token number
 }
+\subsection{Pre-aggregation}{
+
+To address imbalanced data across vowel classes
+(Lobanov 2.0 (Brand et al., 2021)), you can pre-aggregate
+formant values by passing vowel class column(s) to \code{.agg_by}, and
+and an aggregating function to \code{.agg_fun}. The aggregation will be done
+after any \code{.pre_trans} transformation is applied, and will be done
+either formant intrinsically or formant extrinsically based on the
+setting passed to \code{.by_formant}.
+}
 }
 \examples{
 library(tidynorm)
@@ -105,4 +115,9 @@ if (ggplot2_inst) {
 \references{
 Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 Journal of the Acoustical Society of America, 49, 606–608.
+
+Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
+Systematic co-variation of monophthongs across speakers of New Zealand
+English. Journal of Phonetics, 88, 101096.
+\url{https://doi.org/10.1016/j.wocn.2021.101096}
 }
