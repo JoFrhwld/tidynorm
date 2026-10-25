@@ -12,6 +12,9 @@
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
 #' @param .by_token Whether or not the normalization method is vowel intrinsic
+#' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
+#' columns to to pre-aggregate by. Typically a column of vowel category labels.
+#' @param .agg_fun A function to use to pre-aggregate values.
 #' @param .L An expression defining the location parameter.
 #' See Details for more information.
 #' @param .S An expression defining the scale parameter.
@@ -27,7 +30,7 @@
 #' @param .call Used for internal purposes.
 #'
 #' @eval options::as_params(".silent" = "tidynorm.silent")
-#'
+#' @importFrom rlang  env_name
 #'
 #' @details
 #' The following `norm_*` procedures are built on top of `norm_generic()`.
@@ -70,6 +73,14 @@
 #' If `.by_token` is `TRUE`, normalization will be token intrinsic.
 #' If `.by_token` is `FALSE`, normalization will be token extrinsic.
 #'
+#' ### Pre-aggregation
+#' To imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#' and aggretating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsicaly or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of normalized formant values
 #'
@@ -84,6 +95,7 @@ norm_generic <- function(
     .by_formant = FALSE,
     .by_token = FALSE,
     .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .L = 0,
     .S = 1,
     .pre_trans = identity,
@@ -93,8 +105,9 @@ norm_generic <- function(
     .names = "{.formant}_n",
     .silent = opt("tidynorm.silent"),
     .call = caller_env()) {
+
   if (env_name(.call) == "global") {
-    .call <- current_env()
+    .call <- rlang::current_env()
   }
 
   args <- names(call_match())
@@ -111,7 +124,7 @@ norm_generic <- function(
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
-  check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
+  #check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
@@ -124,9 +137,10 @@ norm_generic <- function(
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
 
-  mean_in_mean <- expr({{.agg_by}})
-
-
+  agg_pos <- try_fetch(
+    tidyselect::eval_select(enquo(.agg_by), data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
 
   # adding an id col for safety in
   # pivoting
@@ -163,7 +177,7 @@ norm_generic <- function(
   # augment grouping as necessary to
   # match .by_formant
   norm_grouping <- expr({{ .by }})
-  agg_grouping <- expr({{.agg_by}})
+  agg_grouping <- expr({{ .agg_by }})
 
   if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
@@ -186,37 +200,73 @@ norm_generic <- function(
   }
 
   if (!rlang::quo_is_null(agg_grouping)) {
-    norm_params <- dplyr::summarise(
-      .data,
-      .by = c(!!norm_grouping, !!agg_grouping),
-      .formant = {{ .L }},
-    ) |>
-      dplyr::summarise(
-        .by = !!norm_grouping,
-        .L = {{ .L }},
-        .S = {{ .S }},
-      )
-  } else {
-    norm_params <- dplyr::summarise(
+    if (length(grouped_by > 0)) {
+       norm_params <- .data |>
+         unite(
+           ".agg",
+           {{ .agg_by }}
+         ) |>
+         group_by(
+           !!sym(".agg"),
+           .add = TRUE
+         ) |>
+        summarise(
+          .formant = .agg_fun(!!sym(".formant"))
+        ) |>
+        summarise(
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
+    } else {
+      norm_params <- dplyr::summarise(
         .data,
-        .by = !!norm_grouping,
+        .by = c(!!norm_grouping, !!agg_grouping),
+        .formant = .agg_fun(!!sym(".formant")),
+      ) |>
+        dplyr::summarise(
+          .by = c(!!norm_grouping),
+          .L = {{ .L }},
+          .S = {{ .S }},
+        )
+    }
+  } else {
+    if (length(grouped_by > 0)) {
+      norm_params <- dplyr::summarise(
+        .data,
         .L = {{ .L }},
-        .S = {{ .S }},
+        .S = {{ .S }}
       )
+    } else {
+      norm_params <- dplyr::summarise(
+          .data,
+          .by = !!norm_grouping,
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
+    }
   }
 
   param_joining <- c(
-    dplyr::group_vars(norm_params),
+    dplyr::group_vars(.data),
     names(
       tidyselect::eval_select(norm_grouping, norm_params)
     )
   )
 
-  .data <- left_join(
-    .data,
-    norm_params,
-    by = param_joining
-  ) |>
+  if (length(param_joining) == 0){
+    .data <- dplyr::cross_join(
+      .data,
+      norm_params
+    )
+  } else {
+    .data <- left_join(
+      .data,
+      norm_params,
+      by = param_joining
+    )
+  }
+
+  .data <- .data |>
     mutate(
       "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
     ) |>
@@ -295,6 +345,15 @@ norm_generic <- function(
     )
   }
 
+  if (!quo_is_null(agg_grouping)) {
+    norm_info <- c(
+      norm_info,
+      list(
+        .agg_by = names(agg_pos)
+      )
+    )
+  }
+
   attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
   .data <- append_norm_info(
@@ -347,6 +406,8 @@ norm_lobanov <- function(
     ...,
     .by = NULL,
     .by_formant = TRUE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
@@ -361,6 +422,8 @@ norm_lobanov <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -425,6 +488,8 @@ norm_nearey <- function(
     ...,
     .by = NULL,
     .by_formant = FALSE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
@@ -439,6 +504,8 @@ norm_nearey <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = log,
     .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -495,7 +562,9 @@ norm_deltaF <- function(
     .data,
     ...,
     .by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .by_formant = FALSE,
+    .agg_by = NULL,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
@@ -510,6 +579,8 @@ norm_deltaF <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = 0,
@@ -572,6 +643,8 @@ norm_wattfab <- function(
     ...,
     .by = NULL,
     .by_formant = TRUE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
@@ -586,6 +659,8 @@ norm_wattfab <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = 0,
@@ -640,6 +715,8 @@ norm_barkz <- function(
     .data,
     ...,
     .by = NULL,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_bz",
@@ -666,6 +743,8 @@ norm_barkz <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = hz_to_bark,
     .post_trans = identity,
     .L = (!!sym(".formant"))[3],
