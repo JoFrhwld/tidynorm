@@ -1,5 +1,5 @@
-## v0.4.0
+## v0.4.1
 
-This update contains some bug fixes, as well as new options setting.
+This update eliminates warnings being raised due to an `rlang` update.
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
