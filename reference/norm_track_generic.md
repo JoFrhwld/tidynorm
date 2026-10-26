@@ -12,6 +12,8 @@ norm_track_generic(
   .by = NULL,
   .by_formant = FALSE,
   .by_token = FALSE,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .time_col = NULL,
   .L = 0,
   .S = 1/sqrt(2),
@@ -55,6 +57,16 @@ norm_track_generic(
 - .by_token:
 
   Whether or not the normalization method is token intrinsic
+
+- .agg_by:
+
+  [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
+  A selection of columns to to pre-aggregate by. Typically a column of
+  vowel category labels.
+
+- .agg_fun:
+
+  A function to use to pre-aggregate values.
 
 - .time_col:
 
@@ -138,8 +150,8 @@ This will normalize vowel formant tracks in the following steps:
 3.  Location `.L` and Scale `.S` expressions will be used to summarize
     the zero^(th) DCT coefficients.
 
-4.  These location and scale will be used to normalize the DCT
-    coefficients.
+4.  These location and scale parameters will be used to normalize the
+    DCT coefficients.
 
 5.  If `.return_dct = TRUE`, these normalized DCT coefficients will be
     returned. Otherwise, the Inverse Discrete Cosine Transform will be
@@ -192,6 +204,15 @@ should be passed to `.token_id_col`.
 The number of DCT coefficients used is defined by `.order`. The default
 value is 5. Larger numbers will lead to less smoothing, and smaller
 numbers will lead to more smoothing.
+
+### Pre-aggregation
+
+To address imbalanced data across vowel classes, you can pre-aggregate
+the zero^(th) DCT coefficients by passing vowel class column(s) to
+`.agg_by`, and and an aggregating function to `.agg_fun`. The
+aggregation will be done after the DCT transform is applied, and will be
+done either formant intrinsically or formant extrinsically based on the
+setting passed to `.by_formant`.
 
 ## Examples
 

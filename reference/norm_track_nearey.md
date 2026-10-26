@@ -11,6 +11,8 @@ norm_track_nearey(
   .token_id_col,
   .by = NULL,
   .by_formant = FALSE,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -45,6 +47,16 @@ norm_track_nearey(
 - .by_formant:
 
   Whether or not the normalization method is formant intrinsic.
+
+- .agg_by:
+
+  [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
+  A selection of columns to to pre-aggregate by. Typically a column of
+  vowel category labels.
+
+- .agg_fun:
+
+  A function to use to pre-aggregate values.
 
 - .time_col:
 
@@ -97,6 +109,15 @@ Where
 - \\i\\ is the formant number
 
 - \\j\\ is the token number
+
+### Pre-aggregation
+
+To address imbalanced data across vowel classes, you can pre-aggregate
+the zero^(th) DCT coefficients by passing vowel class column(s) to
+`.agg_by`, and and an aggregating function to `.agg_fun`. The
+aggregation will be done after the DCT transform is applied, and will be
+done either formant intrinsically or formant extrinsically based on the
+setting passed to `.by_formant`.
 
 ## References
 

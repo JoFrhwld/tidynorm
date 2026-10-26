@@ -12,6 +12,8 @@ norm_generic(
   .by = NULL,
   .by_formant = FALSE,
   .by_token = FALSE,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .L = 0,
   .S = 1,
   .pre_trans = identity,
@@ -48,6 +50,16 @@ norm_generic(
 - .by_token:
 
   Whether or not the normalization method is vowel intrinsic
+
+- .agg_by:
+
+  [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
+  A selection of columns to to pre-aggregate by. Typically a column of
+  vowel category labels.
+
+- .agg_fun:
+
+  A function to use to pre-aggregate values.
 
 - .L:
 
@@ -146,6 +158,15 @@ If `.by_formant` is `TRUE`, normalization will be formant intrinsic. If
 
 If `.by_token` is `TRUE`, normalization will be token intrinsic. If
 `.by_token` is `FALSE`, normalization will be token extrinsic.
+
+### Pre-aggregation
+
+To address imbalanced data across vowel classes, you can pre-aggregate
+formant values by passing vowel class column(s) to `.agg_by`, and and an
+aggregating function to `.agg_fun`. The aggregation will be done after
+any `.pre_trans` transformation is applied, and will be done either
+formant intrinsically or formant extrinsically based on the setting
+passed to `.by_formant`.
 
 ## Examples
 

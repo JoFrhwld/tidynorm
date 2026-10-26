@@ -10,6 +10,8 @@ norm_lobanov(
   ...,
   .by = NULL,
   .by_formant = TRUE,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
@@ -37,6 +39,16 @@ norm_lobanov(
 - .by_formant:
 
   Ignored by this procedure
+
+- .agg_by:
+
+  [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
+  A selection of columns to to pre-aggregate by. Typically a column of
+  vowel category labels.
+
+- .agg_fun:
+
+  A function to use to pre-aggregate values.
 
 - .drop_orig:
 
@@ -80,10 +92,24 @@ Where
 
 - \\j\\ is the token number
 
+### Pre-aggregation
+
+To address imbalanced data across vowel classes (Lobanov 2.0 (Brand et
+al., 2021)), you can pre-aggregate formant values by passing vowel class
+column(s) to `.agg_by`, and and an aggregating function to `.agg_fun`.
+The aggregation will be done after any `.pre_trans` transformation is
+applied, and will be done either formant intrinsically or formant
+extrinsically based on the setting passed to `.by_formant`.
+
 ## References
 
 Lobanov, B. (1971). Classification of Russian vowels spoken by different
 listeners. Journal of the Acoustical Society of America, 49, 606–608.
+
+Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
+Systematic co-variation of monophthongs across speakers of New Zealand
+English. Journal of Phonetics, 88, 101096.
+<https://doi.org/10.1016/j.wocn.2021.101096>
 
 ## Examples
 

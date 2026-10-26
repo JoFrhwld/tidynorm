@@ -28,3 +28,7 @@ Useful links:
 
 **Maintainer**: Josef Fruehwald <JoFrhwld@gmail.com> \[copyright
 holder\]
+
+Authors:
+
+- Josef Fruehwald <JoFrhwld@gmail.com> \[copyright holder\]

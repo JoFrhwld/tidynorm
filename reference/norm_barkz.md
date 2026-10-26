@@ -70,6 +70,11 @@ then, within each token, F3 is subtracted from F1 and F2.
 
 \$\$ L_j = F\_{3j} \$\$
 
+### Pre-aggregation
+
+As a vowel-intrinsic normalization technique, the Bark differenc methid
+is incompatible with pre-aggregation.
+
 ## References
 
 Syrdal, A. K., & Gopal, H. S. (1986). A perceptual model of vowel

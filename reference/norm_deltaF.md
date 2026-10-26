@@ -9,7 +9,9 @@ norm_deltaF(
   .data,
   ...,
   .by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .by_formant = FALSE,
+  .agg_by = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
@@ -34,9 +36,19 @@ norm_deltaF(
   [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
   A selection of columns to group by. Typically a column of speaker IDs.
 
+- .agg_fun:
+
+  A function to use to pre-aggregate values.
+
 - .by_formant:
 
   Ignored by this procedure
+
+- .agg_by:
+
+  [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
+  A selection of columns to to pre-aggregate by. Typically a column of
+  vowel category labels.
 
 - .drop_orig:
 
@@ -76,6 +88,15 @@ Where
 - \\i\\ is the formant number
 
 - \\j\\ is the token number
+
+### Pre-aggregation
+
+To address imbalanced data across vowel classes, you can pre-aggregate
+formant values by passing vowel class column(s) to `.agg_by`, and and an
+aggregating function to `.agg_fun`. The aggregation will be done after
+any `.pre_trans` transformation is applied, and will be done either
+formant intrinsically or formant extrinsically based on the setting
+passed to `.by_formant`.
 
 ## References
 
