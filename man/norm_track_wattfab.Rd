@@ -9,6 +9,8 @@ norm_track_wattfab(
   ...,
   .token_id_col,
   .by = NULL,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -29,6 +31,11 @@ that identifies token ids.}
 
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
+
+\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
+columns to to pre-aggregate by. Typically a column of vowel category labels.}
+
+\item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.time_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A time column.
 (optional)}

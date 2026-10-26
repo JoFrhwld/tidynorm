@@ -12,6 +12,9 @@
 #' @param .by_formant Whether or not the normalization method is formant
 #' intrinsic.
 #' @param .by_token Whether or not the normalization method is vowel intrinsic
+#' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
+#' columns to to pre-aggregate by. Typically a column of vowel category labels.
+#' @param .agg_fun A function to use to pre-aggregate values.
 #' @param .L An expression defining the location parameter.
 #' See Details for more information.
 #' @param .S An expression defining the scale parameter.
@@ -27,7 +30,7 @@
 #' @param .call Used for internal purposes.
 #'
 #' @eval options::as_params(".silent" = "tidynorm.silent")
-#'
+#' @importFrom rlang  env_name
 #'
 #' @details
 #' The following `norm_*` procedures are built on top of `norm_generic()`.
@@ -70,6 +73,14 @@
 #' If `.by_token` is `TRUE`, normalization will be token intrinsic.
 #' If `.by_token` is `FALSE`, normalization will be token extrinsic.
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of normalized formant values
 #'
@@ -83,6 +94,8 @@ norm_generic <- function(
     .by = NULL,
     .by_formant = FALSE,
     .by_token = FALSE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .L = 0,
     .S = 1,
     .pre_trans = identity,
@@ -92,8 +105,9 @@ norm_generic <- function(
     .names = "{.formant}_n",
     .silent = opt("tidynorm.silent"),
     .call = caller_env()) {
+
   if (env_name(.call) == "global") {
-    .call <- current_env()
+    .call <- rlang::current_env()
   }
 
   args <- names(call_match())
@@ -110,6 +124,7 @@ norm_generic <- function(
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
+  #check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
@@ -119,6 +134,11 @@ norm_generic <- function(
 
   target_pos <- try_fetch(
     tidyselect::eval_select(targets, data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
+  agg_pos <- try_fetch(
+    tidyselect::eval_select(enquo(.agg_by), data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
 
@@ -157,6 +177,8 @@ norm_generic <- function(
   # augment grouping as necessary to
   # match .by_formant
   norm_grouping <- expr({{ .by }})
+  agg_grouping <- expr({{ .agg_by }})
+
   if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
       .data,
@@ -177,13 +199,77 @@ norm_generic <- function(
     norm_grouping <- expr(c(!!norm_grouping, !!sym(".id")))
   }
 
-  .data <- dplyr::mutate(
-    .data,
-    .by = !!norm_grouping,
-    .L = {{ .L }},
-    .S = {{ .S }},
-    "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
-  ) |>
+  if (!rlang::quo_is_null(agg_grouping)) {
+    if (length(grouped_by > 0)) {
+       norm_params <- .data |>
+         tidyr::unite(
+           ".agg",
+           {{ .agg_by }}
+         ) |>
+         group_by(
+           !!sym(".agg"),
+           .add = TRUE
+         ) |>
+        summarise(
+          .formant = .agg_fun(!!sym(".formant"))
+        ) |>
+        summarise(
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
+    } else {
+      norm_params <- dplyr::summarise(
+        .data,
+        .by = c(!!norm_grouping, !!agg_grouping),
+        .formant = .agg_fun(!!sym(".formant")),
+      ) |>
+        dplyr::summarise(
+          .by = c(!!norm_grouping),
+          .L = {{ .L }},
+          .S = {{ .S }},
+        )
+    }
+  } else {
+    if (length(grouped_by > 0)) {
+      norm_params <- dplyr::summarise(
+        .data,
+        .L = {{ .L }},
+        .S = {{ .S }}
+      )
+    } else {
+      norm_params <- dplyr::summarise(
+          .data,
+          .by = !!norm_grouping,
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
+    }
+  }
+
+  param_joining <- c(
+    dplyr::group_vars(.data),
+    names(
+      tidyselect::eval_select(norm_grouping, norm_params)
+    )
+  )
+
+  if (length(param_joining) == 0){
+    .data <- dplyr::cross_join(
+      .data,
+      norm_params
+    )
+  } else {
+    .data <- left_join(
+      .data,
+      norm_params,
+      by = param_joining
+    )
+  }
+
+  .data <- .data |>
+    mutate(
+      "{.names2}" := .post_trans((!!sym(".formant") - .L) / .S)
+    ) |>
     mutate(
       .formant = !!sym(".formant_orig")
     )
@@ -259,6 +345,15 @@ norm_generic <- function(
     )
   }
 
+  if (!quo_is_null(agg_grouping)) {
+    norm_info <- c(
+      norm_info,
+      list(
+        .agg_by = names(agg_pos)
+      )
+    )
+  }
+
   attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
   .data <- append_norm_info(
@@ -296,12 +391,26 @@ norm_generic <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes
+#' (Lobanov 2.0 (Brand et al., 2021)), you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of Lobanov normalized formant values.
 #'
 #' @references
 #' Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 #' Journal of the Acoustical Society of America, 49, 606–608.
+#'
+#' Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
+#' Systematic co-variation of monophthongs across speakers of New Zealand
+#' English. Journal of Phonetics, 88, 101096.
+#' \url{https://doi.org/10.1016/j.wocn.2021.101096}
 #'
 #' @example inst/examples/ex-norm_lobanov.R
 #' @importFrom options opt
@@ -311,6 +420,8 @@ norm_lobanov <- function(
     ...,
     .by = NULL,
     .by_formant = TRUE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_z",
@@ -325,6 +436,8 @@ norm_lobanov <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -375,6 +488,14 @@ norm_lobanov <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data frame of Nearey normalized formant values.
 #'
@@ -389,6 +510,8 @@ norm_nearey <- function(
     ...,
     .by = NULL,
     .by_formant = FALSE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_lm",
@@ -403,6 +526,8 @@ norm_nearey <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = log,
     .post_trans = identity,
     .L = mean(!!sym(".formant"), na.rm = T),
@@ -444,6 +569,14 @@ norm_nearey <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @references
 #' Johnson, K. (2020). The \eqn{\Delta}F method of vocal tract length normalization for vowels.
 #' Laboratory Phonology: Journal of the Association for Laboratory Phonology, 11(1),
@@ -459,7 +592,9 @@ norm_deltaF <- function(
     .data,
     ...,
     .by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .by_formant = FALSE,
+    .agg_by = NULL,
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_df",
@@ -474,6 +609,8 @@ norm_deltaF <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = 0,
@@ -520,6 +657,14 @@ norm_deltaF <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' formant values by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after any `.pre_trans` transformation is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#'
 #' @returns
 #' A data fame of Watt & Fabricius normalized formant values.
 #'
@@ -536,6 +681,8 @@ norm_wattfab <- function(
     ...,
     .by = NULL,
     .by_formant = TRUE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .drop_orig = FALSE,
     .keep_params = FALSE,
     .names = "{.formant}_wf",
@@ -550,6 +697,8 @@ norm_wattfab <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{.agg_by}},
+    .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
     .L = 0,
@@ -589,6 +738,10 @@ norm_wattfab <- function(
 #' \deqn{
 #' L_j = F_{3j}
 #' }
+#'
+#' ### Pre-aggregation
+#' As a vowel-intrinsic normalization technique, the Bark differenc methid
+#' is incompatible with pre-aggregation.
 #'
 #' @returns
 #' A data frame of Bark Difference normalized formant values

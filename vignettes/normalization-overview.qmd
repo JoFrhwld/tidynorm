@@ -272,11 +272,11 @@ $$
 
 The primary differences between normalization methods are:
 
--   The use of across-the-board data transformations.
+- The use of across-the-board data transformations.
 
--   The calculation function for $L$ and $S$.
+- The calculation function for $L$ and $S$.
 
--   The scope of calculating $L$ and $S$.
+- The scope of calculating $L$ and $S$.
 
 The example above is also known as Lobanov Normalization (see `norm_lobanov()`).
 The `norm_generic()` function allows for flexible definitions of normalization procedures with this in mind.
@@ -287,11 +287,11 @@ The `norm_generic()` function allows for flexible definitions of normalization p
 
 The $\Delta$F method was described in @johnsonDFMethodVocal2020.
 
--   It uses no across-the-board data transformation.
+- It uses no across-the-board data transformation.
 
--   It uses a scaling factor $S$ called $\Delta$F, which is the mean across all formants of the formant frequency in Hz, divided by the formant number minus 0.5.
+- It uses a scaling factor $S$ called $\Delta$F, which is the mean across all formants of the formant frequency in Hz, divided by the formant number minus 0.5.
 
--   $S$ is calculated across all formants
+- $S$ is calculated across all formants
 
 $$
 S = \Delta F = \text{mean}\left(\frac{F_{ij}}{i-0.5}\right)
@@ -330,4 +330,3 @@ ggplot(
   scale_y_reverse() +
   scale_x_reverse()
 ```
-
