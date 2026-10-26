@@ -8,9 +8,7 @@ norm_deltaF(
   .data,
   ...,
   .by = NULL,
-  .agg_fun = function(x) mean(x, na.rm = T),
   .by_formant = FALSE,
-  .agg_by = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
@@ -27,12 +25,7 @@ data columns.}
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
 
-\item{.agg_fun}{A function to use to pre-aggregate values.}
-
 \item{.by_formant}{Ignored by this procedure}
-
-\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
-columns to to pre-aggregate by. Typically a column of vowel category labels.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
@@ -64,15 +57,6 @@ Where
 \item \eqn{\hat{F}} is the normalized formant
 \item \eqn{i} is the formant number
 \item \eqn{j} is the token number
-}
-\subsection{Pre-aggregation}{
-
-To address imbalanced data across vowel classes, you can pre-aggregate
-formant values by passing vowel class column(s) to \code{.agg_by}, and
-and an aggregating function to \code{.agg_fun}. The aggregation will be done
-after any \code{.pre_trans} transformation is applied, and will be done
-either formant intrinsically or formant extrinsically based on the
-setting passed to \code{.by_formant}.
 }
 }
 \examples{

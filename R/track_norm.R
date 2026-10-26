@@ -8,9 +8,6 @@
 #' data columns.
 #' @param .by  [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to group by. Typically a column of speaker IDs.
-#' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
-#' columns to to pre-aggregate by. Typically a column of vowel category labels.
-#' @param .agg_fun A function to use to pre-aggregate values. 
 #' @param .token_id_col [`<data-masking>`][rlang::args_data_masking] A column
 #' that identifies token ids.
 #' @param .by_formant Whether or not the normalization method is formant
@@ -53,7 +50,7 @@
 #' 2. The Discrete Cosine Transform will be applied to the formant data.
 #' 3. Location `.L` and Scale `.S` expressions will be used to summarize the zero<sup>th</sup>
 #' DCT coefficients.
-#' 4. These location and scale parameters will be used to normalize the DCT coefficients.
+#' 4. These location and scale will be used to normalize the DCT coefficients.
 #' 5. If `.return_dct = TRUE`, these normalized DCT coefficients will be returned.
 #' Otherwise, the Inverse Discrete Cosine Transform will be applied to the
 #' normalized DCT coefficients.
@@ -104,14 +101,6 @@
 #' The number of DCT coefficients used is defined by `.order`. The default
 #' value is 5. Larger numbers will lead to less smoothing, and smaller numbers
 #' will lead to more smoothing.
-#' 
-#' ### Pre-aggregation
-#' To address imbalanced data across vowel classes, you can pre-aggregate
-#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
-#' and an aggregating function to `.agg_fun`. The aggregation will be done
-#' after the DCT transform is applied, and will be done
-#' either formant intrinsically or formant extrinsically based on the
-#' setting passed to `.by_formant`.
 #'
 #' @returns
 #' A data frame of normalized formant tracks.
@@ -126,8 +115,6 @@ norm_track_generic <- function(
     .by = NULL,
     .by_formant = FALSE,
     .by_token = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
     .time_col = NULL,
     .L = 0,
     .S = 1 / sqrt(2),
@@ -157,10 +144,6 @@ norm_track_generic <- function(
   targets <- expr(c(...))
   target_pos <- tidyselect::eval_select(targets, .data)
   time_pos <- tidyselect::eval_select(expr({{ .time_col }}), .data)
-  agg_pos <- try_fetch(
-    tidyselect::eval_select(enquo(.agg_by), data = .data),
-    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
-  )
 
   cols <- enquos(
     .by = .by,
@@ -187,8 +170,7 @@ norm_track_generic <- function(
   .data <- grouping_list$.data
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
-  agg_grouping <- expr({{ .agg_by }})
-  
+
   .orig_data <- dplyr::arrange(.data, {{ .time_col }}) |>
     dplyr::select(
       {{ .by }},
@@ -242,8 +224,6 @@ norm_track_generic <- function(
     .by = {{ .by }},
     .by_formant = .by_formant,
     .by_token = .by_token,
-    .agg_by = {{ .agg_by }},
-    .agg_fun = .agg_fun,
     .param_col = !!sym(".param"),
     .L = {{ .L }},
     .S = {{ .S }},
@@ -359,15 +339,6 @@ norm_track_generic <- function(
     )
   }
 
-  if (!quo_is_null(agg_grouping)) {
-    norm_info <- c(
-      norm_info,
-      list(
-        .agg_by = names(agg_pos)
-      )
-    )
-  }
-
   normed_track <- append_norm_info(
     normed_track,
     norm_info
@@ -402,15 +373,7 @@ norm_track_generic <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
-#' ### Pre-aggregation
-#' To address imbalanced data across vowel classes, you can pre-aggregate
-#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
-#' and an aggregating function to `.agg_fun`. The aggregation will be done
-#' after the DCT transform is applied, and will be done
-#' either formant intrinsically or formant extrinsically based on the
-#' setting passed to `.by_formant`.
-#' 
+#'
 #' @returns
 #' A data frame of Lobanov normalized formant tracks.
 #'
@@ -425,8 +388,6 @@ norm_track_lobanov <- function(
     ...,
     .token_id_col,
     .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
     .time_col = NULL,
     .order = 5,
     .return_dct = FALSE,
@@ -444,8 +405,6 @@ norm_track_lobanov <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
-    .agg_by = {{ .agg_by }},
-    .agg_fun = .agg_fun,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,
@@ -498,15 +457,7 @@ norm_track_lobanov <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
-#' ### Pre-aggregation
-#' To address imbalanced data across vowel classes, you can pre-aggregate
-#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
-#' and an aggregating function to `.agg_fun`. The aggregation will be done
-#' after the DCT transform is applied, and will be done
-#' either formant intrinsically or formant extrinsically based on the
-#' setting passed to `.by_formant`.
-#' 
+#'
 #' @returns
 #' A data frame of Nearey normalized formant tracks.
 #'
@@ -522,8 +473,6 @@ norm_track_nearey <- function(
     .token_id_col,
     .by = NULL,
     .by_formant = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
     .time_col = NULL,
     .order = 5,
     .return_dct = FALSE,
@@ -541,8 +490,6 @@ norm_track_nearey <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
-    .agg_by = {{ .agg_by }},
-    .agg_fun = .agg_fun,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .pre_trans = log,
@@ -588,14 +535,6 @@ norm_track_nearey <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
-#' ### Pre-aggregation
-#' To address imbalanced data across vowel classes, you can pre-aggregate
-#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
-#' and an aggregating function to `.agg_fun`. The aggregation will be done
-#' after the DCT transform is applied, and will be done
-#' either formant intrinsically or formant extrinsically based on the
-#' setting passed to `.by_formant`.
 #'
 #' @returns
 #' A data frame of Delta F normalized formant tracks.
@@ -613,8 +552,6 @@ norm_track_deltaF <- function(
     ...,
     .token_id_col,
     .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
     .time_col = NULL,
     .order = 5,
     .return_dct = FALSE,
@@ -632,8 +569,6 @@ norm_track_deltaF <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
-    .agg_by = {{ .agg_by }},
-    .agg_fun = .agg_fun,
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = identity,
@@ -698,8 +633,6 @@ norm_track_wattfab <- function(
     ...,
     .token_id_col,
     .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
     .time_col = NULL,
     .order = 5,
     .return_dct = FALSE,
@@ -717,8 +650,6 @@ norm_track_wattfab <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
-    .agg_by = {{ .agg_by }},
-    .agg_fun = .agg_fun,
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,

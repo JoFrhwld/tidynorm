@@ -10,8 +10,6 @@ norm_generic(
   .by = NULL,
   .by_formant = FALSE,
   .by_token = FALSE,
-  .agg_by = NULL,
-  .agg_fun = function(x) mean(x, na.rm = T),
   .L = 0,
   .S = 1,
   .pre_trans = identity,
@@ -37,11 +35,6 @@ columns to group by. Typically a column of speaker IDs.}
 intrinsic.}
 
 \item{.by_token}{Whether or not the normalization method is vowel intrinsic}
-
-\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
-columns to to pre-aggregate by. Typically a column of vowel category labels.}
-
-\item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.L}{An expression defining the location parameter.
 See Details for more information.}
@@ -120,16 +113,6 @@ If \code{.by_formant} is \code{FALSE}, normalization will be formant extrinsic.
 
 If \code{.by_token} is \code{TRUE}, normalization will be token intrinsic.
 If \code{.by_token} is \code{FALSE}, normalization will be token extrinsic.
-}
-
-\subsection{Pre-aggregation}{
-
-To address imbalanced data across vowel classes, you can pre-aggregate
-formant values by passing vowel class column(s) to \code{.agg_by}, and
-and an aggregating function to \code{.agg_fun}. The aggregation will be done
-after any \code{.pre_trans} transformation is applied, and will be done
-either formant intrinsically or formant extrinsically based on the
-setting passed to \code{.by_formant}.
 }
 }
 \examples{

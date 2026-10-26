@@ -11,8 +11,6 @@ norm_track_generic(
   .by = NULL,
   .by_formant = FALSE,
   .by_token = FALSE,
-  .agg_by = NULL,
-  .agg_fun = function(x) mean(x, na.rm = T),
   .time_col = NULL,
   .L = 0,
   .S = 1/sqrt(2),
@@ -44,11 +42,6 @@ intrinsic.}
 
 \item{.by_token}{Whether or not the normalization method is token
 intrinsic}
-
-\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
-columns to to pre-aggregate by. Typically a column of vowel category labels.}
-
-\item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.time_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A time column.
 (optional)}
@@ -101,7 +94,7 @@ This will normalize vowel formant tracks in the following steps:
 \item The Discrete Cosine Transform will be applied to the formant data.
 \item Location \code{.L} and Scale \code{.S} expressions will be used to summarize the zero\if{html}{\out{<sup>}}th\if{html}{\out{</sup>}}
 DCT coefficients.
-\item These location and scale parameters will be used to normalize the DCT coefficients.
+\item These location and scale will be used to normalize the DCT coefficients.
 \item If \code{.return_dct = TRUE}, these normalized DCT coefficients will be returned.
 Otherwise, the Inverse Discrete Cosine Transform will be applied to the
 normalized DCT coefficients.
@@ -157,16 +150,6 @@ identifies) each individual token. This column should be passed to
 The number of DCT coefficients used is defined by \code{.order}. The default
 value is 5. Larger numbers will lead to less smoothing, and smaller numbers
 will lead to more smoothing.
-}
-
-\subsection{Pre-aggregation}{
-
-To address imbalanced data across vowel classes, you can pre-aggregate
-the zero\if{html}{\out{<sup>}}th\if{html}{\out{</sup>}} DCT coefficients by passing vowel class column(s) to \code{.agg_by}, and
-and an aggregating function to \code{.agg_fun}. The aggregation will be done
-after the DCT transform is applied, and will be done
-either formant intrinsically or formant extrinsically based on the
-setting passed to \code{.by_formant}.
 }
 }
 \examples{
