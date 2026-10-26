@@ -10,6 +10,7 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
+  .agg_by = "Pre-aggregation column: { .agg_by}",
   .pre_trans = "Transformation prior to normalization: { .pre_trans}",
   .norm = "{ .norm}",
   .post_trans = "Transformation after normalization: { .post_trans}"
@@ -47,7 +48,6 @@ check_grouping <- function(
       call = call
     )
   }
-
   if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(

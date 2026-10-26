@@ -53,6 +53,11 @@ subtracted from F1 and F2.
 \deqn{
 L_j = F_{3j}
 }
+\subsection{Pre-aggregation}{
+
+As a vowel-intrinsic normalization technique, the Bark differenc methid
+is incompatible with pre-aggregation.
+}
 }
 \examples{
 library(tidynorm)

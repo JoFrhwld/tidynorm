@@ -9,6 +9,8 @@ norm_lobanov(
   ...,
   .by = NULL,
   .by_formant = TRUE,
+  .agg_by = NULL,
+  .agg_fun = function(x) mean(x, na.rm = T),
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
@@ -26,6 +28,11 @@ data columns.}
 columns to group by. Typically a column of speaker IDs.}
 
 \item{.by_formant}{Ignored by this procedure}
+
+\item{.agg_by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
+columns to to pre-aggregate by. Typically a column of vowel category labels.}
+
+\item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
@@ -63,6 +70,16 @@ Where
 \item \eqn{i} is the formant number
 \item \eqn{j} is the token number
 }
+\subsection{Pre-aggregation}{
+
+To address imbalanced data across vowel classes
+(Lobanov 2.0 (Brand et al., 2021)), you can pre-aggregate
+formant values by passing vowel class column(s) to \code{.agg_by}, and
+and an aggregating function to \code{.agg_fun}. The aggregation will be done
+after any \code{.pre_trans} transformation is applied, and will be done
+either formant intrinsically or formant extrinsically based on the
+setting passed to \code{.by_formant}.
+}
 }
 \examples{
 library(tidynorm)
@@ -98,4 +115,9 @@ if (ggplot2_inst) {
 \references{
 Lobanov, B. (1971). Classification of Russian vowels spoken by different listeners.
 Journal of the Acoustical Society of America, 49, 606–608.
+
+Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
+Systematic co-variation of monophthongs across speakers of New Zealand
+English. Journal of Phonetics, 88, 101096.
+\url{https://doi.org/10.1016/j.wocn.2021.101096}
 }
