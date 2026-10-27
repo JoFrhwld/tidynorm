@@ -1,6 +1,15 @@
 # Changelog
 
-## tidynorm (development version)
+## tidynorm 0.5.0
+
+CRAN release: 2026-10-26
+
+### New Features
+
+- You can now pre-aggregate data by vowel category before calculating
+  the normalization parameters with `.agg_by` and `.agg_fun` arguments
+  to all vowel-extrinsic techniques
+  ([\#43](https://github.com/JoFrhwld/tidynorm/issues/43))
 
 ## tidynorm 0.4.1
 

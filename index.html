@@ -34,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tidynorm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
     <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2025/06/2025-06-16_introducing-tidynorm/">v 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2026/10/2026-10-26_tidynorm-0-5-0/">v 0.5.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="news/index.html">Changelog</a></li>
   </ul>
@@ -176,7 +177,8 @@ Plotting Code
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 <details class="code-fold"><summary>
 Plotting Code
 </summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -217,7 +219,8 @@ Plotting Code
 <span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`</span></span>
 <span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; • (.formant - median(.formant, na.rm = T))/(1)</span></span></code></pre></div>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; • (.formant - median(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 <details class="code-fold"><summary>
 Plotting Code
 </summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -279,7 +282,7 @@ Plotting Code
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://CRAN.R-project.org/package=tidynorm" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidynorm" alt="CRAN status"></a></li>
+<li><a href="https://CRAN.R-project.org/package=tidynorm" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidynorm.png" alt="CRAN status"></a></li>
 </ul>
 </div>
 

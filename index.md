@@ -115,6 +115,7 @@ speaker_normalized
 #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
 #> • grouped by `speaker`
 #> • within formant: FALSE
+#> • Transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1)
 ```
 
@@ -171,6 +172,7 @@ speaker_rnearey <- speaker_data |>
 #> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
 #> • grouped by `speaker`
 #> • within formant: FALSE
+#> • Transformation prior to normalization: log
 #> • (.formant - median(.formant, na.rm = T))/(1)
 ```
 
