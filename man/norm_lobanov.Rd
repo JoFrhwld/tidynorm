@@ -119,5 +119,5 @@ Journal of the Acoustical Society of America, 49, 606–608.
 Brand, J., Hay, J., Clark, L., Watson, K., & Sóskuthy, M. (2021).
 Systematic co-variation of monophthongs across speakers of New Zealand
 English. Journal of Phonetics, 88, 101096.
-\url{https://doi.org/10.1016/j.wocn.2021.101096}
+\doi{10.1016/j.wocn.2021.101096}
 }

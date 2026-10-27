@@ -1,5 +1,5 @@
-## v0.4.1
+## v0.5.0
 
-This update eliminates warnings being raised due to an `rlang` update.
+This update adds some new pre-aggregation options.
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
