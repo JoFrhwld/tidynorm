@@ -294,7 +294,8 @@ reframe_with_dct <- function(
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{ .by }})
+  check_by_grouping(.data, {{ .by }})
+  check_any_grouping(.data, {{ .by }})
 
 
   if (quo_is_null(enquo(.time_col)) & options::opt("tidynorm.warnings")) {
@@ -434,7 +435,8 @@ reframe_with_idct <- function(
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{ .by }})
+  check_by_grouping(.data, {{ .by }})
+  check_any_grouping(.data, {{ .by }})
 
   if (quo_is_null(cols$.param_col) & options::opt("tidynorm.warnings")) {
     cli_par()
@@ -586,7 +588,8 @@ reframe_with_dct_smooth <- function(
   }
 
   # make sure groupings are ok
-  check_grouping(.data, {{ .by }})
+  check_by_grouping(.data, {{ .by }})
+  check_any_grouping(.data, {{ .by }})
 
   grouping_list <- make_dct_grouping(
     .data,

@@ -3,7 +3,6 @@
 #' @importFrom stats sd
 #' @import dplyr
 #' @keywords internal
-#' ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
 #' @importFrom Rcpp evalCpp
 #' @useDynLib tidynorm, .registration = TRUE

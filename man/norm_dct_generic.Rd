@@ -12,6 +12,7 @@ norm_dct_generic(
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
   .param_col = NULL,
+  .exclude = NULL,
   .L = 0,
   .S = 1/sqrt(2),
   .by_formant = FALSE,
@@ -41,6 +42,10 @@ columns to to pre-aggregate by. Typically a column of vowel category labels.}
 \item{.agg_fun}{A function to use to pre-aggregate values.}
 
 \item{.param_col}{A column identifying the DCT parameter number.}
+
+\item{.exclude}{A logical column, or expression that evaulates to a logical vector
+identifying rows to exclude from the normalization parameter estimates.
+Any rows with \code{TRUE} are excluded.}
 
 \item{.L}{An expression defining the location parameter.
 See Details for more information.}

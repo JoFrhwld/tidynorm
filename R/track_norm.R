@@ -11,6 +11,9 @@
 #' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to to pre-aggregate by. Typically a column of vowel category labels.
 #' @param .agg_fun A function to use to pre-aggregate values.
+#' @param .exclude A logical column, or expression that evaulates to a logical vector
+#' identifying rows to exclude from the normalization parameter estimates.
+#' Any rows with `TRUE` are excluded.
 #' @param .token_id_col [`<data-masking>`][rlang::args_data_masking] A column
 #' that identifies token ids.
 #' @param .by_formant Whether or not the normalization method is formant
@@ -128,6 +131,7 @@ norm_track_generic <- function(
   .by_token = FALSE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .L = 0,
   .S = 1 / sqrt(2),
@@ -176,7 +180,8 @@ norm_track_generic <- function(
     )
   }
 
-  check_grouping(.data, {{ .by }}, .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   by_pos <- tidyselect::eval_select(enquo(.by), .data)
 
@@ -245,6 +250,7 @@ norm_track_generic <- function(
     .by_token = .by_token,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .param_col = !!sym(".param"),
     .L = {{ .L }},
     .S = {{ .S }},
@@ -335,6 +341,7 @@ norm_track_generic <- function(
   attr(normed_track, "norminfo") <- prev_attr
 
   norm_info <- list(
+    .op = "Normalized",
     .norm_procedure = "tidynorm::norm_track_generic",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
@@ -428,6 +435,7 @@ norm_track_lobanov <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -448,6 +456,7 @@ norm_track_lobanov <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,
@@ -526,6 +535,7 @@ norm_track_nearey <- function(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -546,6 +556,7 @@ norm_track_nearey <- function(
     .by_formant = .by_formant,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .pre_trans = log,
@@ -617,6 +628,7 @@ norm_track_deltaF <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -637,6 +649,7 @@ norm_track_deltaF <- function(
     .by_formant = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }}, 
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = identity,
@@ -703,6 +716,7 @@ norm_track_wattfab <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -723,6 +737,7 @@ norm_track_wattfab <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,

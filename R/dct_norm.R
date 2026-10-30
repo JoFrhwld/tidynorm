@@ -87,6 +87,7 @@ norm_dct_generic <- function(
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
   .param_col = NULL,
+  .exclude = NULL,
   .L = 0,
   .S = 1 / sqrt(2),
   .by_formant = FALSE,
@@ -129,6 +130,12 @@ norm_dct_generic <- function(
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
 
+  exclusion <- expr({{ .exclude }})
+
+  if (quo_is_null(exclusion)) {
+    exclusion <-  expr(FALSE)
+  }
+
   if (!".param_col" %in% args) {
     .param_col <- sym(".param")
   }
@@ -146,7 +153,8 @@ norm_dct_generic <- function(
     )
   }
 
-  check_grouping(.data, {{ .by }}, .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   grouping_list <- make_dct_grouping(
     .data,
@@ -210,7 +218,8 @@ norm_dct_generic <- function(
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2,
-    {{ .param_col }} == min({{ .param_col }})
+    {{ .param_col }} == min({{ .param_col }}),
+    !(!!exclusion)
   )
 
   if (grouped_by & !.by_token) {
@@ -322,6 +331,7 @@ norm_dct_generic <- function(
   attr(normed, "norminfo") <- prev_attr
   attr(normed, "normalized") <- TRUE
   norm_info <- list(
+    .op = "Normalized",
     .norm_procedure = "tidynorm::norm_dct_generic",
     .by_col = .by_formant,
     .targets = names(target_pos),
@@ -410,6 +420,7 @@ norm_dct_lobanov <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .names = "{.formant}_z",
   .silent = opt("tidynorm.silent"),
@@ -429,6 +440,7 @@ norm_dct_lobanov <- function(
     .by_token = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},
@@ -509,6 +521,7 @@ norm_dct_nearey <- function(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_lm",
@@ -528,6 +541,7 @@ norm_dct_nearey <- function(
     .by_token = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},    
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .param_col = {{ .param_col }},
@@ -595,6 +609,7 @@ norm_dct_deltaF <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_df",
@@ -613,6 +628,7 @@ norm_dct_deltaF <- function(
     .agg_fun = .agg_fun,
     .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
+    .exclude = {{ .exclude }},    
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .param_col = {{ .param_col }},
@@ -683,6 +699,7 @@ norm_dct_wattfab <- function(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_wf",
@@ -701,6 +718,7 @@ norm_dct_wattfab <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},    
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},

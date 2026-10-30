@@ -16,6 +16,7 @@ norm_generic(
   .S = 1,
   .pre_trans = identity,
   .post_trans = identity,
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_n",
@@ -52,6 +53,10 @@ See Details for more information.}
 \item{.pre_trans}{A function to apply to formant values before normalization.}
 
 \item{.post_trans}{A function to apply to formant values after normalization.}
+
+\item{.exclude}{A logical column, or expression that evaulates to a logical vector
+identifying rows to exclude from the normalization parameter estimates.
+Any rows with \code{TRUE} are excluded.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 
