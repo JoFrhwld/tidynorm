@@ -95,7 +95,7 @@ theme_set(
 #| fig-alt: |
 #|   A two dimensional density plot of speakers s01 and s02's vowel
 #|   formant data. They are both roughly triangular, but s02's
-#|   vowel space is smaller, and shifted up and back relative to 
+#|   vowel space is smaller, and shifted up and back relative to
 #|   s01's.
 #| fig-align: center
 #| out-width: 80%

@@ -48,18 +48,18 @@ options::define_option(
 #'
 #' speaker_data |>
 #'   norm_generic(F1:F3) ->
-#'   norm1
+#' norm1
 #'
 #' tidynorm_options(.silent = FALSE, .warnings = TRUE)
 #'
 #' speaker_data |>
 #'   norm_generic(F1:F3) ->
-#'   norm2
+#' norm2
 #'
 tidynorm_options <- function(
-    .silent = opt("tidynorm.silent"),
-    .warnings = opt("tidynorm.warnings")
-){
+  .silent = opt("tidynorm.silent"),
+  .warnings = opt("tidynorm.warnings")
+) {
   options::opt_set("tidynorm.silent", .silent)
   options::opt_set("tidynorm.warnings", .warnings)
 }

@@ -36,6 +36,5 @@ test_that(
       expected_infos,
       names(last_norm)
     )
-
   }
 )

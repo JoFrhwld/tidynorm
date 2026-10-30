@@ -1,4 +1,4 @@
-test_that("original formants aren't transformed",{
+test_that("original formants aren't transformed", {
   orig_f1 <- speaker_data$F1
   log_f1 <- log(speaker_data$F1)
 
@@ -13,5 +13,4 @@ test_that("original formants aren't transformed",{
 
   expect_equal(orig_f1, lnorm$F1, ignore_attr = TRUE)
   expect_equal(log_f1, lnorm$F1_n, ignore_attr = TRUE)
-}
-)
+})
