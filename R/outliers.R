@@ -49,12 +49,9 @@ identify_outliers <- function(
 
   .data <- dplyr::mutate(
     .data,
-    .id = dplyr::row_number()
-  ) |>
-    dplyr::relocate(
-      !!sym(".id"),
-      .before = 1
-    )
+    .id = dplyr::row_number(),
+    .before = 1
+  ) 
 
   # see if the data is grouped
   grouped_by <- dplyr::group_vars(
@@ -153,7 +150,15 @@ identify_outliers <- function(
     mutate(
       outlier = !!sym("prob") > .level
     )
+  
+  if (length(grouped_by) > 0) {
+    .data <- .data |>
+      ungroup(!!sym(".id"))
+  }
 
+  .data <- .data |>
+    select(-!!sym(".id"))
+  
   norm_info <- list(
       .op = "Outliers identified along",
       .targets = names(target_pos),

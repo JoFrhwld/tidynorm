@@ -1,13 +1,8 @@
 norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
-<<<<<<< HEAD
   .targets = "{ .op} {.var { .targets}}",
   .f3  = "{.var { .f3}} used for third formant.",
-=======
-  .targets = "normalized {.var { .targets}}",
-  .f3 = "{.var { .f3}} used for third formant.",
->>>>>>> dev
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
   .time_col = "time column: {.var { .time_col}}",
@@ -34,7 +29,6 @@ number_names <- c(
   fifth = 5
 )
 
-<<<<<<< HEAD
 #' check grouping
 #' @description
 #'  Check for any incompatible .by definition with a grouped
@@ -45,13 +39,6 @@ check_by_grouping <- function(
     .data,
     .by,
     call = caller_env()) {
-=======
-check_grouping <- function(
-  .data,
-  .by,
-  call = caller_env()
-) {
->>>>>>> dev
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
     tidyselect::eval_select(enquo(.by), .data),

@@ -123,13 +123,8 @@ norm_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-<<<<<<< HEAD
   check_by_grouping(.data, {{ .by }}, call = .call)
   check_any_grouping(.data, {{ .by }}, call = .call)
-=======
-  check_grouping(.data, {{ .by }}, call = .call)
-  # check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
->>>>>>> dev
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
