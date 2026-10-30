@@ -1,5 +1,6 @@
 test_that(
-  "point barkz errors on no f3", {
+  "point barkz errors on no f3",
+  {
     expect_error(
       speaker_data |> norm_barkz(F1:F2, .by = speaker)
     )
@@ -16,7 +17,8 @@ test_that(
 
 
 test_that(
-  "track barkz errors on no f3", {
+  "track barkz errors on no f3",
+  {
     expect_error(
       speaker_tracks |> norm_track_barkz(
         F1:F2,

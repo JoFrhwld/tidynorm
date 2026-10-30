@@ -1,5 +1,4 @@
-are_names_aligned <- function(orig_cols, new_cols){
-
+are_names_aligned <- function(orig_cols, new_cols) {
   orig_check <- seq_along(orig_cols) |>
     set_names(orig_cols)
   new_check <- seq_along(new_cols) |>
@@ -40,7 +39,6 @@ test_that(
     norm_data <- formant_start |> norm_generic(F1:F3, .by = speaker, .silent = T)
     new_cols <- colnames(norm_data)
     are_names_aligned(orig_cols, new_cols)
-
   }
 )
 
@@ -56,7 +54,7 @@ test_that(
       .token_id_col = id,
       .time_col = t,
       .silent = TRUE
-      )
+    )
     new_cols <- colnames(norm_data)
     are_names_aligned(orig_cols, new_cols)
 
@@ -74,7 +72,8 @@ test_that(
     # formant first with time col
     formant_first <- speaker_tracks |>
       relocate(
-        F1:F3, .before = 1
+        F1:F3,
+        .before = 1
       )
 
     orig_cols <- colnames(formant_first)
@@ -97,10 +96,7 @@ test_that(
     )
     new_cols <- colnames(norm_data)
     are_names_aligned(orig_cols, new_cols)
-
   }
-
-
 )
 
 test_that(
@@ -115,7 +111,8 @@ test_that(
         F1:F3,
         .time_col = t,
         .token_id_col = id,
-        .by = speaker) |>
+        .by = speaker
+      ) |>
       reframe_with_idct(
         F1:F3,
         .param_col = .param,
@@ -130,6 +127,5 @@ test_that(
       which(new_names == "F1_s"),
       3
     )
-
   }
 )

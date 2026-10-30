@@ -89,23 +89,23 @@
 #'
 #' @export
 norm_generic <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .by_formant = FALSE,
-    .by_token = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .L = 0,
-    .S = 1,
-    .pre_trans = identity,
-    .post_trans = identity,
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_n",
-    .silent = opt("tidynorm.silent"),
-    .call = caller_env()) {
-
+  .data,
+  ...,
+  .by = NULL,
+  .by_formant = FALSE,
+  .by_token = FALSE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .L = 0,
+  .S = 1,
+  .pre_trans = identity,
+  .post_trans = identity,
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_n",
+  .silent = opt("tidynorm.silent"),
+  .call = caller_env()
+) {
   if (env_name(.call) == "global") {
     .call <- rlang::current_env()
   }
@@ -124,7 +124,7 @@ norm_generic <- function(
   prev_attr <- attributes(.data)$norminfo
 
   check_grouping(.data, {{ .by }}, call = .call)
-  #check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
+  # check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
@@ -201,15 +201,12 @@ norm_generic <- function(
 
   if (!rlang::quo_is_null(agg_grouping)) {
     if (length(grouped_by > 0)) {
-       norm_params <- .data |>
-         tidyr::unite(
-           ".agg",
-           {{ .agg_by }}
-         ) |>
-         group_by(
-           !!sym(".agg"),
-           .add = TRUE
-         ) |>
+      norm_params <- .data |>
+        tidyr::unite(".agg", {{ .agg_by }}) |>
+        group_by(
+          !!sym(".agg"),
+          .add = TRUE
+        ) |>
         summarise(
           .formant = .agg_fun(!!sym(".formant"))
         ) |>
@@ -238,11 +235,11 @@ norm_generic <- function(
       )
     } else {
       norm_params <- dplyr::summarise(
-          .data,
-          .by = !!norm_grouping,
-          .L = {{ .L }},
-          .S = {{ .S }}
-        )
+        .data,
+        .by = !!norm_grouping,
+        .L = {{ .L }},
+        .S = {{ .S }}
+      )
     }
   }
 
@@ -253,7 +250,7 @@ norm_generic <- function(
     )
   )
 
-  if (length(param_joining) == 0){
+  if (length(param_joining) == 0) {
     .data <- dplyr::cross_join(
       .data,
       norm_params
@@ -293,7 +290,8 @@ norm_generic <- function(
     .data,
     names_from = !!sym(".formant_name"),
     values_from = c(
-      tidyselect::starts_with(".formant") & !tidyselect::all_of(".formant_name"),
+      tidyselect::starts_with(".formant") &
+        !tidyselect::all_of(".formant_name"),
       tidyselect::any_of(c(".L", ".S"))
     ),
     names_glue = "{.formant_name}_{.value}"
@@ -335,7 +333,9 @@ norm_generic <- function(
     .norm_procedure = "tidynorm::norm_generic",
     .pre_trans = as.character(substitute(.pre_trans)),
     .post_trans = as.character(substitute(.post_trans)),
-    .norm = glue::glue("(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})")
+    .norm = glue::glue(
+      "(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})"
+    )
   )
 
   if (.by_token) {
@@ -395,7 +395,7 @@ norm_generic <- function(
 #' To address imbalanced data across vowel classes
 #' (Lobanov 2.0 (Brand et al., 2021)), you can pre-aggregate
 #' formant values by passing vowel class column(s) to `.agg_by`, and
-#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
 #' after any `.pre_trans` transformation is applied, and will be done
 #' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
@@ -416,16 +416,17 @@ norm_generic <- function(
 #' @importFrom options opt
 #' @export
 norm_lobanov <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .by_formant = TRUE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_z",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .by = NULL,
+  .by_formant = TRUE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_z",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -436,7 +437,7 @@ norm_lobanov <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .agg_by = {{.agg_by}},
+    .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
@@ -491,7 +492,7 @@ norm_lobanov <- function(
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' formant values by passing vowel class column(s) to `.agg_by`, and
-#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
 #' after any `.pre_trans` transformation is applied, and will be done
 #' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
@@ -506,16 +507,17 @@ norm_lobanov <- function(
 #' University of Alberta.
 #' @export
 norm_nearey <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .by_formant = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_lm",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .by = NULL,
+  .by_formant = FALSE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_lm",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -526,7 +528,7 @@ norm_nearey <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .agg_by = {{.agg_by}},
+    .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
     .pre_trans = log,
     .post_trans = identity,
@@ -572,7 +574,7 @@ norm_nearey <- function(
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' formant values by passing vowel class column(s) to `.agg_by`, and
-#'and an aggregating function to `.agg_fun`. The aggregation will be done
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
 #' after any `.pre_trans` transformation is applied, and will be done
 #' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
@@ -589,16 +591,17 @@ norm_nearey <- function(
 #'
 #' @export
 norm_deltaF <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .by_formant = FALSE,
-    .agg_by = NULL,
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_df",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .by_formant = FALSE,
+  .agg_by = NULL,
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_df",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -609,7 +612,7 @@ norm_deltaF <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .agg_by = {{.agg_by}},
+    .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
@@ -677,16 +680,17 @@ norm_deltaF <- function(
 #'
 #' @export
 norm_wattfab <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .by_formant = TRUE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_wf",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .by = NULL,
+  .by_formant = TRUE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_wf",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -697,7 +701,7 @@ norm_wattfab <- function(
     .data,
     !!targets,
     .by = {{ .by }},
-    .agg_by = {{.agg_by}},
+    .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
@@ -754,13 +758,14 @@ norm_wattfab <- function(
 #' @example inst/examples/ex-norm_barkz.R
 #' @export
 norm_barkz <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .drop_orig = FALSE,
-    .keep_params = FALSE,
-    .names = "{.formant}_bz",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .by = NULL,
+  .drop_orig = FALSE,
+  .keep_params = FALSE,
+  .names = "{.formant}_bz",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -769,7 +774,7 @@ norm_barkz <- function(
   target_pos <- tidyselect::eval_select(targets, .data)
   formant_nums <- name_to_formant_num(names(target_pos))
 
-  if (length(target_pos) < 3 ) {
+  if (length(target_pos) < 3) {
     cli_abort(
       message = c(
         "{.fn tidynorm::norm_barkz} requires F3."
