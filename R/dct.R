@@ -264,12 +264,13 @@ idct_accel <- function(y, n = length(y)) {
 #' @example inst/examples/ex-reframe_with_dct.R
 #' @export
 reframe_with_dct <- function(
-    .data,
-    ...,
-    .token_id_col = NULL,
-    .by = NULL,
-    .time_col = NULL,
-    .order = 5) {
+  .data,
+  ...,
+  .token_id_col = NULL,
+  .by = NULL,
+  .time_col = NULL,
+  .order = 5
+) {
   targets <- expr(...)
   target_pos <- tidyselect::eval_select(targets, .data)
 
@@ -405,14 +406,15 @@ reframe_with_dct <- function(
 #'
 #' @export
 reframe_with_idct <- function(
-    .data,
-    ...,
-    .token_id_col = NULL,
-    .by = NULL,
-    .param_col = NULL,
-    .n = 20,
-    .rate = FALSE,
-    .accel = FALSE) {
+  .data,
+  ...,
+  .token_id_col = NULL,
+  .by = NULL,
+  .param_col = NULL,
+  .n = 20,
+  .rate = FALSE,
+  .accel = FALSE
+) {
   targets <- expr(c(...))
   cols <- enquos(
     .token_id_col = .token_id_col,
@@ -557,14 +559,15 @@ reframe_with_idct <- function(
 #'
 #' @export
 reframe_with_dct_smooth <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .time_col = NULL,
-    .order = 5,
-    .rate = FALSE,
-    .accel = FALSE) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .rate = FALSE,
+  .accel = FALSE
+) {
   targets <- expr(...)
   cols <- enquos(
     .token_id_col = .token_id_col,
