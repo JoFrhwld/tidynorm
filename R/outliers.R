@@ -116,7 +116,7 @@ identify_outliers <- function(
       by = c(names(group_pos), grouped_by)
     ) |>
     dplyr::mutate(
-      mahal = purrr::pmap(
+      .mahal = purrr::pmap(
         list(
           !!sym("data"),
           !!sym("mus"),
@@ -129,12 +129,12 @@ identify_outliers <- function(
       {{ .by }},
       grouped_by,
       !!sym(".id"),
-      !!sym("mahal")
+      !!sym(".mahal")
     ) |>
-    tidyr::unnest(!!sym("mahal")) |>
+    tidyr::unnest(!!sym(".mahal")) |>
     mutate(
-      prob = stats::pchisq(
-        !!sym("mahal"),
+      .prob = stats::pchisq(
+        !!sym(".mahal"),
         df = length(target_pos)
       )
     ) -> dists
@@ -145,7 +145,7 @@ identify_outliers <- function(
       by = c(names(group_pos), grouped_by, ".id")
     ) |>
     mutate(
-      outlier = !!sym("prob") > .level
+      .outlier = !!sym(".prob") > .level
     )
 
   if (length(grouped_by) > 0) {
@@ -308,7 +308,7 @@ identify_dct_outliers <- function(
       by = c(names(group_pos), grouped_by)
     ) |>
     dplyr::mutate(
-      mahal = purrr::pmap(
+      .mahal = purrr::pmap(
         list(
           !!sym("data"),
           !!sym("mus"),
@@ -321,12 +321,12 @@ identify_dct_outliers <- function(
       {{ .by }},
       grouped_by,
       {{ .token_id_col }},
-      !!sym("mahal")
+      !!sym(".mahal")
     ) |>
-    tidyr::unnest(!!sym("mahal")) |>
+    tidyr::unnest(!!sym(".mahal")) |>
     mutate(
-      prob = stats::pchisq(
-        !!sym("mahal"),
+      .prob = stats::pchisq(
+        !!sym(".mahal"),
         df = ncol(params[["Sigma"]][[1]])
       )
     ) -> dists
@@ -337,7 +337,7 @@ identify_dct_outliers <- function(
       by = c(names(group_pos), grouped_by, names(token_pos))
     ) |>
     mutate(
-      outlier = !!sym("prob") > .level
+      .outlier = !!sym(".prob") > .level
     )
 
   norm_info <- list(
