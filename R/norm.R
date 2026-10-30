@@ -187,7 +187,6 @@ norm_generic <- function(
   if (quo_is_null(exclusion)) {
     exclusion <-  expr(FALSE)
   }
-  print("jawn")
 
   if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
