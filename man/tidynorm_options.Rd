@@ -22,13 +22,13 @@ tidynorm_options(.silent = TRUE, .warnings = FALSE)
 
 speaker_data |>
   norm_generic(F1:F3) ->
-  norm1
+norm1
 
 tidynorm_options(.silent = FALSE, .warnings = TRUE)
 
 speaker_data |>
   norm_generic(F1:F3) ->
-  norm2
+norm2
 
 }
 \seealso{

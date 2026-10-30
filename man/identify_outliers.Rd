@@ -8,7 +8,7 @@ identify_outliers(
   .data,
   ...,
   .by = NULL,
-  .pre_trans = function(x) x,
+  .pre_trans = identity,
   .level = 0.99,
   .call = caller_env(),
   .silent = opt("tidynorm.silent")
