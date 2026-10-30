@@ -1,5 +1,19 @@
 # tidynorm (development version)
 
+# tidynorm 0.5.0
+
+## New Features
+
+* You can now pre-aggregate data by vowel category before calculating the 
+  normalization parameters with `.agg_by` and `.agg_fun` arguments to all
+  vowel-extrinsic techniques (#43)
+
+# tidynorm 0.4.1
+
+## Minor bug fixes
+
+* Updates how `checkmate::check_character()` is imported (#32, #34)
+
 # tidynorm 0.4.0
 
 ## New features

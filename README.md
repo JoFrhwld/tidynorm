@@ -8,7 +8,7 @@
 
 [![R-CMD-check](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoFrhwld/tidynorm/actions/workflows/R-CMD-check.yaml)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/tidynorm)](https://CRAN.R-project.org/package=tidynorm)
+status](https://www.r-pkg.org/badges/version/tidynorm.png)](https://CRAN.R-project.org/package=tidynorm)
 
 <!-- badges: end -->
 
@@ -128,6 +128,7 @@ speaker_normalized
     #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
     #> • grouped by `speaker`
     #> • within formant: FALSE
+    #> • Transformation prior to normalization: log
     #> • (.formant - mean(.formant, na.rm = T))/(1)
 
 <details class="code-fold">
@@ -184,6 +185,7 @@ speaker_rnearey <- speaker_data |>
     #> • normalized values in `F1_rnearey`, `F2_rnearey`, and `F3_rnearey`
     #> • grouped by `speaker`
     #> • within formant: FALSE
+    #> • Transformation prior to normalization: log
     #> • (.formant - median(.formant, na.rm = T))/(1)
 
 <details class="code-fold">

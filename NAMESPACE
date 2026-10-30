@@ -40,10 +40,15 @@ export(tidynorm_options)
 import(cli)
 import(dplyr)
 import(rlang)
-importFrom(Rcpp,evalCpp)
-importFrom(Rcpp,sourceCpp)
+importFrom(Rcpp,
+  evalCpp,
+  sourceCpp
+)
 importFrom(checkmate,check_character)
 importFrom(options,opt)
-importFrom(rlang,`!!`)
+importFrom(rlang,
+  "!!",
+  env_name
+)
 importFrom(stats,sd)
 useDynLib(tidynorm, .registration = TRUE)

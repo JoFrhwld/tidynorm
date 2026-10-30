@@ -64,6 +64,14 @@
 #' uniquely identifies (or, in combination with a `.by` grouping, uniquely
 #' identifies) each individual token. This column should be passed to
 #' `.token_id_col`.
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
 #'
 #' @returns
 #' A data frame of normalized DCT coefficients.
@@ -76,6 +84,8 @@ norm_dct_generic <- function(
     ...,
     .token_id_col,
     .by = NULL,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),
     .param_col = NULL,
     .L = 0,
     .S = 1 / sqrt(2),
@@ -113,6 +123,11 @@ norm_dct_generic <- function(
     data = .data
   )
 
+  agg_pos <- try_fetch(
+    tidyselect::eval_select(enquo(.agg_by), data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
   if (!".param_col" %in% args) {
     .param_col <- sym(".param")
   }
@@ -124,7 +139,7 @@ norm_dct_generic <- function(
   )
 
   for (x in cols) {
-    try_fetch(
+    rlang::try_fetch(
       tidyselect::eval_select(x, data = .data),
       error = \(cnd) selection_errors(cnd)
     )
@@ -157,6 +172,7 @@ norm_dct_generic <- function(
     )
 
   grouped_by <- length(dplyr::group_vars(.dct_data)) > 0
+  agg_grouping <- expr({{ .agg_by }})
 
   # augment grouping as necessary to
   # match .by_formant
@@ -190,7 +206,7 @@ norm_dct_generic <- function(
     by_grouping2 <- by_grouping
     by_grouping_noid <- expr({{ .by }})
   }
-
+  
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2,
@@ -208,13 +224,47 @@ norm_dct_generic <- function(
     keepit <- NULL
   }
 
-  norm_params <- zeroth |>
-    dplyr::summarise(
-      .by = !!by_grouping_noid,
-      .L = {{ .L }},
-      .S = {{ .S }} * sqrt(2),
-      .groups = keepit
-    )
+  if (!rlang::quo_is_null(agg_grouping)) {
+    if (grouped_by) {
+      norm_params <- zeroth |>
+         tidyr::unite(
+           ".agg",
+           {{ .agg_by }}
+         ) |>
+         dplyr::group_by(
+           !!sym(".agg"),
+           .add = TRUE
+         ) |>
+        dplyr::summarise(
+          .formant = .agg_fun(!!sym(".formant"))
+        ) |>
+        dplyr::summarise(
+          .L = {{ .L }},
+          .S = {{ .S }} * sqrt(2),
+          .groups = keepit
+        )
+    } else {
+      norm_params <- dplyr::summarise(
+         zeroth,
+        .by = c(!!by_grouping_noid, !!agg_grouping),
+        .formant = .agg_fun(!!sym(".formant")),
+      ) |>
+        dplyr::summarise(
+          .by = c(!!by_grouping_noid),
+          .L = {{ .L }},
+          .S = {{ .S }} * sqrt(2),
+          .groups = keepit
+        )      
+    } 
+  } else {
+    norm_params <- zeroth |>
+      dplyr::summarise(
+        .by = !!by_grouping_noid,
+        .L = {{ .L }},
+        .S = {{ .S }} * sqrt(2),
+        .groups = keepit
+      ) 
+  }
 
   param_joining <- c(
     dplyr::group_vars(norm_params),
@@ -291,6 +341,16 @@ norm_dct_generic <- function(
     )
   }
 
+  if (!quo_is_null(agg_grouping)) {
+    norm_info <- c(
+      norm_info,
+      list(
+        .agg_by = names(agg_pos)
+      )
+    )
+  }
+
+
   normed <- append_norm_info(
     normed,
     norm_info
@@ -327,6 +387,14 @@ norm_dct_generic <- function(
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
 #'
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Lobanov normalized DCT Coefficients.
 #'
@@ -341,6 +409,8 @@ norm_dct_lobanov <- function(
     ...,
     .token_id_col,
     .by = NULL,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),    
     .param_col = NULL,
     .names = "{.formant}_z",
     .silent = opt("tidynorm.silent"),
@@ -357,6 +427,8 @@ norm_dct_lobanov <- function(
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
     .by_token = FALSE,
+    .agg_by = {{ .agg_by }},
+    .agg_fun = .agg_fun,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},
@@ -411,7 +483,15 @@ norm_dct_lobanov <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Nearey normalized DCT coefficients
 #'
@@ -427,6 +507,8 @@ norm_dct_nearey <- function(
     .token_id_col,
     .by = NULL,
     .by_formant = FALSE,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),   
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_lm",
@@ -443,6 +525,8 @@ norm_dct_nearey <- function(
     .token_id_col = {{ .token_id_col }},
     .by_formant = .by_formant,
     .by_token = FALSE,
+    .agg_by = {{ .agg_by }},
+    .agg_fun = .agg_fun,
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .param_col = {{ .param_col }},
@@ -484,7 +568,14 @@ norm_dct_nearey <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
 #' @returns
 #' A data frame of Delta F normalized DCT coefficients.
 #'
@@ -501,6 +592,8 @@ norm_dct_deltaF <- function(
     ...,
     .token_id_col,
     .by = NULL,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),       
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_df",
@@ -514,6 +607,8 @@ norm_dct_deltaF <- function(
     .data,
     !!targets,
     .by = {{ .by }},
+    .agg_by = {{ .agg_by }},
+    .agg_fun = .agg_fun,
     .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
     .L = 0,
@@ -560,7 +655,15 @@ norm_dct_deltaF <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#'
+#' 
+#' ### Pre-aggregation
+#' To address imbalanced data across vowel classes, you can pre-aggregate
+#' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
+#' and an aggregating function to `.agg_fun`. The aggregation will be done
+#' after the DCT transform is applied, and will be done
+#' either formant intrinsically or formant extrinsically based on the
+#' setting passed to `.by_formant`.
+#' 
 #' @returns
 #' A data frame of Watt & Fabricius normalized DCT coefficients.
 #'
@@ -576,6 +679,8 @@ norm_dct_wattfab <- function(
     ...,
     .token_id_col,
     .by = NULL,
+    .agg_by = NULL,
+    .agg_fun = \(x) mean(x, na.rm = T),       
     .param_col = NULL,
     .drop_orig = FALSE,
     .names = "{.formant}_wf",
@@ -591,6 +696,8 @@ norm_dct_wattfab <- function(
     .by = {{ .by }},
     .token_id_col = {{ .token_id_col }},
     .by_formant = TRUE,
+    .agg_by = {{ .agg_by }},
+    .agg_fun = .agg_fun,
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},
