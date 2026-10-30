@@ -11,6 +11,9 @@
 #' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to to pre-aggregate by. Typically a column of vowel category labels.
 #' @param .agg_fun A function to use to pre-aggregate values.
+#' @param .exclude A logical column, or expression that evaulates to a logical vector
+#' identifying rows to exclude from the normalization parameter estimates.
+#' Any rows with `TRUE` are excluded.
 #' @param .token_id_col [`<data-masking>`][rlang::args_data_masking] A column
 #' that identifies token ids.
 #' @param .by_formant Whether or not the normalization method is formant
@@ -128,6 +131,7 @@ norm_track_generic <- function(
   .by_token = FALSE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .L = 0,
   .S = 1 / sqrt(2),
