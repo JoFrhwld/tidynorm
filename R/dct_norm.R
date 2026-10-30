@@ -166,9 +166,6 @@ norm_dct_generic <- function(
   joining <- grouping_list$joining
 
   .dct_data <- .data |>
-    dplyr::filter(
-      !(!!exclusion)
-    ) |>
     tidyr::pivot_longer(
       cols = !!targets,
       names_to = ".formant_name",
@@ -221,7 +218,8 @@ norm_dct_generic <- function(
   zeroth <- dplyr::filter(
     .dct_data,
     .by = !!by_grouping2,
-    {{ .param_col }} == min({{ .param_col }})
+    {{ .param_col }} == min({{ .param_col }}),
+    !(!!exclusion)
   )
 
   if (grouped_by & !.by_token) {
