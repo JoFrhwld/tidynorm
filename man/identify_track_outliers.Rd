@@ -36,16 +36,16 @@ columns to group by. Typically a column of speaker IDs.}
 
 \item{.order}{The number of DCT parameters to use.}
 
-\item{.pre_trans}{A function to apply to formant values before normalization.}
+\item{.level}{Probability level above which tokens are labelled as outliers.}
 
-\item{.return_dct}{Whether or not the normalized DCT coefficients themselves
-should be returned.}
+\item{.pre_trans}{A function to apply to formant values before outlier detection.}
+
+\item{.return_dct}{Whether or not to return the DCT coefficients with their
+marked outlier status.}
 
 \item{.call}{Used for internal purposes.}
 
 \item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
-
-\item{level}{Probability level above which tokens are labelled as outliers.}
 }
 \description{
 Identify Track Outliers

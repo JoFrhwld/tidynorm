@@ -30,11 +30,11 @@ columns to group by. Typically a column of speaker IDs.}
 
 \item{.param_col}{A column identifying the DCT parameter number.}
 
+\item{.level}{Probability level above which tokens are labelled as outliers.}
+
 \item{.call}{Used for internal purposes.}
 
 \item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
-
-\item{level}{Probability level above which tokens are labelled as outliers.}
 }
 \description{
 Identify DCT Outliers
