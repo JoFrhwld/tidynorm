@@ -7,15 +7,14 @@ safe_mahal <- purrr::safely(stats::mahalanobis, otherwise = NA)
 #' @eval options::as_params(".silent" = "tidynorm.silent")
 #' @export
 identify_outliers <- function(
-    .data,
-    ...,
-    .by = NULL,
-    .pre_trans = identity,
-    .level = 0.99,
-    .call = caller_env(),
-    .silent = opt("tidynorm.silent")
-    ) {
-
+  .data,
+  ...,
+  .by = NULL,
+  .pre_trans = identity,
+  .level = 0.99,
+  .call = caller_env(),
+  .silent = opt("tidynorm.silent")
+) {
   if (env_name(.call) == "global") {
     .call <- current_env()
   }
@@ -51,7 +50,7 @@ identify_outliers <- function(
     .data,
     .id = dplyr::row_number(),
     .before = 1
-  ) 
+  )
 
   # see if the data is grouped
   grouped_by <- dplyr::group_vars(
@@ -89,8 +88,7 @@ identify_outliers <- function(
     ) |>
     select(
       -!!sym("data")
-    ) ->
-    params
+    ) -> params
 
   if (length(grouped_by > 0)) {
     .data <- dplyr::group_by(
@@ -112,7 +110,7 @@ identify_outliers <- function(
     summarise(
       .by = !!norm_grouping,
       data = list(!!sym("value"))
-    )  |>
+    ) |>
     left_join(
       params,
       by = c(names(group_pos), grouped_by)
@@ -128,7 +126,7 @@ identify_outliers <- function(
       )
     ) |>
     select(
-      {{.by}},
+      {{ .by }},
       grouped_by,
       !!sym(".id"),
       !!sym("mahal")
@@ -139,8 +137,7 @@ identify_outliers <- function(
         !!sym("mahal"),
         df = length(target_pos)
       )
-    ) ->
-    dists
+    ) -> dists
 
   .data <- .data |>
     left_join(
@@ -150,7 +147,7 @@ identify_outliers <- function(
     mutate(
       outlier = !!sym("prob") > .level
     )
-  
+
   if (length(grouped_by) > 0) {
     .data <- .data |>
       ungroup(!!sym(".id"))
@@ -158,12 +155,12 @@ identify_outliers <- function(
 
   .data <- .data |>
     select(-!!sym(".id"))
-  
+
   norm_info <- list(
-      .op = "Outliers identified along",
-      .targets = names(target_pos),
-      .by = c(names(group_pos), grouped_by),
-      .level = .level
+    .op = "Outliers identified along",
+    .targets = names(target_pos),
+    .by = c(names(group_pos), grouped_by),
+    .level = .level
   )
 
   attr(.data, "norminfo") <- prev_attr
