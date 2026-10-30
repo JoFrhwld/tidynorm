@@ -3,7 +3,7 @@ safe_mahal <- purrr::safely(stats::mahalanobis, otherwise = NA)
 
 #' Identify Outliers
 #' @inheritParams norm_generic
-#' @param level Probability level above which tokens are labelled as outliers.
+#' @param .level Probability level above which tokens are labelled as outliers.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
 #' @export
 identify_outliers <- function(
@@ -176,8 +176,8 @@ identify_outliers <- function(
 }
 
 #' Identify DCT Outliers
-#' @inheritParams norm_generic
-#' @param level Probability level above which tokens are labelled as outliers.
+#' @inheritParams norm_dct_generic
+#' @param .level Probability level above which tokens are labelled as outliers.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
 #' @export
 identify_dct_outliers <- function(
@@ -338,6 +338,166 @@ identify_dct_outliers <- function(
     ) |>
     mutate(
       .outlier = !!sym(".prob") > .level
+    )
+
+  norm_info <- list(
+    .op = "Outliers identified along",
+    .targets = names(target_pos),
+    .by = c(names(group_pos), grouped_by),
+    .level = .level
+  )
+
+  attr(.data, "norminfo") <- prev_attr
+  .data <- append_norm_info(
+    .data,
+    norm_info
+  )
+
+  wrap_up(.data, .silent)
+
+  .data
+}
+
+#' Identify Track Outliers
+#' @inheritParams norm_track_generic
+#' @param .level Probability level above which tokens are labelled as outliers.
+#' @param .pre_trans A function to apply to formant values before outlier detection.
+#' @param .return_dct Whether or not to return the DCT coefficients with their
+#' marked outlier status.
+#' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @export
+identify_track_outliers <- function(
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .level = 0.99,
+  .pre_trans = identity,
+  .return_dct = FALSE,
+  .call = caller_env(),
+  .silent = opt("tidynorm.silent")
+) {
+  if (env_name(.call) == "global") {
+    .call <- current_env()
+  }
+
+  # preserve any previous normalization info
+  prev_attr <- attributes(.data)$norminfo
+
+  # check if any arguments should have been dotted
+  args <- names(call_match())
+  fmls <- names(fn_fmls())
+  check_args(args, fmls, .call)
+
+  # capture target columns
+  targets <- expr(c(...))
+
+  cols <- enquos(
+    .by = .by,
+    .token_id_col = .token_id_col,
+    .time_col = .time_col
+  )
+
+  for (x in cols) {
+    try_fetch(
+      tidyselect::eval_select(x, data = .data),
+      error = \(cnd) selection_errors(cnd)
+    )
+  }  
+
+  # check if there was inappropriate grouping,
+  # or a missing grouping
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
+
+  # grouping <- rlang::enquo(.by)
+  group_pos <- tidyselect::eval_select(
+    enquo(.by),
+    data = .data
+  )
+
+  target_pos <- try_fetch(
+    tidyselect::eval_select(targets, data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
+  token_pos <- try_fetch(
+    tidyselect::eval_select(enquo(.token_id_col), data = .data),
+    error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
+  )
+
+  if (length(token_pos) == 0) {
+    cli::cli_abort(
+      "Must supply {.arg .token_id_col}"
+    )
+  }
+
+  time_pos <- tidyselect::eval_select(
+    expr({{ .time_col }}), 
+    .data
+  )
+
+  # see if the data is grouped
+  grouped_by <- dplyr::group_vars(
+    .data
+  )
+
+  norm_grouping <- expr({{ .by }})
+
+  .dct_data <- .data |>
+    dplyr::mutate(
+      across(
+        !!targets,
+        .fns = \(x) .pre_trans(x)
+      )
+    ) |>
+    reframe_with_dct(
+      !!targets,
+      .token_id_col = {{ .token_id_col }},
+      .by =  {{ .by }},
+      .time_col = {{ .time_col }},
+      .order = .order
+    )
+  
+  .dct_data <- .dct_data |>
+    identify_dct_outliers(
+      !!targets,
+      .token_id_col = {{ .token_id_col }},
+      .by = {{ .by }},
+      .param_col = !!sym(".param"),
+      .level = .level,
+      .silent = TRUE,
+      .call = current_env()
+    )
+  
+  if (.return_dct) {
+    wrap_up(.dct_data, .silent)
+    return(.dct_data)
+  }
+  
+  .dct_data |>
+    filter(.param == 0) |>
+    select(
+      {{.by}},
+      {{.token_id_col}},
+      !!sym(".mahal"),
+      !!sym(".prob"),      
+      !!sym(".outlier")      
+    ) ->
+    outliers
+  
+  joining_cols <- outliers |>
+    colnames() |>
+    purrr::discard(
+      \(x) x %in% c(".mahal", ".prob", ".outlier")
+    )
+  
+  .data <- .data |>
+    left_join(
+      outliers,
+      by = joining_cols
     )
 
   norm_info <- list(

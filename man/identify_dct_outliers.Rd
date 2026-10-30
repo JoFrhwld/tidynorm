@@ -16,14 +16,19 @@ identify_dct_outliers(
 )
 }
 \arguments{
-\item{.data}{A data frame containing vowel formant data}
+\item{.data}{A data frame of formant DCT coefficients}
 
 \item{...}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} One or more unquoted
 expressions separated by commas. These should target the vowel formant
 data columns.}
 
+\item{.token_id_col}{\code{\link[rlang:args_data_masking]{<data-masking>}} A column
+that identifies token ids.}
+
 \item{.by}{\code{\link[dplyr:dplyr_tidy_select]{<tidy-select>}} A selection of
 columns to group by. Typically a column of speaker IDs.}
+
+\item{.param_col}{A column identifying the DCT parameter number.}
 
 \item{.call}{Used for internal purposes.}
 
