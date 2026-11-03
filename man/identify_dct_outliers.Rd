@@ -36,6 +36,94 @@ columns to group by. Typically a column of speaker IDs.}
 
 \item{.silent}{Suppress normalization information messages when running a \verb{norm_*()} function. (Defaults to \code{FALSE}, overwritable using option 'tidynorm.silent' or environment variable 'R_TIDYNORM_TIDYNORM_SILENT')}
 }
+\value{
+The same data frame as input, with three additional columns.
+\describe{
+\item{.mahal}{The squared Malahanobis Distance (\link[stats:mahalanobis]{stats::mahalanobis})}
+\item{.prob}{
+The the probability of \code{.mahal} according to the chi-squared distribution
+with degrees of freedom equal to the number of data dimensions
+}
+\item{.outlier}{
+Whether or not \code{.prob} is greater than the probability level
+defined by .level
+}
+}
+}
 \description{
 Identify DCT Outliers
+}
+\examples{
+library(tidynorm)
+library(dplyr)
+ggplot2_inst <- require(ggplot2)
+
+speaker_tracks |>
+  reframe_with_dct(
+    F1:F3,
+    .token_id_col = id,
+    .by = speaker,
+    .time_col = t
+  ) ->
+  speaker_dct
+
+speaker_dct |>
+  identify_dct_outliers(
+    F1:F2,
+    .by = c(speaker, plt_vclass),
+    .token_id_col = id,
+    .param_col = .param,
+    .level = 0.9
+  ) ->
+  outliers_marked
+
+
+if (ggplot2_inst) {
+  outliers_marked |>
+    filter(plt_vclass == "e") |>
+    reframe_with_idct(
+      F1:F3,
+      .token_id_col = id,
+      .param_col = .param,
+      .by = speaker
+    ) |>
+    ggplot(
+      aes(F2, F1, color = .outlier)
+    ) +
+    geom_path(
+      aes(group = id),
+      arrow = arrow(
+        type = "closed",
+        length = unit(0.2, "cm")
+      )
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    facet_wrap(~speaker)
+}
+
+
+if (ggplot2_inst) {
+  outliers_marked |>
+    filter(plt_vclass == "e") |>
+    reframe_with_idct(
+      F1:F3,
+      .token_id_col = id,
+      .param_col = .param,
+      .by = speaker
+    ) |>
+    ggplot(
+      aes(F2, F1, color = sqrt(.mahal))
+    ) +
+    geom_path(
+      aes(group = id),
+      arrow = arrow(
+        type = "closed",
+        length = unit(0.2, "cm")
+      )
+    ) +
+    scale_x_reverse() +
+    scale_y_reverse() +
+    facet_wrap(~speaker)
+}
 }

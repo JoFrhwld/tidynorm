@@ -40,6 +40,9 @@ reference:
       - norm_dct_generic
       - starts_with("norm_dct_")
 
+  - title: Outlier Detection
+    contents:
+      - ends_with("_outliers")
 
   - title: DCT
   - subtitle: Basic DCT Functions
@@ -79,6 +82,7 @@ articles:
   contents:
     - normalization-overview
     - norm-methods
+    - managing-outliers
 
 - title: Details
   navbar: Details

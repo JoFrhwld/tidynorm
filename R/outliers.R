@@ -2,9 +2,27 @@ safe_mahal <- purrr::safely(stats::mahalanobis, otherwise = NA)
 
 
 #' Identify Outliers
+#'
+#' @details
+#' This function will identify outliers using the Mahalanobis distance without
+#' removing them.
+#'
 #' @inheritParams norm_generic
 #' @param .level Probability level above which tokens are labelled as outliers.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @returns The same data frame as input, with three additional columns.
+#' \describe{
+#'   \item{.mahal}{The squared Malahanobis Distance ([stats::mahalanobis])}
+#'   \item{.prob}{
+#'     The the probability of `.mahal` according to the chi-squared distribution
+#'     with degrees of freedom equal to the number of data dimensions
+#'    }
+#'   \item{.outlier}{
+#'     Whether or not `.prob` is greater than the probability level
+#'     defined by .level
+#'   }
+#' }
+#' @example inst/examples/ex-identify_outliers.R
 #' @export
 identify_outliers <- function(
   .data,
@@ -179,6 +197,19 @@ identify_outliers <- function(
 #' @inheritParams norm_dct_generic
 #' @param .level Probability level above which tokens are labelled as outliers.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @returns The same data frame as input, with three additional columns.
+#' \describe{
+#'   \item{.mahal}{The squared Malahanobis Distance ([stats::mahalanobis])}
+#'   \item{.prob}{
+#'     The the probability of `.mahal` according to the chi-squared distribution
+#'     with degrees of freedom equal to the number of data dimensions
+#'    }
+#'   \item{.outlier}{
+#'     Whether or not `.prob` is greater than the probability level
+#'     defined by .level
+#'   }
+#' }
+#' @example inst/examples/ex-identify_dct_outliers.R
 #' @export
 identify_dct_outliers <- function(
   .data,
@@ -292,6 +323,13 @@ identify_dct_outliers <- function(
   }
 
   .data |>
+    dplyr::select(
+      any_of(names(target_pos)),
+      {{ .by }},
+      {{ .param_col }},
+      {{ .token_id_col }},
+      grouped_by
+    ) |>
     tidyr::pivot_wider(
       names_from = {{ .param_col }},
       values_from = any_of(names(target_pos))
@@ -365,6 +403,19 @@ identify_dct_outliers <- function(
 #' @param .return_dct Whether or not to return the DCT coefficients with their
 #' marked outlier status.
 #' @eval options::as_params(".silent" = "tidynorm.silent")
+#' @returns The same data frame as input, with three additional columns.
+#' \describe{
+#'   \item{.mahal}{The squared Malahanobis Distance ([stats::mahalanobis])}
+#'   \item{.prob}{
+#'     The the probability of `.mahal` according to the chi-squared distribution
+#'     with degrees of freedom equal to the number of data dimensions
+#'    }
+#'   \item{.outlier}{
+#'     Whether or not `.prob` is greater than the probability level
+#'     defined by .level
+#'   }
+#' }
+#' @example inst/examples/ex-identify_track_outliers.R
 #' @export
 identify_track_outliers <- function(
   .data,
@@ -405,7 +456,7 @@ identify_track_outliers <- function(
       tidyselect::eval_select(x, data = .data),
       error = \(cnd) selection_errors(cnd)
     )
-  }  
+  }
 
   # check if there was inappropriate grouping,
   # or a missing grouping
@@ -435,7 +486,7 @@ identify_track_outliers <- function(
   }
 
   time_pos <- tidyselect::eval_select(
-    expr({{ .time_col }}), 
+    expr({{ .time_col }}),
     .data
   )
 
@@ -460,7 +511,7 @@ identify_track_outliers <- function(
       .time_col = {{ .time_col }},
       .order = .order
     )
-  
+
   .dct_data <- .dct_data |>
     identify_dct_outliers(
       !!targets,
@@ -471,29 +522,29 @@ identify_track_outliers <- function(
       .silent = TRUE,
       .call = current_env()
     )
-  
+
   if (.return_dct) {
     wrap_up(.dct_data, .silent)
     return(.dct_data)
   }
-  
+
   .dct_data |>
     filter(.param == 0) |>
     select(
       {{.by}},
       {{.token_id_col}},
       !!sym(".mahal"),
-      !!sym(".prob"),      
-      !!sym(".outlier")      
+      !!sym(".prob"),
+      !!sym(".outlier")
     ) ->
     outliers
-  
+
   joining_cols <- outliers |>
     colnames() |>
     purrr::discard(
       \(x) x %in% c(".mahal", ".prob", ".outlier")
     )
-  
+
   .data <- .data |>
     left_join(
       outliers,

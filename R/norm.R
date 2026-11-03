@@ -352,10 +352,7 @@ norm_generic <- function(
     .by_formant = .by_formant,
     .norm_procedure = "tidynorm::norm_generic",
     .pre_trans = as.character(substitute(.pre_trans)),
-    .post_trans = as.character(substitute(.post_trans)),
-    .norm = glue::glue(
-      "(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})"
-    )
+    .post_trans = as.character(substitute(.post_trans))
   )
 
   if (.by_token) {
@@ -373,6 +370,20 @@ norm_generic <- function(
       )
     )
   }
+
+  if (!quo_is_null(enquo(.exclude))) {
+    norm_info <- c(
+      norm_info,
+      .exclude = as_label(substitute(exclusion))
+    )
+  }
+
+  norm_info <- c(
+    norm_info,
+    .norm = glue::glue(
+      "(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})"
+    )
+  )
 
   attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
@@ -621,7 +632,7 @@ norm_deltaF <- function(
   .agg_fun = \(x) mean(x, na.rm = T),
   .by_formant = FALSE,
   .agg_by = NULL,
-  .exclude = NULL, 
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
