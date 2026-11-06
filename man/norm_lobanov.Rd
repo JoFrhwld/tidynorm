@@ -11,6 +11,7 @@ norm_lobanov(
   .by_formant = TRUE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
@@ -33,6 +34,10 @@ columns to group by. Typically a column of speaker IDs.}
 columns to to pre-aggregate by. Typically a column of vowel category labels.}
 
 \item{.agg_fun}{A function to use to pre-aggregate values.}
+
+\item{.exclude}{A logical column, or expression that evaulates to a logical vector
+identifying rows to exclude from the normalization parameter estimates.
+Any rows with \code{TRUE} are excluded.}
 
 \item{.drop_orig}{Whether or not to drop the original formant data columns.}
 

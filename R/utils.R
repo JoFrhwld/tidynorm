@@ -1,7 +1,7 @@
 norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
-  .targets = "normalized {.var { .targets}}",
+  .targets = "{ .op} {.var { .targets}}",
   .f3 = "{.var { .f3}} used for third formant.",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
@@ -10,10 +10,12 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
-  .agg_by = "Pre-aggregation column: { .agg_by}",
-  .pre_trans = "Transformation prior to normalization: { .pre_trans}",
+  .agg_by = "pre-aggregation column: { .agg_by}",
+  .exclude = "exclusion: { .exclude}",
+  .pre_trans = "transformation prior to normalization: { .pre_trans}",
+  .level = "outlier probability level: {.val { .level}}",
   .norm = "{ .norm}",
-  .post_trans = "Transformation after normalization: { .post_trans}"
+  .post_trans = "transformation after normalization: { .post_trans}"
 )
 
 number_names <- c(
@@ -29,7 +31,13 @@ number_names <- c(
   fifth = 5
 )
 
-check_grouping <- function(
+#' check grouping
+#' @description
+#'  Check for any incompatible .by definition with a grouped
+#' data frame.
+#' @keywords internal
+#' @noRd
+check_by_grouping <- function(
   .data,
   .by,
   call = caller_env()
@@ -49,6 +57,23 @@ check_grouping <- function(
       call = call
     )
   }
+}
+
+#' check any grouping
+#' @description
+#'  Check that there's any grouping
+#' @keywords internal
+#' @noRd
+check_any_grouping <- function(
+  .data,
+  .by,
+  call = caller_env()
+) {
+  grouped_by <- dplyr::group_vars(.data)
+  grouping <- try_fetch(
+    tidyselect::eval_select(enquo(.by), .data),
+    error = \(cnd) selection_errors(cnd, arg = ".by", call = call)
+  )
   if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(

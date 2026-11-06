@@ -34,9 +34,9 @@ In addition to the generic normalization functions in tidynorm (`norm_generic()`
 
 tidynorm functions:
 
--   `norm_lobanov()`
--   `norm_track_lobanov()`
--   `norm_dct_lobanov()`
+- `norm_lobanov()`
+- `norm_track_lobanov()`
+- `norm_dct_lobanov()`
 
 Lobanov normalization z-scores each formant.
 If $F_{ij}$ is the $j^{th}$ token of the $i^{th}$ formant, and $\hat{F}_{ij}$ is its normalized value, then
@@ -103,9 +103,9 @@ dct_norm <- speaker_tracks |>
 
 tidynorm functions:
 
--   `norm_nearey()`
--   `norm_track_nearey()`
--   `norm_dct_nearey()`
+- `norm_nearey()`
+- `norm_track_nearey()`
+- `norm_dct_nearey()`
 
 Nearey Normalization first log transforms formant values, then subtracts the grand mean across all formants.
 If $F_{ij}$ is the $j^{th}$ token of the $i^{th}$ formant, and $\hat{F}_{ij}$ is its normalized value, then
@@ -167,11 +167,11 @@ dct_norm <- speaker_tracks |>
 
 tidynorm functions:
 
--   `norm_deltaF()`
+- `norm_deltaF()`
 
--   `norm_track_deltaF()`
+- `norm_track_deltaF()`
 
--   `norm_dct_deltaF()`
+- `norm_dct_deltaF()`
 
 The $\Delta F$ normalization method is based on the average of formant spacing.
 If $F_{ij}$ is the $j^{th}$ token of the $i^{th}$ formant, and $\hat{F}_{ij}$ is its normalized value, then
@@ -232,11 +232,11 @@ dct_norm <- speaker_tracks |>
 
 tidynorm functions:
 
--   `norm_wattfab()`
+- `norm_wattfab()`
 
--   `norm_track_wattfab()`
+- `norm_track_wattfab()`
 
--   `norm_dct_wattfab()`
+- `norm_dct_wattfab()`
 
 The Watt & Fabricious method attempt to center vowel spaces on their "center of gravity".
 The original Watt & Fabricious method involved calculating average F1 and F2 values for point vowels.
@@ -299,11 +299,11 @@ dct_norm <- speaker_tracks |>
 
 tidynorm functions
 
--   `norm_barkz()`
+- `norm_barkz()`
 
--   `norm_track_barkz()`
+- `norm_track_barkz()`
 
--   `norm_dct_barkz()`
+- `norm_dct_barkz()`
 
 The bark difference metric tries to normalize vowels on the basis of individual tokens.
 First, formant data is converted to bark (see `hz_to_bark()`), then F3 is subtracted from F1 and F2.

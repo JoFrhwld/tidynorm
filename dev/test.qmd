@@ -3,119 +3,177 @@ title: testing
 ---
 
 ```{r}
-library(readr)
-library(purrr)
 library(dplyr)
-library(ggplot2)
-library(ggdensity)
-
-s01_dat <- read_csv(
-  "https://lin611-2024.github.io/notes/meetings/data/s01_dat.csv"
-)
+library(tidynorm)
+library(tidyverse)
+library(rlang)
 ```
 
 ```{r}
-library(readr)
-speaker_tracks <- read_csv("../inst/extdata/speaker_tracks.csv")
+test_targets <- function(.data, ...){
+  targets <- expr(c(...))
+  targets_pos <- try_fetch(
+    tidyselect::eval_select(targets, data = .data)
+  )
+  targets_pos
+  
+  .data |> 
+    select(
+      !!targets
+    ) |> 
+    head()
+}
 ```
 
 ```{r}
-speaker_tracks |>
-  filter(
-    .by = c(speaker, id),
-    if_all(
-      F1:F3,
-      ~ mean(is.finite(.x)) > 0.9
+speaker_data |> 
+  norm_barkz(
+    F3:F1,
+    .by = speaker
+  )
+```
+
+```{r}
+library(microbenchmark)
+```
+
+```{r}
+formant_names <- sample(c("F1", "F2", "F3"), 10000, replace = T)
+```
+
+```{r}
+unique_to_num <- function(x){
+  u <- unique(x)
+  unums <- order(u)
+  names(unums) <- u
+  unname(unums[x])
+}
+
+factor_to_num <- function(x){
+  f <- factor(x)
+  as.numeric(f)
+}
+
+microbenchmark(
+  unique_to_num(formant_names),
+  factor_to_num(formant_names),
+  times = 10000
+) ->
+  jawn
+
+
+jawn
+```
+
+```{r}
+speaker_data  |> 
+  norm_generic(
+    F1:F3,
+    .by = speaker
+  )
+```
+
+```{r}
+speaker_tracks
+```
+
+```{r}
+speaker_tracks |> 
+  relocate(c(t),.after = F3) |> 
+  norm_track_nearey(
+    F1:F3,
+    .by = speaker,
+    .token_id_col = id
+  ) 
+
+
+|> 
+  relocate(
+    contains("_.formant"),
+    .before = 5
+  ) |> 
+   dplyr::rename_with(
+      .fn = \(x) stringr::str_remove(x, "_.formant")
+    ) |> 
+  select(
+    -(F1:F3)
+  )
+```
+
+```{r}
+jawn_fn <- function(.data, .col){
+  col_pos <- tidyselect::eval_select(expr({{.col}}), .data)
+  .data |> 
+    select(
+      speaker, F1, {{ .col }}
+    ) |> 
+    relocate(
+      F1, 
+      {{ .col }},
+      .before = 1
     )
-  ) -> speaker_tracks
-```
-
-```{r}
-usethis::use_data(speaker_tracks, overwrite = TRUE)
-```
-
-```{r}
-plot(200:2000, hz_to_mel(200:2000))
-```
-
-```{r}
-speaker_data |>
-  norm_lobanov(
-    F1:F3,
-    by = speaker
-  )
-```
-
-```{r}
-speaker_tracks |>
-  norm_track_lobanov(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .time_col = t
-  )
-```
-
-```{r}
-speaker_tracks |>
-  norm_track_generic(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .by_formant = TRUE,
-    .L = mean(.formant, na.rm = TRUE),
-    .S = sd(.formant, na.rm = TRUE),
-    .time_col = t
-  )
-
-speaker_tracks |>
-  norm_track_generic(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .time_col = t,
-    .L = mean(.formant, na.rm = T),
-    .S = sd(.formant, na.rm = T),
-    .by_formant = T,
-    .return_dct = F,
-    .drop_orig = T
-  )
-```
-
-```{r}
-speaker_tracks |>
-  filter(
-    .by = c(speaker, id),
-    row_number() %% 2 == 1
-  ) -> small_tracks
-
-
-small_tracks |>
-  norm_track_lobanov(
-    F1:F3,
-    .by = speaker,
-    .token_id_col = id,
-    .time_col = t
-  )
-```
-
-```{r}
-foo$call |>
-  purrr::map(as_label) |>
-  unlist()
-```
-
-```{r}
-foo <- function(x) {
-  out <- bar(x)
-  return(out)
 }
 
-bar <- function(x) {
-  return(rlang::trace_back())
+jawn_fn(speaker_data)
+```
+
+```{r}
+speaker_data |> 
+  norm_generic(
+    F1:F3,
+    .by = speaker,
+    .by_formant= 1
+  )
+```
+
+```{r}
+tibble(
+  F1 = rnorm(30),
+  id = c(rep(1, 10), rep(2, 20))
+) |> 
+  reframe_with_dct(
+    F1,
+    .token_id_col = id
+  ) |> 
+  reframe_with_idct(
+    F1, 
+    .param_col = .param,
+    .token_id_col = id
+  )
+```
+
+```{r}
+jawn <- function(.data, .n){
+  n <- enquo(.n)
+
+  n_number <- rlang::try_fetch(
+    {
+      eval_bare(
+        quo_get_expr(n),
+        quo_get_env(n)
+      ) |> 
+        is.numeric()
+    },
+    error = \(x) FALSE
+  )
+
+  n_column <- rlang::try_fetch(
+    {
+      tidyselect::eval_select(n, .data)
+      TRUE
+    },
+    error = \(x)FALSE
+  )
+  # 
+  list(n_number, n_column)
+  
 }
 ```
 
 ```{r}
-as.character(foo()$call[[1]])
+jawn(speaker_data, .n = F1)
+```
+
+```{r}
+inject(!!2 * !!3)
 ```

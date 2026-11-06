@@ -28,8 +28,4 @@ Authors:
 }
 
 }
-\keyword{##}
 \keyword{internal}
-\keyword{namespace:}
-\keyword{start}
-\keyword{usethis}

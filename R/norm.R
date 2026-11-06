@@ -15,6 +15,9 @@
 #' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to to pre-aggregate by. Typically a column of vowel category labels.
 #' @param .agg_fun A function to use to pre-aggregate values.
+#' @param .exclude A logical column, or expression that evaulates to a logical vector
+#' identifying rows to exclude from the normalization parameter estimates.
+#' Any rows with `TRUE` are excluded.
 #' @param .L An expression defining the location parameter.
 #' See Details for more information.
 #' @param .S An expression defining the scale parameter.
@@ -100,6 +103,7 @@ norm_generic <- function(
   .S = 1,
   .pre_trans = identity,
   .post_trans = identity,
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_n",
@@ -123,8 +127,8 @@ norm_generic <- function(
 
   prev_attr <- attributes(.data)$norminfo
 
-  check_grouping(.data, {{ .by }}, call = .call)
-  # check_grouping(.data, {{ .agg_by }}, .warn = FALSE, call = .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   # grouping <- rlang::enquo(.by)
   group_pos <- tidyselect::eval_select(
@@ -178,6 +182,10 @@ norm_generic <- function(
   # match .by_formant
   norm_grouping <- expr({{ .by }})
   agg_grouping <- expr({{ .agg_by }})
+  exclusion <- expr({{ .exclude }})
+  if (quo_is_null(exclusion)) {
+    exclusion <- expr(FALSE)
+  }
 
   if (.by_formant & length(grouped_by > 0)) {
     .data <- dplyr::group_by(
@@ -202,6 +210,9 @@ norm_generic <- function(
   if (!rlang::quo_is_null(agg_grouping)) {
     if (length(grouped_by > 0)) {
       norm_params <- .data |>
+        dplyr::filter(
+          !(!!exclusion)
+        ) |>
         tidyr::unite(".agg", {{ .agg_by }}) |>
         group_by(
           !!sym(".agg"),
@@ -215,11 +226,14 @@ norm_generic <- function(
           .S = {{ .S }}
         )
     } else {
-      norm_params <- dplyr::summarise(
-        .data,
-        .by = c(!!norm_grouping, !!agg_grouping),
-        .formant = .agg_fun(!!sym(".formant")),
-      ) |>
+      norm_params <- .data |>
+        filter(
+          !(!!exclusion)
+        ) |>
+        dplyr::summarise(
+          .by = c(!!norm_grouping, !!agg_grouping),
+          .formant = .agg_fun(!!sym(".formant")),
+        ) |>
         dplyr::summarise(
           .by = c(!!norm_grouping),
           .L = {{ .L }},
@@ -228,18 +242,22 @@ norm_generic <- function(
     }
   } else {
     if (length(grouped_by > 0)) {
-      norm_params <- dplyr::summarise(
-        .data,
-        .L = {{ .L }},
-        .S = {{ .S }}
-      )
+      norm_params <- .data |>
+        dplyr::filter(
+          !(!!exclusion)
+        ) |>
+        dplyr::summarise(
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
     } else {
-      norm_params <- dplyr::summarise(
-        .data,
-        .by = !!norm_grouping,
-        .L = {{ .L }},
-        .S = {{ .S }}
-      )
+      norm_params <- .data |>
+        dplyr::filter(!(!!exclusion)) |>
+        dplyr::summarise(
+          .by = !!norm_grouping,
+          .L = {{ .L }},
+          .S = {{ .S }}
+        )
     }
   }
 
@@ -326,16 +344,14 @@ norm_generic <- function(
   }
 
   norm_info <- list(
+    .op = "normalized",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
     .by = names(group_pos),
     .by_formant = .by_formant,
     .norm_procedure = "tidynorm::norm_generic",
     .pre_trans = as.character(substitute(.pre_trans)),
-    .post_trans = as.character(substitute(.post_trans)),
-    .norm = glue::glue(
-      "(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})"
-    )
+    .post_trans = as.character(substitute(.post_trans))
   )
 
   if (.by_token) {
@@ -353,6 +369,20 @@ norm_generic <- function(
       )
     )
   }
+
+  if (!quo_is_null(enquo(.exclude))) {
+    norm_info <- c(
+      norm_info,
+      .exclude = as_label(substitute(exclusion))
+    )
+  }
+
+  norm_info <- c(
+    norm_info,
+    .norm = glue::glue(
+      "(.formant - {quo_name(enquo(.L))})/({quo_name(enquo(.S))})"
+    )
+  )
 
   attr(.data, "norminfo") <- prev_attr
   attr(.data, "normalized") <- TRUE
@@ -422,6 +452,7 @@ norm_lobanov <- function(
   .by_formant = TRUE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
@@ -441,6 +472,7 @@ norm_lobanov <- function(
     .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .by_formant = TRUE,
@@ -513,6 +545,7 @@ norm_nearey <- function(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_lm",
@@ -532,6 +565,7 @@ norm_nearey <- function(
     .agg_fun = .agg_fun,
     .pre_trans = log,
     .post_trans = identity,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = 1,
     .by_formant = .by_formant,
@@ -597,6 +631,7 @@ norm_deltaF <- function(
   .agg_fun = \(x) mean(x, na.rm = T),
   .by_formant = FALSE,
   .agg_by = NULL,
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
@@ -616,6 +651,7 @@ norm_deltaF <- function(
     .agg_fun = .agg_fun,
     .pre_trans = identity,
     .post_trans = identity,
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .by_formant = FALSE,

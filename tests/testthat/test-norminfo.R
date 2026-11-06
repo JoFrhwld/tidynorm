@@ -1,7 +1,8 @@
 valid_infos <- c(
   ".step", ".norm_procedure", ".targets", ".f3", ".norm_cols",
   ".token_id_col", ".time_col", ".param_col", ".by", ".by_formant",
-  ".by_token", ".pre_trans", ".norm", ".post_trans"
+  ".by_token", ".pre_trans", ".norm", ".post_trans", ".exclude",
+  ".op"
 )
 
 test_that(

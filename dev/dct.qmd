@@ -59,3 +59,40 @@ speaker_tracks |>
     id == 0
   )
 ```
+
+```{r}
+speaker_tracks |>
+  norm_track_generic(
+    F1:F3,
+    .token_id_col = id,
+    .L = 0,
+    .S = 1 / sqrt(2),
+    .by = speaker,
+    .by_formant = T
+  ) |>
+  ggplot(
+    aes(-F2, -F1)
+  ) +
+  geom_point()
+```
+
+```{r}
+speaker_tracks |>
+  summarise(
+    across(
+      F1:F3, mean
+    ),
+    .by = c(speaker, id)
+  ) |>
+  summarise(
+    across(
+      F1:F3,
+      list(mean = mean, sd = sd)
+    ),
+    .by = speaker
+  )
+```
+
+```{r}
+(775.3252 - 664.4059) / 142.4775
+```
