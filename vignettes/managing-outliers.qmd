@@ -16,7 +16,7 @@ vignette: >
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
-eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity", "khroma", "tinytable"))'
+eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity", "khroma", "tinytable", "Hmisc"))'
 fig-width: 7
 fig-asp: 0.618
 ---
@@ -73,7 +73,7 @@ theme_set(
 It's beyond the scope of `{tidynorm}` to define a pipeline for identifying allophone categories, since these will be extremely language, dialect, and label-set specific.
 I would recommend reviewing the general purpose [`dplyr::case_when()`](https://dplyr.tidyverse.org/reference/case-and-replace-when.html) and [`dplyr::recode_values()`](https://dplyr.tidyverse.org/reference/recode-and-replace-values.html), or [`joeyr::code_allophones()`](https://joeystanley.github.io/joeyr/reference/code_allophones.html) for this step.
 
-The second and third steps can be achieved in `{tidnorm}` by
+The second and third steps can be achieved in `{tidynorm}` by
 
 2.  using `identify_outliers()`, `identify_track_outliers()` or `identify_dct_outliers()` to add an `.outlier` column to your vowel data frame.
 3.  passing the `.outlier` column to `.exclude` in your normalization function.
@@ -120,7 +120,7 @@ nrow(normed)
 
 ## General Info
 
-The family of outlier identification functions add three new columns to your vowel formant data frames:
+The family of outlier identification functions add three new columns the input data frames:
 
 `.mahal`
 
@@ -129,6 +129,7 @@ The family of outlier identification functions add three new columns to your vow
 `.prob`
 
 : The probability of observing a value of `.mahal` this extreme or less.
+  Based on the cumulative chi-squared probability distribution.
 
 `.outlier`
 
@@ -251,7 +252,7 @@ ey_identified |>
 
 # Extended uses
 
-It's possible to use either the `.mahal` or `.prob` columns to calculate weighted means, or even weighted versions of the normalization methods.
+It's possible to use either the `.mahal` or `.prob` columns to calculate weighted means.
 
 ```{r}
 #| code-fold: true
@@ -301,6 +302,8 @@ ey_identified |>
   facet_wrap(~speaker)
 ```
 
+It's also possible to use `1 - .prob` to carry out a weighted version of a standard normalization technique, down weighting outliers' contributions instead of categorically excluding them.
+
 ```{r}
 speaker_data |> 
   identify_outliers(
@@ -308,16 +311,31 @@ speaker_data |>
     .by = c(speaker, plt_vclass)
   ) |> 
   mutate(
-    .inv_prob = 1-.prob
+    .inv_prob = 1 - .prob
   ) |> 
+  
   # a weighted log-mean normalization
   norm_generic(
     F1:F3,
-    .by = c(speaker),
+    .by = speaker,
     .pre_trans = log,
     .by_formant = FALSE,
     .exclude = is.na(.inv_prob),
-    .L = weighted.mean(.formant, .inv_prob, na.rm = T)
+    .L = weighted.mean(.formant, .inv_prob, na.rm = T),
+    .names = "{.formant}_lmw"
+  ) |> 
+  
+  # A weighted Lobanov normalization
+  norm_generic(
+   F1:F3,
+   .by = speaker,
+   .by_formant = TRUE,
+   .exclude = is.na(.inv_prob),
+   .L = weighted.mean(.formant, .inv_prob, na.rm = T),
+   .S = sqrt(Hmisc::wtd.var(.formant, .inv_prob)),
+   .names = "{.formant}_zw"
   ) ->
-  normed_weighted
+  weighted_norm
 ```
+
+# References

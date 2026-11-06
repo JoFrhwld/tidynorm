@@ -37,6 +37,7 @@ Depends:
 Suggests:
     ggdensity,
     ggplot2,
+    Hmisc,
     khroma,
     knitr,
     magick,
