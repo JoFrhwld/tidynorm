@@ -81,7 +81,7 @@ identify_outliers <- function(
     dplyr::select(
       any_of(names(target_pos)),
       {{ .by }},
-      grouped_by
+      all_of(grouped_by)
     ) |>
     tidyr::drop_na() |>
     dplyr::mutate(
@@ -145,7 +145,7 @@ identify_outliers <- function(
     ) |>
     select(
       {{ .by }},
-      grouped_by,
+      all_of(grouped_by),
       !!sym(".id"),
       !!sym(".mahal")
     ) |>
@@ -175,7 +175,7 @@ identify_outliers <- function(
     select(-!!sym(".id"))
 
   norm_info <- list(
-    .op = "Outliers identified along",
+    .op = "outliers identified along",
     .targets = names(target_pos),
     .pre_trans = as.character(substitute(.pre_trans)),
     .by = c(names(group_pos), grouped_by),
@@ -287,7 +287,7 @@ identify_dct_outliers <- function(
       {{ .by }},
       {{ .param_col }},
       {{ .token_id_col }},
-      grouped_by
+      all_of(grouped_by)
     ) |>
     tidyr::drop_na() |>
     tidyr::pivot_wider(
@@ -328,7 +328,7 @@ identify_dct_outliers <- function(
       {{ .by }},
       {{ .param_col }},
       {{ .token_id_col }},
-      grouped_by
+      all_of(grouped_by)
     ) |>
     tidyr::pivot_wider(
       names_from = {{ .param_col }},
@@ -357,7 +357,7 @@ identify_dct_outliers <- function(
     ) |>
     select(
       {{ .by }},
-      grouped_by,
+      all_of(grouped_by),
       {{ .token_id_col }},
       !!sym(".mahal")
     ) |>
