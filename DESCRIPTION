@@ -30,7 +30,8 @@ Imports:
     rlang,
     stringr,
     tidyr,
-    tidyselect
+    tidyselect,
+    withr
 URL: https://jofrhwld.github.io/tidynorm/, https://github.com/JoFrhwld/tidynorm
 Depends:
     R (>= 4.1)

@@ -12,7 +12,7 @@ format:
   typst:
     bibliographystyle: "apa"
 vignette: >
-  %\VignetteIndexEntry{Normalization Overview}
+  %\VignetteIndexEntry{Managing Outliers}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib

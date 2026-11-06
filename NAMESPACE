@@ -53,4 +53,5 @@ importFrom(rlang,
   env_name
 )
 importFrom(stats,sd)
+importFrom(withr,with_seed)
 useDynLib(tidynorm, .registration = TRUE)

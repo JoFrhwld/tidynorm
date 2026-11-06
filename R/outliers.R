@@ -529,7 +529,7 @@ identify_track_outliers <- function(
   }
 
   .dct_data |>
-    filter(.param == 0) |>
+    filter(!!sym(".param") == 0) |>
     select(
       {{ .by }},
       {{ .token_id_col }},

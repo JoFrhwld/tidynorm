@@ -1,4 +1,5 @@
 #' @import rlang
+#' @importFrom withr with_seed
 #' @import cli
 #' @importFrom stats sd
 #' @import dplyr
