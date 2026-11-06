@@ -133,7 +133,7 @@ norm_dct_generic <- function(
   exclusion <- expr({{ .exclude }})
 
   if (quo_is_null(exclusion)) {
-    exclusion <-  expr(FALSE)
+    exclusion <- expr(FALSE)
   }
 
   if (!".param_col" %in% args) {

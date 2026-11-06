@@ -184,7 +184,7 @@ norm_generic <- function(
   agg_grouping <- expr({{ .agg_by }})
   exclusion <- expr({{ .exclude }})
   if (quo_is_null(exclusion)) {
-    exclusion <-  expr(FALSE)
+    exclusion <- expr(FALSE)
   }
 
   if (.by_formant & length(grouped_by > 0)) {

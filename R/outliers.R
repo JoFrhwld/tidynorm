@@ -507,7 +507,7 @@ identify_track_outliers <- function(
     reframe_with_dct(
       !!targets,
       .token_id_col = {{ .token_id_col }},
-      .by =  {{ .by }},
+      .by = {{ .by }},
       .time_col = {{ .time_col }},
       .order = .order
     )
@@ -531,13 +531,13 @@ identify_track_outliers <- function(
   .dct_data |>
     filter(.param == 0) |>
     select(
-      {{.by}},
-      {{.token_id_col}},
+      {{ .by }},
+      {{ .token_id_col }},
       !!sym(".mahal"),
       !!sym(".prob"),
       !!sym(".outlier")
     ) ->
-    outliers
+  outliers
 
   joining_cols <- outliers |>
     colnames() |>

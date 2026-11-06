@@ -1,9 +1,10 @@
 test_that(
-  "Mahalanobis is calculated correctly", {
+  "Mahalanobis is calculated correctly",
+  {
     sim_mat <- withr::with_seed(
-      2026-11-04,
+      2026 - 11 - 04,
       {
-      cbind(rnorm(100), rnorm(100)) %*% cbind(x = c(1,0.3), y = c(0.3, 1))
+        cbind(rnorm(100), rnorm(100)) %*% cbind(x = c(1, 0.3), y = c(0.3, 1))
       }
     )
     mu <- colMeans(sim_mat)
@@ -25,12 +26,13 @@ test_that(
 )
 
 test_that(
-  "DCT Mahalanobis", {
+  "DCT Mahalanobis",
+  {
     n_param <- 5
     n_dim <- 2
 
     sim_vec <- withr::with_seed(
-      2026-11-04,
+      2026 - 11 - 04,
       {
         rnorm(100 * n_param * n_dim)
       }
@@ -75,9 +77,8 @@ test_that(
     sim_mahal |>
       dplyr::filter(param == 1) |>
       pull(.mahal) ->
-      m2
+    m2
 
     expect_equal(m, m2)
-
   }
 )

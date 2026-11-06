@@ -85,11 +85,11 @@ speaker_data |>
   identify_outliers(
     # Use F1 through F3 to identify outliers
     F1:F3,
-    
+
     # Identify outliers within speaker and
     # within vowel class
     .by = c(speaker, plt_vclass),
-    
+
     # The probability level beyond which
     # rows are marked as outliers
     .level = 0.95
@@ -97,11 +97,11 @@ speaker_data |>
   norm_nearey(
     F1:F3,
     .by = speaker,
-    
+
     # exclude rows marked as outliers
     .exclude = .outlier,
   ) ->
-  normed
+normed
 ```
 
 - Both `identify_track_outliers()` and `identify_dct_outliers()` require a `.token_id_col` argument.
@@ -139,21 +139,21 @@ The Mahalanobis distance can be thought of as a multi-dimensional z-score.
 For example, the two speakers in `speaker_data` have very different distributions for their \[æ\] vowel, and the outlier status for each token is specific to the shape of the distribution for each speaker for each vowel.
 
 ```{r}
-speaker_data |> 
+speaker_data |>
   identify_outliers(
     F1:F2,
     .by = c(speaker, plt_vclass)
-  ) |> 
+  ) |>
   filter(
     plt_vclass == "ae"
   ) ->
-  ae_identified
+ae_identified
 ```
 
 ```{r}
 #| code-fold: true
 #| code-summary: Plotting Code
-ae_identified |> 
+ae_identified |>
   ggplot(
     aes(F2, F1)
   ) +
@@ -170,7 +170,7 @@ ae_identified |>
   expand_limits(
     fill = 0
   ) +
-  facet_wrap(~speaker) 
+  facet_wrap(~speaker)
 ```
 
 The `.prob` column is based on the chi-squared cumulative probability density function with degrees of freedom equal to the number of data dimensions.
@@ -178,7 +178,7 @@ The `.prob` column is based on the chi-squared cumulative probability density fu
 ```{r}
 #| code-fold: true
 #| code-summary: Plotting Code
-ae_identified |> 
+ae_identified |>
   ggplot(
     aes(F2, F1)
   ) +
@@ -195,7 +195,7 @@ ae_identified |>
   scale_fill_continuous(
     limits = c(0, 1)
   ) +
-  facet_wrap(~speaker) 
+  facet_wrap(~speaker)
 ```
 
 ## DCT and Track Outlier Identification
@@ -204,7 +204,7 @@ If you have a data frame of DCT coefficients by formant, `identify_dct_outliers(
 For `identify_track_outliers()` each formant track first has the DCT transform applied, and then the Mahalanobis distance is calculated in the same way as `identify_dct_outliers()`.
 
 ```{r}
-speaker_tracks |> 
+speaker_tracks |>
   identify_track_outliers(
     F1:F2,
     .by = c(speaker, plt_vclass),
@@ -214,20 +214,20 @@ speaker_tracks |>
     .order = 5,
     .pre_trans = log,
     .return_dct = TRUE
-  ) |> 
+  ) |>
   filter(plt_vclass == "ey") ->
-  ey_identified
+ey_identified
 ```
 
 ```{r}
 #| code-fold: true
 #| code-summary: Plotting Code
-ey_identified |> 
+ey_identified |>
   reframe_with_idct(
     F1:F2,
     .by = c(speaker, id),
     .param_col = .param
-  ) |> 
+  ) |>
   ggplot(
     aes(F2, F1)
   ) +
@@ -240,14 +240,13 @@ ey_identified |>
       type = "closed",
       length = unit(0.1, "cm")
     )
-  ) + 
+  ) +
   scale_color_continuous(
-    limits = c(0,1)
+    limits = c(0, 1)
   ) +
   scale_x_reverse() +
   scale_y_reverse() +
-  facet_wrap(~speaker) 
-
+  facet_wrap(~speaker)
 ```
 
 # Extended uses
@@ -258,10 +257,10 @@ It's possible to use either the `.mahal` or `.prob` columns to calculate weighte
 #| code-fold: true
 #| code-summary: Plotting Code
 #| fig-asp: 0.5
-ey_identified |> 
+ey_identified |>
   mutate(
     .inv_prob = 1 - .prob
-  ) |> 
+  ) |>
   summarise(
     .by = c(speaker, .param),
     across(
@@ -271,25 +270,25 @@ ey_identified |>
         unweighted = mean
       )
     )
-  ) |> 
+  ) |>
   pivot_longer(
     starts_with("F")
-  ) |> 
+  ) |>
   separate(
     name,
     into = c("formant", "weight")
-  ) |> 
+  ) |>
   pivot_wider(
     names_from = formant,
     values_from = value
-  ) |> 
+  ) |>
   reframe_with_idct(
     F1:F2,
     .by = c(speaker, weight),
     .param_col = .param
-  ) |> 
+  ) |>
   ggplot(
-    aes(F2, F1, color = weight )
+    aes(F2, F1, color = weight)
   ) +
   geom_path(
     arrow = arrow(
@@ -297,7 +296,7 @@ ey_identified |>
       length = unit(0.1, "cm")
     )
   ) +
-  scale_y_reverse() + 
+  scale_y_reverse() +
   scale_x_reverse() +
   facet_wrap(~speaker)
 ```
@@ -305,15 +304,14 @@ ey_identified |>
 It's also possible to use `1 - .prob` to carry out a weighted version of a standard normalization technique, down weighting outliers' contributions instead of categorically excluding them.
 
 ```{r}
-speaker_data |> 
+speaker_data |>
   identify_outliers(
     F1:F3,
     .by = c(speaker, plt_vclass)
-  ) |> 
+  ) |>
   mutate(
     .inv_prob = 1 - .prob
-  ) |> 
-  
+  ) |>
   # a weighted log-mean normalization
   norm_generic(
     F1:F3,
@@ -323,19 +321,18 @@ speaker_data |>
     .exclude = is.na(.inv_prob),
     .L = weighted.mean(.formant, .inv_prob, na.rm = T),
     .names = "{.formant}_lmw"
-  ) |> 
-  
+  ) |>
   # A weighted Lobanov normalization
   norm_generic(
-   F1:F3,
-   .by = speaker,
-   .by_formant = TRUE,
-   .exclude = is.na(.inv_prob),
-   .L = weighted.mean(.formant, .inv_prob, na.rm = T),
-   .S = sqrt(Hmisc::wtd.var(.formant, .inv_prob)),
-   .names = "{.formant}_zw"
+    F1:F3,
+    .by = speaker,
+    .by_formant = TRUE,
+    .exclude = is.na(.inv_prob),
+    .L = weighted.mean(.formant, .inv_prob, na.rm = T),
+    .S = sqrt(Hmisc::wtd.var(.formant, .inv_prob)),
+    .names = "{.formant}_zw"
   ) ->
-  weighted_norm
+weighted_norm
 ```
 
 # References

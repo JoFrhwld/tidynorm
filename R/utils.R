@@ -2,7 +2,7 @@ norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
   .targets = "{ .op} {.var { .targets}}",
-  .f3  = "{.var { .f3}} used for third formant.",
+  .f3 = "{.var { .f3}} used for third formant.",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
   .time_col = "time column: {.var { .time_col}}",
@@ -38,9 +38,10 @@ number_names <- c(
 #' @keywords internal
 #' @noRd
 check_by_grouping <- function(
-    .data,
-    .by,
-    call = caller_env()) {
+  .data,
+  .by,
+  call = caller_env()
+) {
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
     tidyselect::eval_select(enquo(.by), .data),
@@ -64,9 +65,10 @@ check_by_grouping <- function(
 #' @keywords internal
 #' @noRd
 check_any_grouping <- function(
-    .data,
-    .by,
-    call = caller_env()) {
+  .data,
+  .by,
+  call = caller_env()
+) {
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
     tidyselect::eval_select(enquo(.by), .data),
