@@ -8,11 +8,6 @@
       }
     ]
   },
-  "Python": {
-    "Version": "3.12.2",
-    "Type": "virtualenv",
-    "Name": "/Users/joseffruehwald/.pyenv/versions/3.12.2/envs/tidynorm"
-  },
   "Packages": {
     "DBI": {
       "Package": "DBI",
