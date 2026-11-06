@@ -1,8 +1,8 @@
 norm_messages <- list(
   .step = "{ .step}",
   .norm_procedure = "normalized with {.fn { .norm_procedure}}",
-  .targets = "normalized {.var { .targets}}",
-  .f3  = "{.var { .f3}} used for third formant.",
+  .targets = "{ .op} {.var { .targets}}",
+  .f3 = "{.var { .f3}} used for third formant.",
   .norm_cols = "normalized values in {.var { .norm_cols}}",
   .token_id_col = "token id column: {.var { .token_id_col}}",
   .time_col = "time column: {.var { .time_col}}",
@@ -10,10 +10,12 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
-  .agg_by = "Pre-aggregation column: { .agg_by}",
-  .pre_trans = "Transformation prior to normalization: { .pre_trans}",
+  .agg_by = "pre-aggregation column: { .agg_by}",
+  .exclude = "exclusion: { .exclude}",
+  .pre_trans = "transformation prior to normalization: { .pre_trans}",
+  .level = "outlier probability level: {.val { .level}}",
   .norm = "{ .norm}",
-  .post_trans = "Transformation after normalization: { .post_trans}"
+  .post_trans = "transformation after normalization: { .post_trans}"
 )
 
 number_names <- c(
@@ -29,10 +31,17 @@ number_names <- c(
   fifth = 5
 )
 
-check_grouping <- function(
-    .data,
-    .by,
-    call = caller_env()) {
+#' check grouping
+#' @description
+#'  Check for any incompatible .by definition with a grouped
+#' data frame.
+#' @keywords internal
+#' @noRd
+check_by_grouping <- function(
+  .data,
+  .by,
+  call = caller_env()
+) {
   grouped_by <- dplyr::group_vars(.data)
   grouping <- try_fetch(
     tidyselect::eval_select(enquo(.by), .data),
@@ -48,6 +57,23 @@ check_grouping <- function(
       call = call
     )
   }
+}
+
+#' check any grouping
+#' @description
+#'  Check that there's any grouping
+#' @keywords internal
+#' @noRd
+check_any_grouping <- function(
+  .data,
+  .by,
+  call = caller_env()
+) {
+  grouped_by <- dplyr::group_vars(.data)
+  grouping <- try_fetch(
+    tidyselect::eval_select(enquo(.by), .data),
+    error = \(cnd) selection_errors(cnd, arg = ".by", call = call)
+  )
   if (length(grouped_by) < 1 & length(grouping) < 1 & options::opt("tidynorm.warnings")) {
     cli_par()
     cli_warn(
@@ -62,8 +88,9 @@ check_grouping <- function(
 }
 
 check_tokens <- function(
-    tokens,
-    call = caller_env()) {
+  tokens,
+  call = caller_env()
+) {
   if (length(tokens) < 1) {
     cli_abort(
       c(
@@ -75,9 +102,10 @@ check_tokens <- function(
 }
 
 check_args <- function(
-    args,
-    fmls,
-    call = caller_env()) {
+  args,
+  fmls,
+  call = caller_env()
+) {
   fmls_undot <- stringr::str_remove(
     fmls,
     "^\\."
@@ -105,9 +133,10 @@ check_args <- function(
 }
 
 selection_errors <- function(
-    cnd,
-    arg = "",
-    call = caller_env()) {
+  cnd,
+  arg = "",
+  call = caller_env()
+) {
   if (cnd_inherits(cnd, "vctrs_error_subscript_oob")) {
     cli_abort(
       "Problem with column selection for {.arg {arg}}",
@@ -134,9 +163,10 @@ selection_errors <- function(
 }
 
 make_dct_grouping <- function(
-    .data,
-    .by,
-    .token_id_col) {
+  .data,
+  .by,
+  .token_id_col
+) {
   cols <- enquos(
     .by = .by,
     .token_id_col = .token_id_col
@@ -172,15 +202,16 @@ make_dct_grouping <- function(
 }
 
 append_norm_info <- function(
-    .data,
-    info) {
+  .data,
+  info
+) {
   prev_attr <- attributes(.data)$norminfo
 
   if (length(info$.post_trans) > 1) {
     info$.post_trans <- info$.post_trans[3]
   }
 
-  if (length(info$.pre_trans) > 1){
+  if (length(info$.pre_trans) > 1) {
     info$.pre_trans <- info$.pre_trans[3]
   }
 
@@ -203,8 +234,9 @@ append_norm_info <- function(
 }
 
 update_norm_info <- function(
-    .data,
-    info) {
+  .data,
+  info
+) {
   norminfo <- attr(.data, "norminfo")
   last_norm <- norminfo[[length(norminfo)]]
 
@@ -222,8 +254,9 @@ update_norm_info <- function(
 }
 
 wrap_up <- function(.data, .silent = FALSE) {
-
-  if(.silent) return()
+  if (.silent) {
+    return()
+  }
 
 
   if (is.null(attr(.data, "norminfo"))) {
@@ -317,12 +350,12 @@ name_to_formant_num <- function(.formant_name, call = caller_env()) {
   checkmate::check_character(.formant_name, any.missing = FALSE, min.len = 1)
 
   has_digit <- stringr::str_detect(
-     .formant_name, r"{[fF][1-5]}"
-     ) |>
-       all()
+    .formant_name, r"{[fF][1-5]}"
+  ) |>
+    all()
 
   if (has_digit) {
-    nums = stringr::str_extract(
+    nums <- stringr::str_extract(
       .formant_name,
       r"{[fF]([1-5])}",
       group = 1
@@ -349,12 +382,11 @@ name_to_formant_num <- function(.formant_name, call = caller_env()) {
       )
     ) |>
       tolower()
-    nums = number_names[digit_name] |>
+    nums <- number_names[digit_name] |>
       unname()
 
     return(nums)
   }
 
   as.numeric(as.factor(.formant_name))
-
 }

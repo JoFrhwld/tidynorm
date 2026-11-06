@@ -118,8 +118,9 @@ bark_to_hz <- function(bark) {
 #'
 #' @export
 hz_to_mel <- function(
-    hz,
-    htk = FALSE) {
+  hz,
+  htk = FALSE
+) {
   if (htk) {
     mels <- 2595.0 * log10(1.0 + (hz / 700.0))
     return(mels)
@@ -172,8 +173,9 @@ hz_to_mel <- function(
 #'
 #' @export
 mel_to_hz <- function(
-    mel,
-    htk = FALSE) {
+  mel,
+  htk = FALSE
+) {
   if (htk) {
     hz <- 700.0 * (10.0^(mel / 2595.0) - 1.0)
     return(hz)

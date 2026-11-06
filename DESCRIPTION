@@ -1,9 +1,14 @@
 Type: Package
 Package: tidynorm
 Title: Tools for Tidy Vowel Normalization
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: c(
-    person("Josef", "Fruehwald", , "JoFrhwld@gmail.com", role = c("cre", "aut", "cph"))
+    person(
+     given = "Josef", 
+     family = "Fruehwald", 
+     email = "JoFrhwld@gmail.com", 
+     role = c("cre", "aut", "cph")
+    )
   )
 Description: An implementation of tidy speaker vowel normalization.
     This includes generic functions for defining new normalization methods for
@@ -30,23 +35,27 @@ Imports:
     rlang,
     stringr,
     tidyr,
-    tidyselect
+    tidyselect,
+    withr
 URL: https://jofrhwld.github.io/tidynorm/, https://github.com/JoFrhwld/tidynorm
 Depends:
     R (>= 4.1)
 Suggests:
     ggdensity,
     ggplot2,
+    Hmisc,
+    khroma,
     knitr,
     magick,
     quarto,
     reticulate,
     rmarkdown,
     testthat (>= 3.0.0),
-    tibble
+    tibble,
+    tinytable
 Config/testthat/edition: 3
 Config/testthat/parallel: true
-VignetteBuilder: quarto
+VignetteBuilder: quarto, knitr
 LinkingTo:
     Rcpp, RcppArmadillo
 BugReports: https://github.com/JoFrhwld/tidynorm/issues

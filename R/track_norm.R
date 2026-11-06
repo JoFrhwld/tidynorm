@@ -10,7 +10,10 @@
 #' columns to group by. Typically a column of speaker IDs.
 #' @param .agg_by [`<tidy-select>`][dplyr::dplyr_tidy_select] A selection of
 #' columns to to pre-aggregate by. Typically a column of vowel category labels.
-#' @param .agg_fun A function to use to pre-aggregate values. 
+#' @param .agg_fun A function to use to pre-aggregate values.
+#' @param .exclude A logical column, or expression that evaulates to a logical vector
+#' identifying rows to exclude from the normalization parameter estimates.
+#' Any rows with `TRUE` are excluded.
 #' @param .token_id_col [`<data-masking>`][rlang::args_data_masking] A column
 #' that identifies token ids.
 #' @param .by_formant Whether or not the normalization method is formant
@@ -104,7 +107,7 @@
 #' The number of DCT coefficients used is defined by `.order`. The default
 #' value is 5. Larger numbers will lead to less smoothing, and smaller numbers
 #' will lead to more smoothing.
-#' 
+#'
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
@@ -120,25 +123,27 @@
 #'
 #' @export
 norm_track_generic <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .by_formant = FALSE,
-    .by_token = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .time_col = NULL,
-    .L = 0,
-    .S = 1 / sqrt(2),
-    .pre_trans = identity,
-    .post_trans = identity,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_n",
-    .silent = opt("tidynorm.silent"),
-    .call = caller_env()) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .by_formant = FALSE,
+  .by_token = FALSE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
+  .time_col = NULL,
+  .L = 0,
+  .S = 1 / sqrt(2),
+  .pre_trans = identity,
+  .post_trans = identity,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_n",
+  .silent = opt("tidynorm.silent"),
+  .call = caller_env()
+) {
   if (env_name(.call) == "global") {
     .call2 <- current_env()
   }
@@ -161,6 +166,7 @@ norm_track_generic <- function(
     tidyselect::eval_select(enquo(.agg_by), data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
+  exclusion <- expr({{ .exclude }})
 
   cols <- enquos(
     .by = .by,
@@ -175,7 +181,8 @@ norm_track_generic <- function(
     )
   }
 
-  check_grouping(.data, {{ .by }}, .call)
+  check_by_grouping(.data, {{ .by }}, call = .call)
+  check_any_grouping(.data, {{ .by }}, call = .call)
 
   by_pos <- tidyselect::eval_select(enquo(.by), .data)
 
@@ -188,7 +195,7 @@ norm_track_generic <- function(
   by_grouping <- grouping_list$by_grouping
   joining <- grouping_list$joining
   agg_grouping <- expr({{ .agg_by }})
-  
+
   .orig_data <- dplyr::arrange(.data, {{ .time_col }}) |>
     dplyr::select(
       {{ .by }},
@@ -244,6 +251,7 @@ norm_track_generic <- function(
     .by_token = .by_token,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .param_col = !!sym(".param"),
     .L = {{ .L }},
     .S = {{ .S }},
@@ -334,6 +342,7 @@ norm_track_generic <- function(
   attr(normed_track, "norminfo") <- prev_attr
 
   norm_info <- list(
+    .op = "normalized",
     .norm_procedure = "tidynorm::norm_track_generic",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
@@ -365,6 +374,13 @@ norm_track_generic <- function(
       list(
         .agg_by = names(agg_pos)
       )
+    )
+  }
+
+  if (!quo_is_null(enquo(.exclude))) {
+    norm_info <- c(
+      norm_info,
+      .exclude = as_label(substitute(exclusion))
     )
   }
 
@@ -402,7 +418,7 @@ norm_track_generic <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
+#'
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
@@ -410,7 +426,7 @@ norm_track_generic <- function(
 #' after the DCT transform is applied, and will be done
 #' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
-#' 
+#'
 #' @returns
 #' A data frame of Lobanov normalized formant tracks.
 #'
@@ -421,18 +437,20 @@ norm_track_generic <- function(
 #' @example inst/examples/ex-norm_track_lobanov.R
 #' @export
 norm_track_lobanov <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),
-    .time_col = NULL,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_z",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_z",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -446,6 +464,7 @@ norm_track_lobanov <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = sd(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,
@@ -498,7 +517,7 @@ norm_track_lobanov <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
+#'
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
@@ -506,7 +525,7 @@ norm_track_lobanov <- function(
 #' after the DCT transform is applied, and will be done
 #' either formant intrinsically or formant extrinsically based on the
 #' setting passed to `.by_formant`.
-#' 
+#'
 #' @returns
 #' A data frame of Nearey normalized formant tracks.
 #'
@@ -517,19 +536,21 @@ norm_track_lobanov <- function(
 #' University of Alberta.
 #' @export
 norm_track_nearey <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .by_formant = FALSE,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
-    .time_col = NULL,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_lm",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .by_formant = FALSE,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_lm",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -543,6 +564,7 @@ norm_track_nearey <- function(
     .by_formant = .by_formant,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .pre_trans = log,
@@ -568,7 +590,6 @@ norm_track_nearey <- function(
 }
 
 
-
 #' Delta F Track Normalization
 #'
 #' @inheritParams norm_track_generic
@@ -588,7 +609,7 @@ norm_track_nearey <- function(
 #' - \eqn{\hat{F}} is the normalized formant
 #' - \eqn{i} is the formant number
 #' - \eqn{j} is the token number
-#' 
+#'
 #' ### Pre-aggregation
 #' To address imbalanced data across vowel classes, you can pre-aggregate
 #' the zero<sup>th</sup> DCT coefficients by passing vowel class column(s) to `.agg_by`, and
@@ -609,18 +630,20 @@ norm_track_nearey <- function(
 #'
 #' @export
 norm_track_deltaF <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
-    .time_col = NULL,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_df",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_df",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -634,6 +657,7 @@ norm_track_deltaF <- function(
     .by_formant = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = identity,
@@ -694,18 +718,20 @@ norm_track_deltaF <- function(
 #' Leeds Working Papers in Linguistics and Phonetics, 9, 159–173.
 #' @export
 norm_track_wattfab <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .agg_by = NULL,
-    .agg_fun = \(x) mean(x, na.rm = T),    
-    .time_col = NULL,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_wf",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .agg_by = NULL,
+  .agg_fun = \(x) mean(x, na.rm = T),
+  .exclude = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_wf",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)
@@ -719,6 +745,7 @@ norm_track_wattfab <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .pre_trans = identity,
@@ -778,16 +805,17 @@ norm_track_wattfab <- function(
 #'
 #' @export
 norm_track_barkz <- function(
-    .data,
-    ...,
-    .token_id_col,
-    .by = NULL,
-    .time_col = NULL,
-    .order = 5,
-    .return_dct = FALSE,
-    .drop_orig = FALSE,
-    .names = "{.formant}_bz",
-    .silent = opt("tidynorm.silent")) {
+  .data,
+  ...,
+  .token_id_col,
+  .by = NULL,
+  .time_col = NULL,
+  .order = 5,
+  .return_dct = FALSE,
+  .drop_orig = FALSE,
+  .names = "{.formant}_bz",
+  .silent = opt("tidynorm.silent")
+) {
   args <- names(call_match())
   fmls <- names(fn_fmls())
   check_args(args, fmls)

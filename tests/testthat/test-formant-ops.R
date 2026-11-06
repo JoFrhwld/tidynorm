@@ -18,7 +18,6 @@ test_that(
     expect_true(
       all(f3_minus$F3_n == 0, na.rm = T)
     )
-
   }
 )
 
@@ -45,8 +44,8 @@ test_that(
         first_formant = F1,
         second_formant = F2,
         third_formant = F3
-        ) ->
-      weird_names
+      ) ->
+    weird_names
 
     # test 1
     norm1 <- weird_names |>
@@ -96,6 +95,5 @@ test_that(
     expect_true(
       all(norm3$third_formant_n == 0, na.rm = T)
     )
-
   }
 )
