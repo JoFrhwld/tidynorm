@@ -379,7 +379,7 @@ identify_dct_outliers <- function(
     )
 
   norm_info <- list(
-    .op = "Outliers identified along",
+    .op = "outliers identified along",
     .targets = names(target_pos),
     .by = c(names(group_pos), grouped_by),
     .level = .level
@@ -552,7 +552,7 @@ identify_track_outliers <- function(
     )
 
   norm_info <- list(
-    .op = "Outliers identified along",
+    .op = "outliers identified along",
     .targets = names(target_pos),
     .by = c(names(group_pos), grouped_by),
     .level = .level

@@ -166,6 +166,7 @@ norm_track_generic <- function(
     tidyselect::eval_select(enquo(.agg_by), data = .data),
     error = \(cnd) selection_errors(cnd, arg = "...", call = .call)
   )
+  exclusion <- expr({{ .exclude }})
 
   cols <- enquos(
     .by = .by,
@@ -341,7 +342,7 @@ norm_track_generic <- function(
   attr(normed_track, "norminfo") <- prev_attr
 
   norm_info <- list(
-    .op = "Normalized",
+    .op = "normalized",
     .norm_procedure = "tidynorm::norm_track_generic",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
@@ -373,6 +374,13 @@ norm_track_generic <- function(
       list(
         .agg_by = names(agg_pos)
       )
+    )
+  }
+
+  if (!quo_is_null(enquo(.exclude))) {
+    norm_info <- c(
+      norm_info,
+      .exclude = as_label(substitute(exclusion))
     )
   }
 
@@ -649,7 +657,7 @@ norm_track_deltaF <- function(
     .by_formant = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
-    .exclude = {{ .exclude }}, 
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .pre_trans = identity,

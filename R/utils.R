@@ -10,11 +10,12 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
-  .agg_by = "Pre-aggregation column: { .agg_by}",
-  .exclude = "Exclusion: { .exclude}",
-  .pre_trans = "Transformation prior to normalization: { .pre_trans}",
+  .agg_by = "pre-aggregation column: { .agg_by}",
+  .exclude = "exclusion: { .exclude}",
+  .pre_trans = "transformation prior to normalization: { .pre_trans}",
+  .level = "outlier probability level: {.val { .level}}",
   .norm = "{ .norm}",
-  .post_trans = "Transformation after normalization: { .post_trans}"
+  .post_trans = "transformation after normalization: { .post_trans}"
 )
 
 number_names <- c(

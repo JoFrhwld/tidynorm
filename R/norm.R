@@ -183,7 +183,6 @@ norm_generic <- function(
   norm_grouping <- expr({{ .by }})
   agg_grouping <- expr({{ .agg_by }})
   exclusion <- expr({{ .exclude }})
-
   if (quo_is_null(exclusion)) {
     exclusion <-  expr(FALSE)
   }
@@ -345,7 +344,7 @@ norm_generic <- function(
   }
 
   norm_info <- list(
-    .op = "Normalized",
+    .op = "normalized",
     .targets = names(target_pos),
     .norm_cols = glue::glue(.names, .formant = names(target_pos)),
     .by = names(group_pos),

@@ -331,7 +331,7 @@ norm_dct_generic <- function(
   attr(normed, "norminfo") <- prev_attr
   attr(normed, "normalized") <- TRUE
   norm_info <- list(
-    .op = "Normalized",
+    .op = "normalized",
     .norm_procedure = "tidynorm::norm_dct_generic",
     .by_col = .by_formant,
     .targets = names(target_pos),
@@ -359,6 +359,12 @@ norm_dct_generic <- function(
     )
   }
 
+  if (!quo_is_null(enquo(.exclude))) {
+    norm_info <- c(
+      norm_info,
+      .exclude = as_label(substitute(exclusion))
+    )
+  }
 
   normed <- append_norm_info(
     normed,
@@ -541,7 +547,7 @@ norm_dct_nearey <- function(
     .by_token = FALSE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
-    .exclude = {{ .exclude }},    
+    .exclude = {{ .exclude }},
     .L = mean(!!sym(".formant"), na.rm = T),
     .S = (1 / sqrt(2)),
     .param_col = {{ .param_col }},
@@ -628,7 +634,7 @@ norm_dct_deltaF <- function(
     .agg_fun = .agg_fun,
     .token_id_col = {{ .token_id_col }},
     .by_formant = FALSE,
-    .exclude = {{ .exclude }},    
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant") / (!!sym(".formant_num") - 0.5), na.rm = T),
     .param_col = {{ .param_col }},
@@ -718,7 +724,7 @@ norm_dct_wattfab <- function(
     .by_formant = TRUE,
     .agg_by = {{ .agg_by }},
     .agg_fun = .agg_fun,
-    .exclude = {{ .exclude }},    
+    .exclude = {{ .exclude }},
     .L = 0,
     .S = mean(!!sym(".formant"), na.rm = T),
     .param_col = {{ .param_col }},
