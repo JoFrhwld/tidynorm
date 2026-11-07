@@ -7,15 +7,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/JoFrhwld/tidynorm/blob/v0.5.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/JoFrhwld/tidynorm/blob/main/DESCRIPTION)
 
 Fruehwald J (2026). *tidynorm: Tools for Tidy Vowel Normalization*. R
-package version 0.5.0, <https://jofrhwld.github.io/tidynorm/>.
+package version 0.6.0, <https://jofrhwld.github.io/tidynorm/>.
 
     @Manual{,
       title = {tidynorm: Tools for Tidy Vowel Normalization},
       author = {Josef Fruehwald},
       year = {2026},
-      note = {R package version 0.5.0},
+      note = {R package version 0.6.0},
       url = {https://jofrhwld.github.io/tidynorm/},
     }

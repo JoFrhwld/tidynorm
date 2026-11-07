@@ -13,6 +13,7 @@ norm_dct_nearey(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .drop_orig = FALSE,
   .names = "{.formant}_lm",
@@ -55,6 +56,12 @@ norm_dct_nearey(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .param_col:
 

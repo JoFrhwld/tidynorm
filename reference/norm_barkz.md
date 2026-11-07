@@ -87,7 +87,6 @@ vowels. The Journal of the Acoustical Society of America, 79(4),
 ``` r
 library(tidynorm)
 ggplot2_inst <- require(ggplot2)
-#> Loading required package: ggplot2
 
 speaker_data_barkz <- speaker_data |>
   norm_barkz(
@@ -103,7 +102,7 @@ speaker_data_barkz <- speaker_data |>
 #> • grouped by `speaker`
 #> • within formant: FALSE
 #> • within token: TRUE
-#> • Transformation prior to normalization: hz_to_bark
+#> • transformation prior to normalization: hz_to_bark
 #> • (.formant - .formant[3])/(1)
 #> 
 

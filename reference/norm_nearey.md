@@ -12,6 +12,7 @@ norm_nearey(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_lm",
@@ -49,6 +50,12 @@ norm_nearey(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .drop_orig:
 
@@ -126,7 +133,7 @@ speaker_data_nearey <- speaker_data |>
 #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
 #> • grouped by `speaker`
 #> • within formant: FALSE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1)
 #> 
 
@@ -167,7 +174,7 @@ speaker_data_nearey2 <- speaker_data |>
 #> • normalized values in `F1_nearey`, `F2_nearey`, and `F3_nearey`
 #> • grouped by `speaker`
 #> • within formant: TRUE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1)
 #> 
 

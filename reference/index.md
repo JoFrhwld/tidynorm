@@ -57,6 +57,15 @@ Tidy normalization procedures to be applied to your formant data frames.
 - [`norm_dct_wattfab()`](https://jofrhwld.github.io/tidynorm/reference/norm_dct_wattfab.md)
   : Watt and Fabricius DCT normalization
 
+## Outlier Detection
+
+- [`identify_dct_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_dct_outliers.md)
+  : Identify DCT Outliers
+- [`identify_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_outliers.md)
+  : Identify Outliers
+- [`identify_track_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_track_outliers.md)
+  : Identify Track Outliers
+
 ## DCT
 
 ### Basic DCT Functions

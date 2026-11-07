@@ -36,7 +36,7 @@ check_norm(speaker_norm)
 #> • normalized values in `F1_lm`, `F2_lm`, and `F3_lm`
 #> • grouped by `speaker`
 #> • within formant: FALSE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1)
 #> 
 ```

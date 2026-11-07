@@ -92,14 +92,6 @@ vowels. The Journal of the Acoustical Society of America, 79(4),
 ``` r
 library(tidynorm)
 library(dplyr)
-#> 
-#> Attaching package: ‘dplyr’
-#> The following objects are masked from ‘package:stats’:
-#> 
-#>     filter, lag
-#> The following objects are masked from ‘package:base’:
-#> 
-#>     intersect, setdiff, setequal, union
 ggplot2_inst <- require(ggplot2)
 
 speaker_dct <- speaker_tracks |>

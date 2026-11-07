@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tidynorm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Get Started</h6></li>
     <li><a class="dropdown-item" href="../articles/normalization-overview.html">Normalization Overview</a></li>
     <li><a class="dropdown-item" href="../articles/norm-methods.html">Normalization Methods</a></li>
+    <li><a class="dropdown-item" href="../articles/managing-outliers.html">Managing Outliers</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Details</h6></li>
     <li><a class="dropdown-item" href="../articles/normalizing_formant_tracks.html">Normalizing Formant Tracks</a></li>
@@ -32,6 +33,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
     <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2025/06/2025-06-16_introducing-tidynorm/">v 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2026/10/2026-10-26_tidynorm-0-5-0/">v 0.5.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul></li>
@@ -46,9 +48,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/JoFrhwld/tidynorm/blob/v0.5.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/JoFrhwld/tidynorm/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="tidynorm-060">tidynorm 0.6.0<a class="anchor" aria-label="anchor" href="#tidynorm-060"></a></h2><p class="text-muted">CRAN release: 2026-11-06</p>
+<div class="section level3">
+<h3 id="new-features-0-6-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h3>
+<ul><li>A new family of outlier detection functions (<code><a href="../reference/identify_outliers.html">identify_outliers()</a></code>, <code><a href="../reference/identify_track_outliers.html">identify_track_outliers()</a></code> and <code><a href="../reference/identify_dct_outliers.html">identify_dct_outliers()</a></code>) have been added (<a href="https://github.com/JoFrhwld/tidynorm/issues/48" class="external-link">#48</a>).</li>
+<li>A new <code>.exclude</code> argument has been added to all normalization functions. Where <code>TRUE</code>, corresponding rows are excluded from the cal culation of normalization parameters (<a href="https://github.com/JoFrhwld/tidynorm/issues/48" class="external-link">#48</a>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="tidynorm-050">tidynorm 0.5.0<a class="anchor" aria-label="anchor" href="#tidynorm-050"></a></h2><p class="text-muted">CRAN release: 2026-10-26</p>
 <div class="section level3">

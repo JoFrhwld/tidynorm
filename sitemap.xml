@@ -4,6 +4,7 @@
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/checking.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/dct.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/index.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/articles/managing-outliers.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/norm-methods.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/normalization-overview.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/articles/normalizing_formant_tracks.html</loc></url>
@@ -19,6 +20,9 @@
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/idct.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/idct_accel.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/idct_rate.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/identify_dct_outliers.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/identify_outliers.html</loc></url>
+<url><loc>https://jofrhwld.github.io/tidynorm/reference/identify_track_outliers.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/index.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/mel_to_hz.html</loc></url>
 <url><loc>https://jofrhwld.github.io/tidynorm/reference/norm_barkz.html</loc></url>

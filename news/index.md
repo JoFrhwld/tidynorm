@@ -1,5 +1,23 @@
 # Changelog
 
+## tidynorm 0.6.0
+
+CRAN release: 2026-11-06
+
+### New Features
+
+- A new family of outlier detection functions
+  ([`identify_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_outliers.md),
+  [`identify_track_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_track_outliers.md)
+  and
+  [`identify_dct_outliers()`](https://jofrhwld.github.io/tidynorm/reference/identify_dct_outliers.md))
+  have been added
+  ([\#48](https://github.com/JoFrhwld/tidynorm/issues/48)).
+- A new `.exclude` argument has been added to all normalization
+  functions. Where `TRUE`, corresponding rows are excluded from the cal
+  culation of normalization parameters
+  ([\#48](https://github.com/JoFrhwld/tidynorm/issues/48)).
+
 ## tidynorm 0.5.0
 
 CRAN release: 2026-10-26

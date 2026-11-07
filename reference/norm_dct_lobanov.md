@@ -12,6 +12,7 @@ norm_dct_lobanov(
   .by = NULL,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .param_col = NULL,
   .names = "{.formant}_z",
   .silent = opt("tidynorm.silent"),
@@ -50,6 +51,12 @@ norm_dct_lobanov(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .param_col:
 

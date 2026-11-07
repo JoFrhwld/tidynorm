@@ -151,7 +151,7 @@ point_norm <- speaker_data |>
 #> • normalized values in `F1_lm`, `F2_lm`, and `F3_lm`
 #> • grouped by `speaker`
 #> • within formant: FALSE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1)
 ```
 
@@ -174,7 +174,7 @@ track_norm <- speaker_tracks |>
 #> • time column: `t`
 #> • grouped by `speaker`
 #> • within formant: FALSE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1/sqrt(2))
 ```
 
@@ -431,7 +431,7 @@ point_norm <- speaker_data |>
 #> • grouped by `speaker`
 #> • within formant: FALSE
 #> • within token: TRUE
-#> • Transformation prior to normalization: hz_to_bark
+#> • transformation prior to normalization: hz_to_bark
 #> • (.formant - .formant[3])/(1)
 ```
 
@@ -456,7 +456,7 @@ track_norm <- speaker_tracks |>
 #> • grouped by `speaker`
 #> • within formant: FALSE
 #> • within token: TRUE
-#> • Transformation prior to normalization: hz_to_bark
+#> • transformation prior to normalization: hz_to_bark
 #> • (.formant - .formant[3])/(1/sqrt(2))
 ```
 

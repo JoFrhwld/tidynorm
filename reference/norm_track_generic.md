@@ -14,6 +14,7 @@ norm_track_generic(
   .by_token = FALSE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .L = 0,
   .S = 1/sqrt(2),
@@ -67,6 +68,12 @@ norm_track_generic(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .time_col:
 

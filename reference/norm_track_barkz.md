@@ -132,7 +132,7 @@ track_norm <- track_subset |>
 #> • grouped by `speaker`
 #> • within formant: FALSE
 #> • within token: TRUE
-#> • Transformation prior to normalization: hz_to_bark
+#> • transformation prior to normalization: hz_to_bark
 #> • (.formant - .formant[3])/(1/sqrt(2))
 #> 
 

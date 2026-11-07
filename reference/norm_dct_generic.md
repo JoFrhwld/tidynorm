@@ -13,6 +13,7 @@ norm_dct_generic(
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
   .param_col = NULL,
+  .exclude = NULL,
   .L = 0,
   .S = 1/sqrt(2),
   .by_formant = FALSE,
@@ -59,6 +60,12 @@ norm_dct_generic(
 - .param_col:
 
   A column identifying the DCT parameter number.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .L:
 

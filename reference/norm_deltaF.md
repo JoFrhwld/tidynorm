@@ -12,6 +12,7 @@ norm_deltaF(
   .agg_fun = function(x) mean(x, na.rm = T),
   .by_formant = FALSE,
   .agg_by = NULL,
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_df",
@@ -49,6 +50,12 @@ norm_deltaF(
   [`<tidy-select>`](https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html)
   A selection of columns to to pre-aggregate by. Typically a column of
   vowel category labels.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .drop_orig:
 

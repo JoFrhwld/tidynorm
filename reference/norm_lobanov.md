@@ -12,6 +12,7 @@ norm_lobanov(
   .by_formant = TRUE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_z",
@@ -49,6 +50,12 @@ norm_lobanov(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .drop_orig:
 

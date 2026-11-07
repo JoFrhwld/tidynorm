@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tidynorm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Get Started</h6></li>
     <li><a class="dropdown-item" href="../articles/normalization-overview.html">Normalization Overview</a></li>
     <li><a class="dropdown-item" href="../articles/norm-methods.html">Normalization Methods</a></li>
+    <li><a class="dropdown-item" href="../articles/managing-outliers.html">Managing Outliers</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Details</h6></li>
     <li><a class="dropdown-item" href="../articles/normalizing_formant_tracks.html">Normalizing Formant Tracks</a></li>
@@ -32,6 +33,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
     <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2025/06/2025-06-16_introducing-tidynorm/">v 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://jofrhwld.github.io/blog/posts/2026/10/2026-10-26_tidynorm-0-5-0/">v 0.5.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul></li>
@@ -46,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Bark Difference Normalize</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JoFrhwld/tidynorm/blob/v0.5.0/R/norm.R" class="external-link"><code>R/norm.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JoFrhwld/tidynorm/blob/main/R/norm.R" class="external-link"><code>R/norm.R</code></a></small>
       <div class="d-none name"><code>norm_barkz.Rd</code></div>
     </div>
 
@@ -140,7 +142,6 @@ The Journal of the Acoustical Society of America, 79(4), 1086–1100.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jofrhwld.github.io/tidynorm/">tidynorm</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ggplot2_inst</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: ggplot2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">speaker_data_barkz</span> <span class="op">&lt;-</span> <span class="va">speaker_data</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">norm_barkz</span><span class="op">(</span></span></span>
@@ -156,7 +157,7 @@ The Journal of the Acoustical Society of America, 79(4), 1086–1100.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> grouped by `speaker`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> within formant: FALSE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> within token: TRUE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Transformation prior to normalization: hz_to_bark</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> transformation prior to normalization: hz_to_bark</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> (.formant - .formant[3])/(1)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>

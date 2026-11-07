@@ -13,6 +13,7 @@ norm_track_nearey(
   .by_formant = FALSE,
   .agg_by = NULL,
   .agg_fun = function(x) mean(x, na.rm = T),
+  .exclude = NULL,
   .time_col = NULL,
   .order = 5,
   .return_dct = FALSE,
@@ -57,6 +58,12 @@ norm_track_nearey(
 - .agg_fun:
 
   A function to use to pre-aggregate values.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .time_col:
 
@@ -158,7 +165,7 @@ track_norm <- track_subset |>
 #> • time column: `t`
 #> • grouped by `speaker`
 #> • within formant: TRUE
-#> • Transformation prior to normalization: log
+#> • transformation prior to normalization: log
 #> • (.formant - mean(.formant, na.rm = T))/(1/sqrt(2))
 #> 
 

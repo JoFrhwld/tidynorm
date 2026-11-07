@@ -18,6 +18,7 @@ norm_generic(
   .S = 1,
   .pre_trans = identity,
   .post_trans = identity,
+  .exclude = NULL,
   .drop_orig = FALSE,
   .keep_params = FALSE,
   .names = "{.formant}_n",
@@ -78,6 +79,12 @@ norm_generic(
 - .post_trans:
 
   A function to apply to formant values after normalization.
+
+- .exclude:
+
+  A logical column, or expression that evaulates to a logical vector
+  identifying rows to exclude from the normalization parameter
+  estimates. Any rows with `TRUE` are excluded.
 
 - .drop_orig:
 

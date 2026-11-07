@@ -6,6 +6,8 @@
   Overview](https://jofrhwld.github.io/tidynorm/articles/normalization-overview.md):
 - [Normalization
   Methods](https://jofrhwld.github.io/tidynorm/articles/norm-methods.md):
+- [Managing
+  Outliers](https://jofrhwld.github.io/tidynorm/articles/managing-outliers.md):
 
 ### Details
 
