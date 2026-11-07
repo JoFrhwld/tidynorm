@@ -9,8 +9,10 @@ format:
   html:
     toc: true
     html-math-method: mathjax
+    fig-format: png
   typst:
     bibliographystyle: "apa"
+    fig-format: png
 vignette: >
   %\VignetteIndexEntry{Managing Outliers}
   %\VignetteEngine{quarto::html}
